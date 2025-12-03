@@ -9,6 +9,7 @@
   --accent-strong: #5a3df1;
   --border: #e8e3ff;
   --shadow: 0 25px 60px -30px rgba(44, 26, 110, 0.25);
+  --shadow-light: 0 14px 32px -18px rgba(62, 40, 120, 0.25);
   --sidebar-bg: #f5f5f5;
   --sidebar-highlight: #ededed;
   --sidebar-indicator: #8b5cf6;
@@ -27,6 +28,7 @@
   --accent-strong: #b6a8ff;
   --border: #1e1b35;
   --shadow: 0 25px 60px -30px rgba(0, 0, 0, 0.6);
+  --shadow-light: 0 14px 32px -18px rgba(0, 0, 0, 0.6);
 }
 
 * {
@@ -568,6 +570,49 @@ label {
 .modal-grid {
   display: grid;
   gap: 0.75rem;
+}
+
+.mode-select-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 0.75rem;
+}
+
+.mode-card {
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  background: linear-gradient(135deg, rgba(116, 88, 255, 0.06), rgba(255, 255, 255, 0.02));
+  box-shadow: var(--shadow-light);
+  cursor: pointer;
+}
+
+.mode-card.disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.mode-subtitle {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+}
+
+.mode-subtext {
+  margin: 0.3rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.mode-badge {
+  align-self: flex-start;
+  background: var(--border);
+  color: var(--muted);
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  border: 1px solid var(--border-strong, var(--border));
 }
 
 .pill-list {

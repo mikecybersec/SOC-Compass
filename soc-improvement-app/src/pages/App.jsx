@@ -79,6 +79,7 @@ const PreferencesModal = ({ open, onClose, language, setLanguage, theme, setThem
 const App = () => {
   const [view, setView] = useState('home');
   const [startModalOpen, setStartModalOpen] = useState(false);
+  const [modeModalOpen, setModeModalOpen] = useState(false);
   const [apiModalOpen, setApiModalOpen] = useState(false);
   const [preferencesModalOpen, setPreferencesModalOpen] = useState(false);
   const scoresRef = useRef();
@@ -137,7 +138,7 @@ const App = () => {
         onGoHome={() => setView('home')}
         onNewAssessment={() => {
           setView('home');
-          setStartModalOpen(true);
+          setModeModalOpen(true);
         }}
         onExistingAssessments={() => setView('home')}
         onOpenApiModal={() => setApiModalOpen(true)}
@@ -153,8 +154,14 @@ const App = () => {
           hasActiveAssessment={hasActiveAssessment}
           currentAssessment={currentAssessment}
           startModalOpen={startModalOpen}
-          onOpenStartModal={() => setStartModalOpen(true)}
+          modeModalOpen={modeModalOpen}
+          onOpenStartModal={() => setModeModalOpen(true)}
           onCloseStartModal={() => setStartModalOpen(false)}
+          onCloseModeModal={() => setModeModalOpen(false)}
+          onSelectSoloMode={() => {
+            setStartModalOpen(true);
+            setModeModalOpen(false);
+          }}
         />
       )}
       {view === 'assessment' && (

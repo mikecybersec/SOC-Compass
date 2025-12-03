@@ -15,6 +15,48 @@ const disabledFrameworks = ['sim3', 'inform'];
 const getInitialFrameworkId = (frameworkId) =>
   disabledFrameworks.includes(frameworkId) ? 'soc_cmm' : frameworkId;
 
+const ModeSelectionModal = ({ open, onClose, onSelectSolo }) => {
+  if (!open) return null;
+
+  return (
+    <div className="modal-backdrop">
+      <div className="modal">
+        <div className="flex-between" style={{ marginBottom: '1rem' }}>
+          <h2>Select mode</h2>
+          <button className="secondary" onClick={onClose}>
+            Close
+          </button>
+        </div>
+        <div className="mode-select-grid">
+          <button className="mode-card" onClick={onSelectSolo}>
+            <div className="flex-between" style={{ alignItems: 'flex-start' }}>
+              <div>
+                <h3 style={{ margin: 0 }}>Solo</h3>
+                <p className="mode-subtitle">
+                  I don't need assistance with interpreting any evidence, I will self-score the assessment.
+                </p>
+              </div>
+            </div>
+          </button>
+          <button className="mode-card disabled" disabled>
+            <div className="flex-between" style={{ alignItems: 'flex-start' }}>
+              <div>
+                <h3 style={{ margin: 0 }}>Assisted Mode</h3>
+                <p className="mode-subtitle">
+                  Compass will help you by reviewing attached Standard Operating Procedures, diagrams and evidence and score any
+                  relevant aspects of the assessment, speeding up your assessment delivery.
+                </p>
+                <p className="mode-subtext">Up to 50% faster</p>
+              </div>
+              <span className="mode-badge">Coming Soon</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, currentFrameworkId }) => {
   const [selectedObjectives, setSelectedObjectives] = useState(initialMetadata.objectives || []);
   const [form, setForm] = useState({
@@ -188,6 +230,9 @@ const Home = ({
   startModalOpen,
   onOpenStartModal,
   onCloseStartModal,
+  modeModalOpen,
+  onCloseModeModal,
+  onSelectSoloMode,
 }) => {
   const upcomingMetadata = useAssessmentStore((s) => s.upcomingMetadata);
   const theme = useAssessmentStore((s) => s.theme);
@@ -320,6 +365,7 @@ const Home = ({
         </div>
       </div>
 
+      <ModeSelectionModal open={modeModalOpen} onClose={onCloseModeModal} onSelectSolo={onSelectSoloMode} />
       <StartAssessmentModal
         open={startModalOpen}
         onClose={onCloseStartModal}
