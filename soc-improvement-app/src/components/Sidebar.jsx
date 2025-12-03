@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 
-const Sidebar = ({ aspects, currentKey, onSelect }) => {
+const Sidebar = ({ aspects, currentKey, onSelect, onOpenAssessmentInfo }) => {
   const answers = useAssessmentStore((s) => s.currentAssessment.answers);
 
   const grouped = aspects.reduce((acc, item) => {
@@ -12,6 +12,15 @@ const Sidebar = ({ aspects, currentKey, onSelect }) => {
 
   return (
     <aside className="sidebar">
+      {onOpenAssessmentInfo && (
+        <div style={{ display: 'grid', gap: '0.5rem', marginBottom: '1rem' }}>
+          <button className="secondary" onClick={onOpenAssessmentInfo} style={{ justifyContent: 'space-between' }}>
+            <span>Assessment info</span>
+            <span aria-hidden>→</span>
+          </button>
+          <div className="section-divider" aria-hidden />
+        </div>
+      )}
       <h3>SOC Domains</h3>
       {Object.entries(grouped).map(([domain, domainAspects]) => (
         <div key={domain} style={{ marginBottom: '1rem' }}>
