@@ -206,6 +206,12 @@ button, input, select, textarea {
   gap: 0.55rem;
 }
 
+.sidebar-group {
+  display: grid;
+  gap: 0.35rem;
+  padding-top: 0.35rem;
+}
+
 .sidebar-nav {
   display: grid;
   gap: 0.6rem;
@@ -256,6 +262,21 @@ button, input, select, textarea {
 
 .sidebar-link.active::before {
   background: var(--sidebar-indicator);
+}
+
+.sidebar-toggle {
+  justify-content: space-between;
+  font-weight: 700;
+  border-color: #e5e5e5;
+}
+
+.sidebar-toggle .chevron {
+  display: inline-block;
+  transition: transform 0.16s ease;
+}
+
+.sidebar-toggle.open .chevron {
+  transform: rotate(180deg);
 }
 
 .sidebar-label {

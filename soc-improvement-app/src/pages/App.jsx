@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Home from './Home';
 import Assessment from './Assessment';
 import AssessmentInfo from './AssessmentInfo';
+import Reporting from './Reporting';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import Navbar from '../components/Navbar';
 
@@ -112,6 +113,10 @@ const App = () => {
     setView('assessmentInfo');
   };
 
+  const handleViewReporting = () => {
+    setView('reporting');
+  };
+
   const handleStart = (payload) => {
     if (hasActiveAssessment) {
       saveAssessmentToHistory('Previous assessment snapshot');
@@ -158,10 +163,23 @@ const App = () => {
           scoresRef={scoresRef}
           actionPlanRef={actionPlanRef}
           onOpenAssessmentInfo={handleViewAssessmentInfo}
+          onOpenReporting={handleViewReporting}
         />
       )}
       {view === 'assessmentInfo' && (
-        <AssessmentInfo onBack={() => setView('assessment')} scoresRef={scoresRef} actionPlanRef={actionPlanRef} />
+        <AssessmentInfo
+          onBack={() => setView('assessment')}
+          scoresRef={scoresRef}
+          actionPlanRef={actionPlanRef}
+          onOpenReporting={handleViewReporting}
+        />
+      )}
+      {view === 'reporting' && (
+        <Reporting
+          onBack={() => setView('assessment')}
+          onOpenAssessmentInfo={handleViewAssessmentInfo}
+          onOpenReporting={handleViewReporting}
+        />
       )}
       <ApiKeyModal
         open={apiModalOpen}
