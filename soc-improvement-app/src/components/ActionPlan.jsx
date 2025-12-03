@@ -1,4 +1,5 @@
 import React, { useState, forwardRef } from 'react';
+import { renderMarkdown } from '../utils/markdown';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { generateActionPlan } from '../utils/ai';
 import { frameworks } from '../utils/frameworks';
@@ -18,7 +19,7 @@ const ActionPlan = forwardRef((_, ref) => {
 
   const handleGenerate = async () => {
     setLoading(true);
-    setActionPlan({ steps: [], error: undefined });
+    setActionPlan({ steps: [], raw: '', error: undefined });
     const result = await generateActionPlan({
       apiKey,
       apiBase,
@@ -65,12 +66,20 @@ const ActionPlan = forwardRef((_, ref) => {
         </p>
       )}
       <div>
-        {actionPlan.steps?.length ? (
+        {actionPlan.raw ? (
+          <div
+            className="markdown-body"
+            style={{ lineHeight: 1.5 }}
+            dangerouslySetInnerHTML={{ __html: renderMarkdown(actionPlan.raw) }}
+          />
+        ) : actionPlan.steps?.length ? (
           <ol>
             {actionPlan.steps.map((step, idx) => (
-              <li key={idx} style={{ marginBottom: '0.4rem' }}>
-                {step}
-              </li>
+              <li
+                key={idx}
+                style={{ marginBottom: '0.4rem' }}
+                dangerouslySetInnerHTML={{ __html: renderMarkdown(step) }}
+              />
             ))}
           </ol>
         ) : (
