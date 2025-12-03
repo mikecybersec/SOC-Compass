@@ -1196,11 +1196,15 @@ label {
 
 .assessment-row {
   display: grid;
-  grid-template-columns: 1.35fr 1.15fr 1fr 1fr 0.7fr 0.6fr;
+  grid-template-columns: 1.35fr 1.15fr 1fr 1fr 0.7fr;
   gap: 0.65rem;
   align-items: center;
   padding: 0.55rem 0.85rem;
   font-size: 0.9rem;
+}
+
+.assessment-row-link {
+  cursor: pointer;
 }
 
 .assessment-row:nth-child(odd):not(.assessment-header) {

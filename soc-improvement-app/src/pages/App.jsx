@@ -148,7 +148,7 @@ const App = () => {
 
   const handleLoad = (id) => {
     loadAssessmentFromHistory(id);
-    setView('assessment');
+    setView('assessmentInfo');
   };
 
   return (
@@ -169,9 +169,7 @@ const App = () => {
           onStartAssessment={handleStart}
           onContinueAssessment={() => setView('assessment')}
           onLoadAssessment={handleLoad}
-          onSaveSnapshot={() => saveAssessmentToHistory('Saved from home')}
           assessmentHistory={assessmentHistory}
-          hasActiveAssessment={hasActiveAssessment}
           currentAssessment={currentAssessment}
           startModalOpen={startModalOpen}
           modeModalOpen={modeModalOpen}

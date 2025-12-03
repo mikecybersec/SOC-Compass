@@ -321,9 +321,7 @@ const Home = ({
   onStartAssessment,
   onContinueAssessment,
   onLoadAssessment,
-  onSaveSnapshot,
   assessmentHistory,
-  hasActiveAssessment,
   currentAssessment,
   startModalOpen,
   onOpenStartModal,
@@ -370,9 +368,6 @@ const Home = ({
                 view.
               </CardDescription>
             </div>
-            <Button variant="secondary" onClick={onSaveSnapshot} disabled={!hasActiveAssessment}>
-              Save current assessment
-            </Button>
           </CardHeader>
           {activeHistory.length === 0 ? (
             <CardContent>
@@ -386,35 +381,40 @@ const Home = ({
                 <div role="columnheader">Framework</div>
                 <div role="columnheader">Last saved</div>
                 <div role="columnheader">Status</div>
-                <div role="columnheader" className="actions-col">
-                  <span className="sr-only">Actions</span>
-                </div>
               </div>
               {activeHistory.map((item) => {
                 const statusText = item.metadata?.status || 'Not Started';
                 const statusClass = statusText.toLowerCase().replace(/\s+/g, '-');
 
-              return (
-                <div key={item.id} className="assessment-row" role="row">
-                  <div className="cell-ellipsis" role="cell">
-                    <div className="cell-title">{item.metadata?.assessmentTitle || item.label || 'Untitled assessment'}</div>
-                  </div>
-                  <div className="cell-ellipsis" role="cell">
-                    <div className="cell-title">{item.metadata?.name || 'Not provided'}</div>
-                  </div>
-                  <div className="cell-ellipsis" role="cell">
-                    <div className="cell-title">{frameworks[item.frameworkId]?.name || 'Unknown framework'}</div>
-                  </div>
-                  <div className="cell-ellipsis" role="cell">
-                    <div className="cell-title">{new Date(item.savedAt).toLocaleString()}</div>
-                  </div>
-                  <div role="cell">
-                    <span className={`status-pill status-${statusClass}`}>{statusText}</span>
-                  </div>
-                    <div className="actions-col" role="cell">
-                      <Button variant="ghost" size="sm" onClick={() => onLoadAssessment(item.id)}>
-                        Open
-                      </Button>
+                return (
+                  <div
+                    key={item.id}
+                    className="assessment-row assessment-row-link"
+                    role="row"
+                    tabIndex={0}
+                    onClick={() => onLoadAssessment(item.id)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        onLoadAssessment(item.id);
+                      }
+                    }}
+                    aria-label={`Open assessment ${item.metadata?.assessmentTitle || item.label || 'Untitled assessment'}`}
+                  >
+                    <div className="cell-ellipsis" role="cell">
+                      <div className="cell-title">{item.metadata?.assessmentTitle || item.label || 'Untitled assessment'}</div>
+                    </div>
+                    <div className="cell-ellipsis" role="cell">
+                      <div className="cell-title">{item.metadata?.name || 'Not provided'}</div>
+                    </div>
+                    <div className="cell-ellipsis" role="cell">
+                      <div className="cell-title">{frameworks[item.frameworkId]?.name || 'Unknown framework'}</div>
+                    </div>
+                    <div className="cell-ellipsis" role="cell">
+                      <div className="cell-title">{new Date(item.savedAt).toLocaleString()}</div>
+                    </div>
+                    <div role="cell">
+                      <span className={`status-pill status-${statusClass}`}>{statusText}</span>
                     </div>
                   </div>
                 );
