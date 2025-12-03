@@ -3,10 +3,10 @@
 ![SOC Compass](./compass.jpeg)
 
 ## Usage Instructions
-1. git clone
-2. npm install
-3. npm run dev
-4. Visit http://localhost:3000
+1. `git clone`
+2. `npm install`
+3. `npm run dev`
+4. Visit `http://localhost:3000`
 5. Enjoy!
 
 ## The problem
