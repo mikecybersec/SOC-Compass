@@ -14,9 +14,8 @@ const Sidebar = ({ aspects, currentKey, onSelect, onOpenAssessmentInfo }) => {
     <aside className="sidebar">
       {onOpenAssessmentInfo && (
         <div style={{ display: 'grid', gap: '0.5rem', marginBottom: '1rem' }}>
-          <button className="secondary" onClick={onOpenAssessmentInfo} style={{ justifyContent: 'space-between' }}>
+          <button className="secondary" onClick={onOpenAssessmentInfo} style={{ justifyContent: 'flex-start' }}>
             <span>Assessment info</span>
-            <span aria-hidden>→</span>
           </button>
           <div className="section-divider" aria-hidden />
         </div>
