@@ -2,6 +2,13 @@
 
 ![SOC Compass](./compass.jpeg)
 
+## Usage Instructions
+1. git clone
+2. npm install
+3. npm run dev
+4. Visit http://localhost:3000
+5. Enjoy!
+
 ## The problem
 When security professionals take on the role of SOC Leader/Manager, they don't all come via the same linear path i.e. some will:
 - Inherit the SOC through their existing management leaving the organisation or changing role
