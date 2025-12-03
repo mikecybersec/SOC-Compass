@@ -15,6 +15,8 @@ const formatBudget = (metadata) => {
 
 const Assessment = ({ onBack }) => {
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
+  const lastSavedAt = useAssessmentStore((s) => s.lastSavedAt);
+  const autoSaveAssessment = useAssessmentStore((s) => s.autoSaveAssessment);
   const frameworkId = currentAssessment.frameworkId;
   const metadata = currentAssessment.metadata;
   const [aspectKey, setAspectKey] = useState(null);
@@ -37,6 +39,14 @@ const Assessment = ({ onBack }) => {
       setAspectKey(`${currentFramework.aspects[0].domain}::${currentFramework.aspects[0].aspect}`);
     }
   }, [aspectKey, currentFramework]);
+
+  useEffect(() => {
+    const autosaveHandle = setTimeout(() => {
+      autoSaveAssessment();
+    }, 800);
+
+    return () => clearTimeout(autosaveHandle);
+  }, [currentAssessment, autoSaveAssessment]);
 
   const activeAspect = aspectKey ? aspectLookup[aspectKey] : null;
 
@@ -61,6 +71,9 @@ const Assessment = ({ onBack }) => {
             <div style={{ textAlign: 'right', minWidth: '220px' }}>
               <p style={{ fontWeight: 700 }}>{metadata.name}</p>
               <p style={{ color: 'var(--muted)' }}>{(metadata.objectives || []).join(', ')}</p>
+              <p className="muted-label" style={{ margin: '0.35rem 0 0' }}>
+                Autosaved {lastSavedAt ? new Date(lastSavedAt).toLocaleTimeString() : 'just now'}
+              </p>
               <button className="secondary" style={{ marginTop: '0.5rem' }} onClick={onBack}>
                 ← Back to home
               </button>
