@@ -37,6 +37,13 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef }) => {
       <input type="file" accept="application/json" ref={fileRef} style={{ display: 'none' }} onChange={handleImport} />
 
       <div className="flex" style={{ gap: '1rem', flexWrap: 'wrap' }}>
+        <div style={{ minWidth: '240px', flex: 1 }}>
+          <label>Assessment title</label>
+          <input
+            value={state.currentAssessment.metadata.assessmentTitle}
+            onChange={(e) => setMetadata({ assessmentTitle: e.target.value })}
+          />
+        </div>
         <div style={{ minWidth: '220px' }}>
           <label>Organization name</label>
           <input value={state.currentAssessment.metadata.name} onChange={(e) => setMetadata({ name: e.target.value })} />

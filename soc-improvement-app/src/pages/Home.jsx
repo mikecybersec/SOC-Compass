@@ -60,6 +60,7 @@ const ModeSelectionModal = ({ open, onClose, onSelectSolo }) => {
 const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, currentFrameworkId, startMode }) => {
   const [selectedObjectives, setSelectedObjectives] = useState(initialMetadata.objectives || []);
   const [form, setForm] = useState({
+    assessmentTitle: initialMetadata.assessmentTitle || '',
     name: initialMetadata.name || '',
     budgetAmount: initialMetadata.budgetAmount || '',
     budgetCurrency: initialMetadata.budgetCurrency || '$',
@@ -73,6 +74,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
   useEffect(() => {
     if (!open) return;
     setForm({
+      assessmentTitle: initialMetadata.assessmentTitle || '',
       name: initialMetadata.name || '',
       budgetAmount: initialMetadata.budgetAmount || '',
       budgetCurrency: initialMetadata.budgetCurrency || '$',
@@ -117,6 +119,15 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
           </button>
         </div>
         <form onSubmit={handleSubmit} className="modal-grid">
+          <div>
+            <label>Assessment Title</label>
+            <input
+              value={form.assessmentTitle}
+              onChange={(e) => setForm({ ...form, assessmentTitle: e.target.value })}
+              placeholder="e.g. SOC maturity uplift Q4"
+              required
+            />
+          </div>
           <div>
             <label>Organisation Name</label>
             <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
@@ -298,28 +309,56 @@ const Home = ({
           {activeHistory.length === 0 ? (
             <p style={{ color: 'var(--muted)' }}>No active assessments yet.</p>
           ) : (
-            <div className="history-list">
-              {activeHistory.map((item) => (
-                <div key={item.id} className="history-row">
-                  <div>
-                    <p style={{ margin: 0, fontWeight: 600 }}>{item.label}</p>
-                    <p style={{ margin: 0, color: 'var(--muted)' }}>
-                      {new Date(item.savedAt).toLocaleString()} • {frameworks[item.frameworkId]?.name || 'Unknown framework'}
-                    </p>
-                    <p style={{ margin: '0.2rem 0 0', color: 'var(--muted)' }}>
-                      {item.metadata?.name} • {item.metadata?.sector} • {(item.metadata?.objectives || []).join(', ')}
-                    </p>
-                    <p style={{ margin: '0.2rem 0 0', color: 'var(--muted)' }}>
-                      Status: {item.metadata?.status || 'Not Started'}
-                    </p>
-                  </div>
-                  <div className="flex" style={{ gap: '0.5rem' }}>
-                    <button className="secondary" onClick={() => onLoadAssessment(item.id)}>
-                      Load
-                    </button>
-                  </div>
+            <div className="assessment-table" role="table" aria-label="Active assessments table">
+              <div className="assessment-row assessment-header" role="row">
+                <div role="columnheader">Assessment Title</div>
+                <div role="columnheader">Organisation</div>
+                <div role="columnheader">Framework</div>
+                <div role="columnheader">Last saved</div>
+                <div role="columnheader">Status</div>
+                <div role="columnheader" className="actions-col">
+                  <span className="sr-only">Actions</span>
                 </div>
-              ))}
+              </div>
+              {activeHistory.map((item) => {
+                const objectives = (item.metadata?.objectives || []).filter(Boolean);
+                const objectivePreview = objectives.slice(0, 2).join(', ') || 'No objectives added';
+                const remainingObjectives = objectives.length > 2 ? ` (+${objectives.length - 2})` : '';
+                const statusText = item.metadata?.status || 'Not Started';
+                const statusClass = statusText.toLowerCase().replace(/\s+/g, '-');
+
+                return (
+                  <div key={item.id} className="assessment-row" role="row">
+                    <div className="cell-ellipsis" role="cell">
+                      <div className="cell-title">{item.metadata?.assessmentTitle || item.label || 'Untitled assessment'}</div>
+                      <div className="cell-subdued">
+                        {objectivePreview}
+                        {remainingObjectives}
+                      </div>
+                    </div>
+                    <div className="cell-ellipsis" role="cell">
+                      <div className="cell-title">{item.metadata?.name || 'Not provided'}</div>
+                      <div className="cell-subdued">{item.metadata?.sector || 'Sector TBD'}</div>
+                    </div>
+                    <div className="cell-ellipsis" role="cell">
+                      <div className="cell-title">{frameworks[item.frameworkId]?.name || 'Unknown framework'}</div>
+                      <div className="cell-subdued">{item.metadata?.frameworkId || item.frameworkId}</div>
+                    </div>
+                    <div className="cell-ellipsis" role="cell">
+                      <div className="cell-title">{new Date(item.savedAt).toLocaleString()}</div>
+                      <div className="cell-subdued">{item.label}</div>
+                    </div>
+                    <div role="cell">
+                      <span className={`status-pill status-${statusClass}`}>{statusText}</span>
+                    </div>
+                    <div className="actions-col" role="cell">
+                      <button className="ghost-button" onClick={() => onLoadAssessment(item.id)}>
+                        Open
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
