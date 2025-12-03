@@ -356,11 +356,6 @@ const Home = ({
           </p>
           <div className="hero-actions">
             <Button onClick={onOpenStartModal}>Start new assessment</Button>
-            {hasActiveAssessment && (
-              <Button variant="secondary" onClick={onContinueAssessment}>
-                Continue current assessment
-              </Button>
-            )}
           </div>
         </div>
       </header>
@@ -396,36 +391,26 @@ const Home = ({
                 </div>
               </div>
               {activeHistory.map((item) => {
-                const objectives = (item.metadata?.objectives || []).filter(Boolean);
-                const objectivePreview = objectives.slice(0, 2).join(', ') || 'No objectives added';
-                const remainingObjectives = objectives.length > 2 ? ` (+${objectives.length - 2})` : '';
                 const statusText = item.metadata?.status || 'Not Started';
                 const statusClass = statusText.toLowerCase().replace(/\s+/g, '-');
 
-                return (
-                  <div key={item.id} className="assessment-row" role="row">
-                    <div className="cell-ellipsis" role="cell">
-                      <div className="cell-title">{item.metadata?.assessmentTitle || item.label || 'Untitled assessment'}</div>
-                      <div className="cell-subdued">
-                        {objectivePreview}
-                        {remainingObjectives}
-                      </div>
-                    </div>
-                    <div className="cell-ellipsis" role="cell">
-                      <div className="cell-title">{item.metadata?.name || 'Not provided'}</div>
-                      <div className="cell-subdued">{item.metadata?.sector || 'Sector TBD'}</div>
-                    </div>
-                    <div className="cell-ellipsis" role="cell">
-                      <div className="cell-title">{frameworks[item.frameworkId]?.name || 'Unknown framework'}</div>
-                      <div className="cell-subdued">{item.metadata?.frameworkId || item.frameworkId}</div>
-                    </div>
-                    <div className="cell-ellipsis" role="cell">
-                      <div className="cell-title">{new Date(item.savedAt).toLocaleString()}</div>
-                      <div className="cell-subdued">{item.label}</div>
-                    </div>
-                    <div role="cell">
-                      <span className={`status-pill status-${statusClass}`}>{statusText}</span>
-                    </div>
+              return (
+                <div key={item.id} className="assessment-row" role="row">
+                  <div className="cell-ellipsis" role="cell">
+                    <div className="cell-title">{item.metadata?.assessmentTitle || item.label || 'Untitled assessment'}</div>
+                  </div>
+                  <div className="cell-ellipsis" role="cell">
+                    <div className="cell-title">{item.metadata?.name || 'Not provided'}</div>
+                  </div>
+                  <div className="cell-ellipsis" role="cell">
+                    <div className="cell-title">{frameworks[item.frameworkId]?.name || 'Unknown framework'}</div>
+                  </div>
+                  <div className="cell-ellipsis" role="cell">
+                    <div className="cell-title">{new Date(item.savedAt).toLocaleString()}</div>
+                  </div>
+                  <div role="cell">
+                    <span className={`status-pill status-${statusClass}`}>{statusText}</span>
+                  </div>
                     <div className="actions-col" role="cell">
                       <Button variant="ghost" size="sm" onClick={() => onLoadAssessment(item.id)}>
                         Open
