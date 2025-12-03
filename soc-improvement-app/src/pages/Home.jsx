@@ -249,8 +249,12 @@ const Home = ({
   const currentFrameworkId = currentAssessment.frameworkId;
 
   const sortedHistory = useMemo(
-    () => (assessmentHistory || []).sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt)),
+    () => [...(assessmentHistory || [])].sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt)),
     [assessmentHistory]
+  );
+  const activeHistory = useMemo(
+    () => sortedHistory.filter((entry) => entry.metadata?.status !== 'Completed'),
+    [sortedHistory]
   );
 
   return (
@@ -279,9 +283,10 @@ const Home = ({
         <div className="card">
           <div className="flex-between" style={{ alignItems: 'flex-start' }}>
             <div>
-              <h3>Portfolio of assessments</h3>
+              <h3>Active assessments</h3>
               <p style={{ color: 'var(--muted)' }}>
-                Each entry keeps its own metadata, notes, and action plan. Load any SOC without changing another client profile.
+                Each entry keeps its own metadata, notes, action plan, and status. Completed assessments are hidden from this
+                view.
               </p>
             </div>
             <div className="flex" style={{ gap: '0.5rem' }}>
@@ -290,11 +295,11 @@ const Home = ({
               </button>
             </div>
           </div>
-          {sortedHistory.length === 0 ? (
-            <p style={{ color: 'var(--muted)' }}>No saved assessments yet.</p>
+          {activeHistory.length === 0 ? (
+            <p style={{ color: 'var(--muted)' }}>No active assessments yet.</p>
           ) : (
             <div className="history-list">
-              {sortedHistory.map((item) => (
+              {activeHistory.map((item) => (
                 <div key={item.id} className="history-row">
                   <div>
                     <p style={{ margin: 0, fontWeight: 600 }}>{item.label}</p>
@@ -303,6 +308,9 @@ const Home = ({
                     </p>
                     <p style={{ margin: '0.2rem 0 0', color: 'var(--muted)' }}>
                       {item.metadata?.name} • {item.metadata?.sector} • {(item.metadata?.objectives || []).join(', ')}
+                    </p>
+                    <p style={{ margin: '0.2rem 0 0', color: 'var(--muted)' }}>
+                      Status: {item.metadata?.status || 'Not Started'}
                     </p>
                   </div>
                   <div className="flex" style={{ gap: '0.5rem' }}>

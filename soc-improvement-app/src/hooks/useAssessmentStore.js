@@ -16,6 +16,7 @@ const defaultMetadata = () => ({
   sector: 'MSSP',
   objectives: ['Reduce MTTR', 'Improve detection coverage'],
   language: 'en',
+  status: 'Not Started',
 });
 
 const normalizeMetadata = (metadata = {}) => ({
@@ -24,6 +25,7 @@ const normalizeMetadata = (metadata = {}) => ({
   budgetAmount: metadata.budgetAmount || metadata.budget || '',
   budgetCurrency: metadata.budgetCurrency || '$',
   sector: metadata.sector || metadata.industry || 'MSSP',
+  status: metadata.status || 'Not Started',
 });
 
 const buildAssessment = ({ frameworkId = defaultFrameworkId, metadata } = {}) => ({
@@ -186,7 +188,7 @@ export const useAssessmentStore = create(
     importState: (state) => set(() => hydrateState(state)),
     startAssessment: ({ frameworkId, metadata }) =>
       set((state) => {
-        const startingMetadata = { ...defaultMetadata(), ...state.upcomingMetadata, ...metadata };
+        const startingMetadata = { ...defaultMetadata(), ...state.upcomingMetadata, ...metadata, status: 'Not Started' };
         return {
           ...state,
           currentAssessment: buildAssessment({ frameworkId: frameworkId || defaultFrameworkId, metadata: startingMetadata }),
