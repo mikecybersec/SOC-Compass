@@ -13,6 +13,7 @@ export const generateActionPlan = async ({
 }) => {
   if (!apiKey) {
     return {
+      raw: 'Provide an API key to request an AI action plan.',
       steps: [
         'Provide an API key to request an AI action plan.',
       ],
@@ -56,10 +57,11 @@ export const generateActionPlan = async ({
     }
 
     const payload = await response.json();
-    const content = payload.choices?.[0]?.message?.content || '';
+    const content = (payload.choices?.[0]?.message?.content || '').trim();
     return { raw: content, steps: content.split('\n').filter(Boolean) };
   } catch (error) {
     return {
+      raw: 'Failed to generate action plan automatically. Please try again later.',
       steps: ['Failed to generate action plan automatically. Please try again later.'],
       error: error.message,
     };

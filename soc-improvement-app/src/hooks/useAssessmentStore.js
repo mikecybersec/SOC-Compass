@@ -19,7 +19,7 @@ const buildInitialState = () => {
       objectives: ['Reduce MTTR', 'Improve detection coverage'],
       language: 'en',
     },
-    actionPlan: { steps: [] },
+    actionPlan: { steps: [], raw: '' },
     apiKey: '',
     apiBase: defaultApiBase,
     model: defaultModel,
@@ -31,6 +31,7 @@ const buildInitialState = () => {
       ...defaults,
       ...saved,
       metadata: { ...defaults.metadata, ...(saved.metadata || {}) },
+      actionPlan: { ...defaults.actionPlan, ...(saved.actionPlan || {}) },
       apiBase: defaultApiBase,
       model: defaultModel,
     };
@@ -42,7 +43,7 @@ const buildInitialState = () => {
 export const useAssessmentStore = create(
   devtools((set, get) => ({
     ...buildInitialState(),
-    setFramework: (frameworkId) => set({ frameworkId, answers: {}, notes: {}, actionPlan: { steps: [] } }),
+    setFramework: (frameworkId) => set({ frameworkId, answers: {}, notes: {}, actionPlan: { steps: [], raw: '' } }),
     setAnswer: (code, value) => set((state) => ({ answers: { ...state.answers, [code]: value } })),
     setNote: (code, value) => set((state) => ({ notes: { ...state.notes, [code]: value } })),
     setMetadata: (metadata) => set({ metadata: { ...get().metadata, ...metadata } }),
