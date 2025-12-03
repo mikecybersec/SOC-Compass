@@ -10,7 +10,6 @@ import { useAssessmentStore } from '../hooks/useAssessmentStore';
 const Assessment = ({ onBack, scoresRef, actionPlanRef, onOpenAssessmentInfo, onOpenReporting }) => {
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
   const lastSavedAt = useAssessmentStore((s) => s.lastSavedAt);
-  const autoSaveAssessment = useAssessmentStore((s) => s.autoSaveAssessment);
   const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
   const setActiveAspectKey = useAssessmentStore((s) => s.setActiveAspectKey);
   const frameworkId = currentAssessment.frameworkId;
@@ -41,14 +40,6 @@ const Assessment = ({ onBack, scoresRef, actionPlanRef, onOpenAssessmentInfo, on
       setActiveAspectKey(firstAspectKey);
     }
   }, [activeAspectKey, aspectLookup, currentFramework, setActiveAspectKey]);
-
-  useEffect(() => {
-    const autosaveHandle = setTimeout(() => {
-      autoSaveAssessment();
-    }, 800);
-
-    return () => clearTimeout(autosaveHandle);
-  }, [currentAssessment, autoSaveAssessment]);
 
   useEffect(() => {
     if (!hydratedRef.current) {
