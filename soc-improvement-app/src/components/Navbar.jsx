@@ -6,6 +6,9 @@ const Navbar = ({
   onExistingAssessments,
   onOpenApiModal,
   onOpenPreferences,
+  onOpenAssessmentInfo,
+  activeView,
+  assessmentInfoDisabled,
 }) => {
   const handleBrandKey = (event) => {
     if (event.key === 'Enter' || event.key === ' ') {
@@ -21,6 +24,13 @@ const Navbar = ({
       <div className="nav-links">
         <button className="nav-link" onClick={onGoHome}>
           Home
+        </button>
+        <button
+          className={`nav-link ${activeView === 'assessmentInfo' ? 'active' : ''}`.trim()}
+          onClick={onOpenAssessmentInfo}
+          disabled={assessmentInfoDisabled}
+        >
+          Assessment Info
         </button>
         <div className="nav-dropdown">
           <button className="nav-link">Assessments</button>
