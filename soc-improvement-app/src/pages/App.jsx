@@ -82,6 +82,7 @@ const App = () => {
   const [modeModalOpen, setModeModalOpen] = useState(false);
   const [apiModalOpen, setApiModalOpen] = useState(false);
   const [preferencesModalOpen, setPreferencesModalOpen] = useState(false);
+  const [startMode, setStartMode] = useState(null);
   const scoresRef = useRef();
   const actionPlanRef = useRef();
   const theme = useAssessmentStore((s) => s.theme);
@@ -125,6 +126,7 @@ const App = () => {
     startAssessment(payload);
     setView('assessment');
     setStartModalOpen(false);
+    setStartMode(null);
   };
 
   const handleLoad = (id) => {
@@ -156,12 +158,17 @@ const App = () => {
           startModalOpen={startModalOpen}
           modeModalOpen={modeModalOpen}
           onOpenStartModal={() => setModeModalOpen(true)}
-          onCloseStartModal={() => setStartModalOpen(false)}
+          onCloseStartModal={() => {
+            setStartModalOpen(false);
+            setStartMode(null);
+          }}
           onCloseModeModal={() => setModeModalOpen(false)}
           onSelectSoloMode={() => {
+            setStartMode('solo');
             setStartModalOpen(true);
             setModeModalOpen(false);
           }}
+          startMode={startMode}
         />
       )}
       {view === 'assessment' && (
