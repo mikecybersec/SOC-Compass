@@ -20,6 +20,8 @@ const Assessment = ({ onBack }) => {
   const frameworkId = currentAssessment.frameworkId;
   const metadata = currentAssessment.metadata;
   const [aspectKey, setAspectKey] = useState(null);
+  const [showSaveToast, setShowSaveToast] = useState(false);
+  const hydratedRef = useRef(false);
   const scoresRef = useRef();
   const actionPlanRef = useRef();
   const metaRef = useRef();
@@ -47,6 +49,17 @@ const Assessment = ({ onBack }) => {
 
     return () => clearTimeout(autosaveHandle);
   }, [currentAssessment, autoSaveAssessment]);
+
+  useEffect(() => {
+    if (!hydratedRef.current) {
+      hydratedRef.current = true;
+      return;
+    }
+
+    setShowSaveToast(true);
+    const timeout = setTimeout(() => setShowSaveToast(false), 2000);
+    return () => clearTimeout(timeout);
+  }, [lastSavedAt]);
 
   const activeAspect = aspectKey ? aspectLookup[aspectKey] : null;
 
@@ -87,6 +100,8 @@ const Assessment = ({ onBack }) => {
         <ScoreBoard ref={scoresRef} />
         <ActionPlan ref={actionPlanRef} />
       </main>
+
+      <div className={`toast ${showSaveToast ? 'toast-visible' : ''}`}>Changes saved to assessment</div>
     </div>
   );
 };
