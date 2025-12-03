@@ -236,26 +236,6 @@ label {
   margin: 0.75rem 0 0.5rem;
 }
 
-.hero-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 0.75rem;
-  margin-top: 0.5rem;
-}
-
-.stat-chip {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 0.75rem 0.9rem;
-  background: rgba(15, 23, 42, 0.03);
-}
-
-.stat-value {
-  margin: 0.2rem 0;
-  font-weight: 700;
-  font-size: 1.1rem;
-}
-
 .hero-panel {
   width: min(420px, 40%);
   padding: 1rem;

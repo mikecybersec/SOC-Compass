@@ -210,23 +210,6 @@ const Home = ({
               </button>
             )}
           </div>
-          <div className="hero-stats">
-            <div className="stat-chip">
-              <small className="muted-label">Active SOC</small>
-              <p className="stat-value">{currentAssessment.metadata.name}</p>
-              <span className="muted-label">{frameworks[currentFrameworkId]?.name}</span>
-            </div>
-            <div className="stat-chip">
-              <small className="muted-label">Upcoming assessment</small>
-              <p className="stat-value">{upcomingMetadata.name}</p>
-              <span className="muted-label">{upcomingMetadata.sector}</span>
-            </div>
-            <div className="stat-chip">
-              <small className="muted-label">History</small>
-              <p className="stat-value">{assessmentHistory.length}</p>
-              <span className="muted-label">saved assessments</span>
-            </div>
-          </div>
         </div>
       </header>
 

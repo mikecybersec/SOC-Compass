@@ -6,6 +6,7 @@ import { loadState, saveState } from '../utils/storage';
 
 const defaultApiBase = 'https://api.x.ai/v1/';
 const defaultModel = 'grok-4-latest';
+const timestampNow = () => new Date().toISOString();
 
 const defaultMetadata = () => ({
   name: 'My SOC',
@@ -59,6 +60,7 @@ const hydrateState = (saved) => {
     currentAssessment: buildAssessment(),
     upcomingMetadata: defaultMetadata(),
     assessmentHistory: [],
+    lastSavedAt: timestampNow(),
   };
 
   if (!saved) return defaults;
@@ -81,6 +83,7 @@ const hydrateState = (saved) => {
     apiBase: defaultApiBase,
     model: defaultModel,
     assessmentHistory: (saved.assessmentHistory || []).map((entry) => hydrateAssessment(entry, entry.metadata)),
+    lastSavedAt: saved.lastSavedAt || timestampNow(),
   };
 
   return hydrated;
@@ -141,6 +144,7 @@ export const useAssessmentStore = create(
     setModel: (model) => set({ model }),
     setActionPlan: (actionPlan) =>
       set((state) => ({ currentAssessment: { ...state.currentAssessment, actionPlan } })),
+    autoSaveAssessment: () => set({ lastSavedAt: timestampNow() }),
     importState: (state) => set(() => hydrateState(state)),
     startAssessment: ({ frameworkId, metadata }) =>
       set((state) => {
