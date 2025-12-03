@@ -6,8 +6,7 @@ import { loadState, saveState } from '../utils/storage';
 
 const buildInitialState = () => {
   const saved = typeof window !== 'undefined' ? loadState() : null;
-  if (saved) return saved;
-  return {
+  const defaults = {
     frameworkId: defaultFrameworkId,
     answers: {},
     notes: {},
@@ -20,8 +19,20 @@ const buildInitialState = () => {
     },
     actionPlan: { steps: [] },
     apiKey: '',
+    apiBase: 'https://api.openai.com/v1',
+    model: 'gpt-4o-mini',
     theme: 'light',
   };
+
+  if (saved) {
+    return {
+      ...defaults,
+      ...saved,
+      metadata: { ...defaults.metadata, ...(saved.metadata || {}) },
+    };
+  }
+
+  return defaults;
 };
 
 export const useAssessmentStore = create(
@@ -34,6 +45,8 @@ export const useAssessmentStore = create(
     setTheme: (theme) => set({ theme }),
     setLanguage: (language) => set({ metadata: { ...get().metadata, language } }),
     setApiKey: (apiKey) => set({ apiKey }),
+    setApiBase: (apiBase) => set({ apiBase }),
+    setModel: (model) => set({ model }),
     setActionPlan: (actionPlan) => set({ actionPlan }),
     importState: (state) => set(() => state),
     reset: () => set(buildInitialState()),

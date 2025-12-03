@@ -2,7 +2,15 @@ const buildPrompt = ({ frameworkName, answers, scores, metadata }) => {
   return `You are an SOC consultant. Build a concise, prioritized action plan.\nFramework: ${frameworkName}\nOrganization: ${metadata.name || 'Unknown'} (${metadata.size || 'size n/a'}) with budget ${metadata.budget || 'n/a'}.\nObjectives: ${(metadata.objectives || []).join(', ') || 'Not specified'}.\nScores: ${JSON.stringify(scores)}\nAnswers: ${JSON.stringify(answers)}\nRespond with 5-8 actionable steps, each including rationale and expected impact.`;
 };
 
-export const generateActionPlan = async ({ apiKey, model = 'gpt-4o-mini', frameworkName, answers, scores, metadata }) => {
+export const generateActionPlan = async ({
+  apiKey,
+  apiBase = 'https://api.openai.com/v1',
+  model = 'gpt-4o-mini',
+  frameworkName,
+  answers,
+  scores,
+  metadata,
+}) => {
   if (!apiKey) {
     return {
       steps: [
@@ -11,10 +19,12 @@ export const generateActionPlan = async ({ apiKey, model = 'gpt-4o-mini', framew
     };
   }
 
+  const normalizedBase = (apiBase?.trim() || 'https://api.openai.com/v1').replace(/\/+$/, '')
+    || 'https://api.openai.com/v1';
   const prompt = buildPrompt({ frameworkName, answers, scores, metadata });
 
   try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch(`${normalizedBase}/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -39,7 +49,7 @@ export const generateActionPlan = async ({ apiKey, model = 'gpt-4o-mini', framew
       }
 
       if (response.status === 401 || response.status === 403) {
-        message = 'The API key was rejected. Please verify your key or permissions and try again.';
+        message = 'The API key or endpoint was rejected. Verify your key, model, and API base for your provider and try again.';
       }
 
       throw new Error(message);

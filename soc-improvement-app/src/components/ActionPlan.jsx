@@ -11,6 +11,10 @@ const ActionPlan = forwardRef((_, ref) => {
   const metadata = useAssessmentStore((s) => s.metadata);
   const apiKey = useAssessmentStore((s) => s.apiKey);
   const setApiKey = useAssessmentStore((s) => s.setApiKey);
+  const apiBase = useAssessmentStore((s) => s.apiBase);
+  const setApiBase = useAssessmentStore((s) => s.setApiBase);
+  const model = useAssessmentStore((s) => s.model);
+  const setModel = useAssessmentStore((s) => s.setModel);
   const actionPlan = useAssessmentStore((s) => s.actionPlan);
   const setActionPlan = useAssessmentStore((s) => s.setActionPlan);
 
@@ -19,6 +23,8 @@ const ActionPlan = forwardRef((_, ref) => {
     setActionPlan({ steps: [], error: undefined });
     const result = await generateActionPlan({
       apiKey,
+      apiBase,
+      model,
       frameworkName: frameworks[frameworkId].name,
       answers,
       scores,
@@ -51,6 +57,22 @@ const ActionPlan = forwardRef((_, ref) => {
         <button className="primary" onClick={handleGenerate} disabled={loading}>
           {loading ? 'Generating…' : 'Generate action plan'}
         </button>
+      </div>
+      <div className="flex" style={{ gap: '0.5rem', marginBottom: '0.5rem' }}>
+        <input
+          type="text"
+          placeholder="Model (e.g., gpt-4o-mini, llama-3.1-8b-instant)"
+          value={model}
+          onChange={(e) => setModel(e.target.value)}
+          style={{ flex: 1 }}
+        />
+        <input
+          type="text"
+          placeholder="API base URL (e.g., https://api.openai.com/v1)"
+          value={apiBase}
+          onChange={(e) => setApiBase(e.target.value)}
+          style={{ flex: 1 }}
+        />
       </div>
       {actionPlan.error && (
         <p style={{ color: 'var(--danger, #c23d3d)', marginTop: '-0.4rem' }}>
