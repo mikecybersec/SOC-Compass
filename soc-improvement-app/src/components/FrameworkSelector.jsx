@@ -4,22 +4,18 @@ import { useAssessmentStore } from '../hooks/useAssessmentStore';
 
 const FrameworkSelector = () => {
   const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
-  const setFramework = useAssessmentStore((s) => s.setFramework);
+  const currentFramework = frameworks[frameworkId];
 
   return (
     <div className="card">
       <div className="flex-between">
         <div>
           <h3>Framework</h3>
-          <p style={{ color: 'var(--muted)' }}>Choose the model that best matches your SOC assessment.</p>
+          <p style={{ color: 'var(--muted)' }}>Framework selection is locked for this assessment. Start a new assessment to switch.</p>
         </div>
-        <select value={frameworkId} onChange={(e) => setFramework(e.target.value)}>
-          {Object.values(frameworks).map((fw) => (
-            <option key={fw.id} value={fw.id}>
-              {fw.name}
-            </option>
-          ))}
-        </select>
+        <div className="badge" style={{ alignSelf: 'center' }}>
+          {currentFramework?.name || 'Unknown framework'}
+        </div>
       </div>
     </div>
   );

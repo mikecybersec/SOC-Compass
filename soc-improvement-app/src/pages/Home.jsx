@@ -11,6 +11,10 @@ const objectiveOptions = [
   'Strengthen threat hunting',
 ];
 
+const disabledFrameworks = ['sim3', 'inform'];
+const getInitialFrameworkId = (frameworkId) =>
+  disabledFrameworks.includes(frameworkId) ? 'soc_cmm' : frameworkId;
+
 const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, currentFrameworkId }) => {
   const [selectedObjectives, setSelectedObjectives] = useState(initialMetadata.objectives || []);
   const [form, setForm] = useState({
@@ -19,7 +23,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
     budgetCurrency: initialMetadata.budgetCurrency || '$',
     size: initialMetadata.size || 'Mid-market',
     sector: initialMetadata.sector || 'MSSP',
-    frameworkId: currentFrameworkId,
+    frameworkId: getInitialFrameworkId(currentFrameworkId),
   });
   const [customObjective, setCustomObjective] = useState('');
 
@@ -31,7 +35,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
       budgetCurrency: initialMetadata.budgetCurrency || '$',
       size: initialMetadata.size || 'Mid-market',
       sector: initialMetadata.sector || 'MSSP',
-      frameworkId: currentFrameworkId,
+      frameworkId: getInitialFrameworkId(currentFrameworkId),
     });
     setSelectedObjectives(initialMetadata.objectives || []);
   }, [open, initialMetadata, currentFrameworkId]);
@@ -44,8 +48,9 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const frameworkId = getInitialFrameworkId(form.frameworkId);
     onStart({
-      frameworkId: form.frameworkId,
+      frameworkId,
       metadata: { ...form, objectives: selectedObjectives },
     });
     onClose();
@@ -142,11 +147,15 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
           <div>
             <label>Assessment type</label>
             <select value={form.frameworkId} onChange={(e) => setForm({ ...form, frameworkId: e.target.value })}>
-              {Object.values(frameworks).map((framework) => (
-                <option key={framework.id} value={framework.id}>
-                  {framework.name}
-                </option>
-              ))}
+              {Object.values(frameworks).map((framework) => {
+                const isDisabled = disabledFrameworks.includes(framework.id);
+                const label = isDisabled ? `${framework.name} (Coming Soon)` : framework.name;
+                return (
+                  <option key={framework.id} value={framework.id} disabled={isDisabled}>
+                    {label}
+                  </option>
+                );
+              })}
             </select>
           </div>
           <div className="flex-between" style={{ marginTop: '0.5rem' }}>
