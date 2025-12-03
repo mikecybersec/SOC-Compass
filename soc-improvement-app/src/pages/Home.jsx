@@ -118,63 +118,140 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
             Close
           </button>
         </div>
-        <form onSubmit={handleSubmit} className="modal-grid">
-          <div>
-            <label>Assessment Title</label>
-            <input
-              value={form.assessmentTitle}
-              onChange={(e) => setForm({ ...form, assessmentTitle: e.target.value })}
-              placeholder="e.g. SOC maturity uplift Q4"
-              required
-            />
-          </div>
-          <div>
-            <label>Organisation Name</label>
-            <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
-          </div>
-          <div className="flex" style={{ gap: '0.75rem' }}>
-            <div style={{ flex: 1 }}>
-              <label>Budget amount</label>
-              <input
-                value={form.budgetAmount}
-                onChange={(e) => setForm({ ...form, budgetAmount: e.target.value })}
-                placeholder="e.g. 250000"
-                required
-              />
+        <form onSubmit={handleSubmit} className="shadcn-form">
+          <div className="form-grid">
+            <div className="form-card">
+              <div className="form-card-header">
+                <div>
+                  <p className="form-eyebrow">Workspace</p>
+                  <h3 className="form-title">Assessment details</h3>
+                  <p className="form-description">Provide a title and select a framework to tailor the questions.</p>
+                </div>
+              </div>
+              <div className="form-item">
+                <label className="form-label">Assessment Title</label>
+                <p className="form-help">Visible in the workspace header and export files.</p>
+                <input
+                  className="form-control"
+                  value={form.assessmentTitle}
+                  onChange={(e) => setForm({ ...form, assessmentTitle: e.target.value })}
+                  placeholder="e.g. SOC maturity uplift Q4"
+                  required
+                />
+              </div>
+              <div className="form-grid-inline">
+                <div className="form-item">
+                  <label className="form-label">Organisation Name</label>
+                  <p className="form-help">Displayed on reports and exports.</p>
+                  <input
+                    className="form-control"
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="form-item">
+                  <label className="form-label">Assessment type</label>
+                  <p className="form-help">Choose the framework that best matches your scope.</p>
+                  <select
+                    className="form-control"
+                    value={form.frameworkId}
+                    onChange={(e) => setForm({ ...form, frameworkId: e.target.value })}
+                    required
+                  >
+                    {Object.values(frameworks).map((framework) => {
+                      const isDisabled = disabledFrameworks.includes(framework.id);
+                      const label = isDisabled ? `${framework.name} (Coming Soon)` : framework.name;
+                      return (
+                        <option key={framework.id} value={framework.id} disabled={isDisabled}>
+                          {label}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  {selectedFramework && (
+                    <p className="form-footnote">
+                      Estimated time to complete: ~{selectedFramework.estimatedMinutes} minutes
+                      {selectedFramework.questionCount ? ` • ${selectedFramework.questionCount} questions` : ''}
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
-            <div style={{ width: '140px' }}>
-              <label>Currency</label>
-              <select
-                value={form.budgetCurrency}
-                onChange={(e) => setForm({ ...form, budgetCurrency: e.target.value })}
-              >
-                <option value="$">USD ($)</option>
-                <option value="€">EUR (€)</option>
-                <option value="£">GBP (£)</option>
-                <option value="¥">JPY (¥)</option>
-              </select>
+            <div className="form-card">
+              <div className="form-card-header">
+                <div>
+                  <p className="form-eyebrow">Organization</p>
+                  <h3 className="form-title">Context</h3>
+                  <p className="form-description">Add budget and industry context to personalize guidance.</p>
+                </div>
+              </div>
+              <div className="form-grid-inline">
+                <div className="form-item">
+                  <label className="form-label">Budget amount</label>
+                  <p className="form-help">Used to tailor investment recommendations.</p>
+                  <input
+                    className="form-control"
+                    value={form.budgetAmount}
+                    onChange={(e) => setForm({ ...form, budgetAmount: e.target.value })}
+                    placeholder="e.g. 250000"
+                    required
+                  />
+                </div>
+                <div className="form-item form-item-compact">
+                  <label className="form-label">Currency</label>
+                  <p className="form-help">Display symbol for budget fields.</p>
+                  <select
+                    className="form-control"
+                    value={form.budgetCurrency}
+                    onChange={(e) => setForm({ ...form, budgetCurrency: e.target.value })}
+                  >
+                    <option value="$">USD ($)</option>
+                    <option value="€">EUR (€)</option>
+                    <option value="£">GBP (£)</option>
+                    <option value="¥">JPY (¥)</option>
+                  </select>
+                </div>
+              </div>
+              <div className="form-grid-inline">
+                <div className="form-item">
+                  <label className="form-label">Size</label>
+                  <p className="form-help">Team or organization size.</p>
+                  <input
+                    className="form-control"
+                    value={form.size}
+                    onChange={(e) => setForm({ ...form, size: e.target.value })}
+                  />
+                </div>
+                <div className="form-item">
+                  <label className="form-label">Sector</label>
+                  <p className="form-help">Used to contextualize suggested actions.</p>
+                  <select
+                    className="form-control"
+                    value={form.sector}
+                    onChange={(e) => setForm({ ...form, sector: e.target.value })}
+                  >
+                    <option value="MSSP">MSSP</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Healthcare">Healthcare</option>
+                    <option value="Government">Government</option>
+                    <option value="Manufacturing">Manufacturing</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="flex" style={{ gap: '0.75rem' }}>
-            <div style={{ flex: 1 }}>
-              <label>Size</label>
-              <input value={form.size} onChange={(e) => setForm({ ...form, size: e.target.value })} />
+
+          <div className="form-card">
+            <div className="form-card-header">
+              <div>
+                <p className="form-eyebrow">Objectives</p>
+                <h3 className="form-title">Primary goals</h3>
+                <p className="form-description">Select the outcomes you want the assessment to prioritize.</p>
+              </div>
             </div>
-            <div style={{ flex: 1 }}>
-              <label>Sector</label>
-              <select value={form.sector} onChange={(e) => setForm({ ...form, sector: e.target.value })}>
-                <option value="MSSP">MSSP</option>
-                <option value="Technology">Technology</option>
-                <option value="Finance">Finance</option>
-                <option value="Healthcare">Healthcare</option>
-                <option value="Government">Government</option>
-                <option value="Manufacturing">Manufacturing</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-          </div>
-          <div>
-            <label>Objectives (select one or more)</label>
             <div className="pill-list">
               {objectiveOptions.map((option) => (
                 <button
@@ -187,8 +264,9 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
                 </button>
               ))}
             </div>
-            <div className="flex" style={{ gap: '0.5rem', marginTop: '0.5rem' }}>
+            <div className="flex" style={{ gap: '0.5rem', marginTop: '0.75rem' }}>
               <input
+                className="form-control"
                 placeholder="Add a custom objective"
                 value={customObjective}
                 onChange={(e) => setCustomObjective(e.target.value)}
@@ -198,28 +276,12 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
               </button>
             </div>
           </div>
-          <div>
-            <label>Assessment type</label>
-            <select value={form.frameworkId} onChange={(e) => setForm({ ...form, frameworkId: e.target.value })}>
-              {Object.values(frameworks).map((framework) => {
-                const isDisabled = disabledFrameworks.includes(framework.id);
-                const label = isDisabled ? `${framework.name} (Coming Soon)` : framework.name;
-                return (
-                  <option key={framework.id} value={framework.id} disabled={isDisabled}>
-                    {label}
-                  </option>
-                );
-              })}
-            </select>
-            {selectedFramework && (
-              <p className="muted-label" style={{ marginTop: '0.35rem' }}>
-                Estimated time to complete: ~{selectedFramework.estimatedMinutes} minutes
-                {selectedFramework.questionCount ? ` • ${selectedFramework.questionCount} questions` : ''}
-              </p>
-            )}
-          </div>
-          <div className="flex-between" style={{ marginTop: '0.5rem' }}>
-            <p style={{ color: 'var(--muted)' }}>Metadata will populate the assessment workspace.</p>
+
+          <div className="form-footer">
+            <div>
+              <p className="form-description">Metadata will populate the assessment workspace.</p>
+              <p className="form-footnote">You can update these details later in Settings.</p>
+            </div>
             <button className="primary" type="submit">
               Create Assessment Workspace
             </button>
