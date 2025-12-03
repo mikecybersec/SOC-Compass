@@ -5,6 +5,7 @@ import AssessmentInfo from './AssessmentInfo';
 import Reporting from './Reporting';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import Dialog from '../components/ui/Dialog';
 import Button from '../components/ui/Button';
 import { Input, Select } from '../components/ui/Input';
@@ -154,63 +155,68 @@ const App = () => {
   return (
     <>
       <AutoSave />
-      <Navbar
-        onGoHome={() => setView('home')}
-        onNewAssessment={() => {
-          setView('home');
-          setModeModalOpen(true);
-        }}
-        onExistingAssessments={() => setView('home')}
-        onOpenApiModal={() => setApiModalOpen(true)}
-        onOpenPreferences={() => setPreferencesModalOpen(true)}
-      />
-      {view === 'home' && (
-        <Home
-          onStartAssessment={handleStart}
-          onContinueAssessment={() => setView('assessment')}
-          onLoadAssessment={handleLoad}
-          assessmentHistory={assessmentHistory}
-          currentAssessment={currentAssessment}
-          startModalOpen={startModalOpen}
-          modeModalOpen={modeModalOpen}
-          onOpenStartModal={() => setModeModalOpen(true)}
-          onCloseStartModal={() => {
-            setStartModalOpen(false);
-            setStartMode(null);
+      <div className="app-container">
+        <Navbar
+          onGoHome={() => setView('home')}
+          onNewAssessment={() => {
+            setView('home');
+            setModeModalOpen(true);
           }}
-          onCloseModeModal={() => setModeModalOpen(false)}
-          onSelectSoloMode={() => {
-            setStartMode('solo');
-            setStartModalOpen(true);
-            setModeModalOpen(false);
-          }}
-          startMode={startMode}
+          onExistingAssessments={() => setView('home')}
+          onOpenApiModal={() => setApiModalOpen(true)}
+          onOpenPreferences={() => setPreferencesModalOpen(true)}
         />
-      )}
-      {view === 'assessment' && (
-        <Assessment
-          onBack={() => setView('home')}
-          scoresRef={scoresRef}
-          actionPlanRef={actionPlanRef}
-          onOpenAssessmentInfo={handleViewAssessmentInfo}
-          onOpenReporting={handleViewReporting}
-        />
-      )}
-      {view === 'assessmentInfo' && (
-        <AssessmentInfo
-          onBack={() => setView('assessment')}
-          scoresRef={scoresRef}
-          actionPlanRef={actionPlanRef}
-          onOpenReporting={handleViewReporting}
-        />
-      )}
-      {view === 'reporting' && (
-        <Reporting
-          onBack={() => setView('assessment')}
-          onOpenAssessmentInfo={handleViewAssessmentInfo}
-          onOpenReporting={handleViewReporting}
-        />
-      )}
+        <main className="app-main">
+          {view === 'home' && (
+            <Home
+              onStartAssessment={handleStart}
+              onContinueAssessment={() => setView('assessment')}
+              onLoadAssessment={handleLoad}
+              assessmentHistory={assessmentHistory}
+              currentAssessment={currentAssessment}
+              startModalOpen={startModalOpen}
+              modeModalOpen={modeModalOpen}
+              onOpenStartModal={() => setModeModalOpen(true)}
+              onCloseStartModal={() => {
+                setStartModalOpen(false);
+                setStartMode(null);
+              }}
+              onCloseModeModal={() => setModeModalOpen(false)}
+              onSelectSoloMode={() => {
+                setStartMode('solo');
+                setStartModalOpen(true);
+                setModeModalOpen(false);
+              }}
+              startMode={startMode}
+            />
+          )}
+          {view === 'assessment' && (
+            <Assessment
+              onBack={() => setView('home')}
+              scoresRef={scoresRef}
+              actionPlanRef={actionPlanRef}
+              onOpenAssessmentInfo={handleViewAssessmentInfo}
+              onOpenReporting={handleViewReporting}
+            />
+          )}
+          {view === 'assessmentInfo' && (
+            <AssessmentInfo
+              onBack={() => setView('assessment')}
+              scoresRef={scoresRef}
+              actionPlanRef={actionPlanRef}
+              onOpenReporting={handleViewReporting}
+            />
+          )}
+          {view === 'reporting' && (
+            <Reporting
+              onBack={() => setView('assessment')}
+              onOpenAssessmentInfo={handleViewAssessmentInfo}
+              onOpenReporting={handleViewReporting}
+            />
+          )}
+        </main>
+        <Footer />
+      </div>
       <ApiKeyModal
         open={apiModalOpen}
         onClose={() => setApiModalOpen(false)}
