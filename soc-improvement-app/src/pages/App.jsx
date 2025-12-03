@@ -2,15 +2,98 @@ import React, { useEffect, useState } from 'react';
 import Home from './Home';
 import Assessment from './Assessment';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
+import Navbar from '../components/Navbar';
+
+const ApiKeyModal = ({ open, onClose, apiKey, setApiKey, apiBase, setApiBase, model, setModel }) => {
+  if (!open) return null;
+
+  return (
+    <div className="modal-backdrop">
+      <div className="modal">
+        <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
+          <h2>API configuration</h2>
+          <button className="secondary" onClick={onClose}>
+            Close
+          </button>
+        </div>
+        <div className="flex" style={{ gap: '0.75rem', flexWrap: 'wrap' }}>
+          <div style={{ minWidth: '240px', flex: 1 }}>
+            <label>API Key</label>
+            <input
+              type="password"
+              placeholder="Paste your provider key"
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+            />
+          </div>
+          <div style={{ minWidth: '200px', flex: 1 }}>
+            <label>Model</label>
+            <input value={model} onChange={(e) => setModel(e.target.value)} />
+          </div>
+          <div style={{ minWidth: '220px', flex: 1 }}>
+            <label>API Base URL</label>
+            <input value={apiBase} onChange={(e) => setApiBase(e.target.value)} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const PreferencesModal = ({ open, onClose, language, setLanguage, theme, setTheme }) => {
+  if (!open) return null;
+
+  return (
+    <div className="modal-backdrop">
+      <div className="modal">
+        <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
+          <h2>System preferences</h2>
+          <button className="secondary" onClick={onClose}>
+            Close
+          </button>
+        </div>
+        <div className="flex" style={{ gap: '1rem', flexWrap: 'wrap' }}>
+          <div style={{ minWidth: '200px' }}>
+            <label>Language</label>
+            <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+              <option value="en">English</option>
+              <option value="es">Español</option>
+              <option value="fr">Français</option>
+            </select>
+          </div>
+          <div style={{ minWidth: '200px' }}>
+            <label>Theme</label>
+            <select value={theme} onChange={(e) => setTheme(e.target.value)}>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const App = () => {
   const [view, setView] = useState('home');
+  const [startModalOpen, setStartModalOpen] = useState(false);
+  const [apiModalOpen, setApiModalOpen] = useState(false);
+  const [preferencesModalOpen, setPreferencesModalOpen] = useState(false);
   const theme = useAssessmentStore((s) => s.theme);
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
   const startAssessment = useAssessmentStore((s) => s.startAssessment);
   const assessmentHistory = useAssessmentStore((s) => s.assessmentHistory);
   const loadAssessmentFromHistory = useAssessmentStore((s) => s.loadAssessmentFromHistory);
   const saveAssessmentToHistory = useAssessmentStore((s) => s.saveAssessmentToHistory);
+  const apiKey = useAssessmentStore((s) => s.apiKey);
+  const setApiKey = useAssessmentStore((s) => s.setApiKey);
+  const apiBase = useAssessmentStore((s) => s.apiBase);
+  const setApiBase = useAssessmentStore((s) => s.setApiBase);
+  const model = useAssessmentStore((s) => s.model);
+  const setModel = useAssessmentStore((s) => s.setModel);
+  const language = useAssessmentStore((s) => s.upcomingMetadata.language);
+  const setLanguage = useAssessmentStore((s) => s.setLanguage);
+  const setTheme = useAssessmentStore((s) => s.setTheme);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -28,6 +111,7 @@ const App = () => {
     }
     startAssessment(payload);
     setView('assessment');
+    setStartModalOpen(false);
   };
 
   const handleLoad = (id) => {
@@ -35,18 +119,53 @@ const App = () => {
     setView('assessment');
   };
 
-  return view === 'home' ? (
-    <Home
-      onStartAssessment={handleStart}
-      onContinueAssessment={() => setView('assessment')}
-      onLoadAssessment={handleLoad}
-      onSaveSnapshot={() => saveAssessmentToHistory('Saved from home')}
-      assessmentHistory={assessmentHistory}
-      hasActiveAssessment={hasActiveAssessment}
-      currentAssessment={currentAssessment}
-    />
-  ) : (
-    <Assessment onBack={() => setView('home')} />
+  return (
+    <>
+      <Navbar
+        onGoHome={() => setView('home')}
+        onNewAssessment={() => {
+          setView('home');
+          setStartModalOpen(true);
+        }}
+        onExistingAssessments={() => setView('home')}
+        onOpenApiModal={() => setApiModalOpen(true)}
+        onOpenPreferences={() => setPreferencesModalOpen(true)}
+      />
+      {view === 'home' ? (
+        <Home
+          onStartAssessment={handleStart}
+          onContinueAssessment={() => setView('assessment')}
+          onLoadAssessment={handleLoad}
+          onSaveSnapshot={() => saveAssessmentToHistory('Saved from home')}
+          assessmentHistory={assessmentHistory}
+          hasActiveAssessment={hasActiveAssessment}
+          currentAssessment={currentAssessment}
+          startModalOpen={startModalOpen}
+          onOpenStartModal={() => setStartModalOpen(true)}
+          onCloseStartModal={() => setStartModalOpen(false)}
+        />
+      ) : (
+        <Assessment onBack={() => setView('home')} />
+      )}
+      <ApiKeyModal
+        open={apiModalOpen}
+        onClose={() => setApiModalOpen(false)}
+        apiKey={apiKey}
+        setApiKey={setApiKey}
+        apiBase={apiBase}
+        setApiBase={setApiBase}
+        model={model}
+        setModel={setModel}
+      />
+      <PreferencesModal
+        open={preferencesModalOpen}
+        onClose={() => setPreferencesModalOpen(false)}
+        language={language}
+        setLanguage={setLanguage}
+        theme={theme}
+        setTheme={setTheme}
+      />
+    </>
   );
 };
 
