@@ -14,8 +14,9 @@ const formatBudget = (metadata) => {
 };
 
 const Assessment = ({ onBack }) => {
-  const frameworkId = useAssessmentStore((s) => s.frameworkId);
-  const metadata = useAssessmentStore((s) => s.metadata);
+  const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
+  const frameworkId = currentAssessment.frameworkId;
+  const metadata = currentAssessment.metadata;
   const [aspectKey, setAspectKey] = useState(null);
   const scoresRef = useRef();
   const actionPlanRef = useRef();

@@ -168,10 +168,11 @@ const Home = ({
   onSaveSnapshot,
   assessmentHistory,
   hasActiveAssessment,
+  currentAssessment,
 }) => {
-  const metadata = useAssessmentStore((s) => s.metadata);
+  const upcomingMetadata = useAssessmentStore((s) => s.upcomingMetadata);
   const theme = useAssessmentStore((s) => s.theme);
-  const language = useAssessmentStore((s) => s.metadata.language);
+  const language = useAssessmentStore((s) => s.upcomingMetadata.language);
   const setTheme = useAssessmentStore((s) => s.setTheme);
   const setLanguage = useAssessmentStore((s) => s.setLanguage);
   const apiKey = useAssessmentStore((s) => s.apiKey);
@@ -180,7 +181,8 @@ const Home = ({
   const setApiBase = useAssessmentStore((s) => s.setApiBase);
   const model = useAssessmentStore((s) => s.model);
   const setModel = useAssessmentStore((s) => s.setModel);
-  const currentFrameworkId = useAssessmentStore((s) => s.frameworkId);
+  const setUpcomingMetadata = useAssessmentStore((s) => s.setUpcomingMetadata);
+  const currentFrameworkId = currentAssessment.frameworkId;
 
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -191,39 +193,84 @@ const Home = ({
 
   return (
     <div className="home">
-      <header className="home-hero card">
-        <div>
-          <p className="badge">Privacy-first / Offline-first</p>
-          <h1>Welcome to the SOC Improvement App</h1>
-          <p style={{ color: 'var(--muted)', maxWidth: '780px' }}>
-            Launch assessments faster, keep your API keys centralized, and reopen previous runs to refine answers or regenerate
-            action plans.
+      <header className="home-hero card enterprise-hero">
+        <div className="hero-copy">
+          <p className="badge">Enterprise landing · Offline by default</p>
+          <h1>Control every SOC assessment from one place</h1>
+          <p className="hero-subtitle">
+            Metadata is now scoped per assessment, so consultants and multi-SOC teams can launch dedicated workspaces without
+            overwriting client details.
           </p>
-          <div className="flex" style={{ gap: '0.75rem', flexWrap: 'wrap', marginTop: '0.5rem', color: 'var(--muted)' }}>
-            <span>Current framework: {frameworks[currentFrameworkId]?.name}</span>
+          <div className="hero-actions">
+            <button className="primary" onClick={() => setModalOpen(true)}>
+              Start new assessment
+            </button>
+            {hasActiveAssessment && (
+              <button className="secondary" onClick={onContinueAssessment}>
+                Continue current assessment
+              </button>
+            )}
+          </div>
+          <div className="hero-stats">
+            <div className="stat-chip">
+              <small className="muted-label">Active SOC</small>
+              <p className="stat-value">{currentAssessment.metadata.name}</p>
+              <span className="muted-label">{frameworks[currentFrameworkId]?.name}</span>
+            </div>
+            <div className="stat-chip">
+              <small className="muted-label">Upcoming assessment</small>
+              <p className="stat-value">{upcomingMetadata.name}</p>
+              <span className="muted-label">{upcomingMetadata.sector}</span>
+            </div>
+            <div className="stat-chip">
+              <small className="muted-label">History</small>
+              <p className="stat-value">{assessmentHistory.length}</p>
+              <span className="muted-label">saved assessments</span>
+            </div>
+          </div>
+        </div>
+        <div className="hero-panel">
+          <p className="muted-label" style={{ marginTop: 0 }}>Per-assessment metadata</p>
+          <h3 style={{ margin: '0 0 0.4rem' }}>{currentAssessment.metadata.name}</h3>
+          <p style={{ color: 'var(--muted)', margin: '0 0 0.75rem' }}>
+            Keep budgets, objectives, and sector data locked to each assessment. Switching between SOCs no longer overwrites
+            another client profile.
+          </p>
+          <div className="metadata-grid compact-grid">
+            <div>
+              <p className="muted-label">Budget</p>
+              <p style={{ margin: 0 }}>
+                {currentAssessment.metadata.budgetCurrency}
+                {currentAssessment.metadata.budgetAmount || 'Not set'}
+              </p>
+            </div>
+            <div>
+              <p className="muted-label">Size</p>
+              <p style={{ margin: 0 }}>{currentAssessment.metadata.size}</p>
+            </div>
+            <div>
+              <p className="muted-label">Sector</p>
+              <p style={{ margin: 0 }}>{currentAssessment.metadata.sector}</p>
+            </div>
+            <div style={{ gridColumn: '1 / span 2' }}>
+              <p className="muted-label">Objectives</p>
+              <p style={{ margin: 0 }}>{(currentAssessment.metadata.objectives || []).join(', ')}</p>
+            </div>
+          </div>
+          <div className="hero-footnote">
             <span>Language: {language?.toUpperCase()}</span>
             <span>Theme: {theme}</span>
           </div>
         </div>
-        <div className="flex" style={{ gap: '0.5rem', flexWrap: 'wrap' }}>
-          <button className="primary" onClick={() => setModalOpen(true)}>
-            Start new assessment
-          </button>
-          {hasActiveAssessment && (
-            <button className="secondary" onClick={onContinueAssessment}>
-              Continue current assessment
-            </button>
-          )}
-        </div>
       </header>
 
-      <div className="home-grid">
+      <div className="home-grid enterprise-grid">
         <div className="card">
           <div className="flex-between" style={{ alignItems: 'flex-start' }}>
             <div>
-              <h3>Past assessments</h3>
+              <h3>Portfolio of assessments</h3>
               <p style={{ color: 'var(--muted)' }}>
-                Load a saved run to review the action plan, adjust answers, and regenerate as needed.
+                Each entry keeps its own metadata, notes, and action plan. Load any SOC without changing another client profile.
               </p>
             </div>
             <div className="flex" style={{ gap: '0.5rem' }}>
@@ -243,7 +290,9 @@ const Home = ({
                     <p style={{ margin: 0, color: 'var(--muted)' }}>
                       {new Date(item.savedAt).toLocaleString()} • {frameworks[item.frameworkId]?.name || 'Unknown framework'}
                     </p>
-                    <p style={{ margin: 0, color: 'var(--muted)' }}>{item.metadata?.name}</p>
+                    <p style={{ margin: '0.2rem 0 0', color: 'var(--muted)' }}>
+                      {item.metadata?.name} • {item.metadata?.sector} • {(item.metadata?.objectives || []).join(', ')}
+                    </p>
                   </div>
                   <div className="flex" style={{ gap: '0.5rem' }}>
                     <button className="secondary" onClick={() => onLoadAssessment(item.id)}>
@@ -256,6 +305,90 @@ const Home = ({
           )}
         </div>
 
+        <div className="card gradient-card next-metadata-card">
+          <div className="flex-between" style={{ alignItems: 'flex-start' }}>
+            <div>
+              <h3>Next assessment metadata</h3>
+              <p style={{ color: 'var(--muted)' }}>
+                Configure the next SOC before you launch. Values stay tied to the assessment you create.
+              </p>
+            </div>
+            <button className="secondary" onClick={() => setUpcomingMetadata(currentAssessment.metadata)}>
+              Use active metadata
+            </button>
+          </div>
+          <div className="metadata-grid">
+            <div>
+              <p className="muted-label">Organisation</p>
+              <p style={{ margin: 0, fontWeight: 600 }}>{upcomingMetadata.name}</p>
+            </div>
+            <div>
+              <p className="muted-label">Budget</p>
+              <p style={{ margin: 0 }}>
+                {upcomingMetadata.budgetCurrency || '$'}
+                {upcomingMetadata.budgetAmount || 'Not set'}
+              </p>
+            </div>
+            <div>
+              <p className="muted-label">Size</p>
+              <p style={{ margin: 0 }}>{upcomingMetadata.size}</p>
+            </div>
+            <div>
+              <p className="muted-label">Sector</p>
+              <p style={{ margin: 0 }}>{upcomingMetadata.sector}</p>
+            </div>
+            <div style={{ gridColumn: '1 / span 2' }}>
+              <p className="muted-label">Objectives</p>
+              <p style={{ margin: 0 }}>{(upcomingMetadata.objectives || []).join(', ')}</p>
+            </div>
+          </div>
+          <div className="inline-form">
+            <div>
+              <label>Organisation Name</label>
+              <input
+                value={upcomingMetadata.name}
+                onChange={(e) => setUpcomingMetadata({ name: e.target.value })}
+                placeholder="SOC name for the next run"
+              />
+            </div>
+            <div>
+              <label>Sector</label>
+              <select
+                value={upcomingMetadata.sector}
+                onChange={(e) => setUpcomingMetadata({ sector: e.target.value })}
+              >
+                <option value="MSSP">MSSP</option>
+                <option value="Technology">Technology</option>
+                <option value="Finance">Finance</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Government">Government</option>
+                <option value="Manufacturing">Manufacturing</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label>Objectives</label>
+              <input
+                value={(upcomingMetadata.objectives || []).join(', ')}
+                onChange={(e) =>
+                  setUpcomingMetadata({
+                    objectives: e.target.value
+                      .split(',')
+                      .map((item) => item.trim())
+                      .filter(Boolean),
+                  })
+                }
+                placeholder="Comma separated"
+              />
+            </div>
+          </div>
+          <div className="flex" style={{ justifyContent: 'flex-end', gap: '0.5rem' }}>
+            <button className="secondary" onClick={() => setModalOpen(true)}>Start with these values</button>
+          </div>
+        </div>
+      </div>
+
+      <div className="home-grid settings-grid">
         <div className="card">
           <h3>API key & model</h3>
           <p style={{ color: 'var(--muted)' }}>Centralize your LLM configuration before starting an assessment.</p>
@@ -282,7 +415,7 @@ const Home = ({
 
         <div className="card">
           <h3>Preferences</h3>
-          <p style={{ color: 'var(--muted)' }}>Pick your preferred language and theme before launching an assessment.</p>
+          <p style={{ color: 'var(--muted)' }}>Language and theme apply across the interface without touching assessment metadata.</p>
           <div className="flex" style={{ gap: '1rem', flexWrap: 'wrap' }}>
             <div style={{ minWidth: '200px' }}>
               <label>Language</label>
@@ -301,40 +434,13 @@ const Home = ({
             </div>
           </div>
         </div>
-
-        <div className="card">
-          <h3>Current metadata</h3>
-          <p style={{ color: 'var(--muted)' }}>Review the values that will seed your next assessment.</p>
-          <div className="metadata-grid">
-            <div>
-              <p className="muted-label">Organisation</p>
-              <p style={{ margin: 0, fontWeight: 600 }}>{metadata.name}</p>
-            </div>
-            <div>
-              <p className="muted-label">Budget</p>
-              <p style={{ margin: 0 }}>{metadata.budgetCurrency || '$'}{metadata.budgetAmount || 'Not set'}</p>
-            </div>
-            <div>
-              <p className="muted-label">Size</p>
-              <p style={{ margin: 0 }}>{metadata.size}</p>
-            </div>
-            <div>
-              <p className="muted-label">Sector</p>
-              <p style={{ margin: 0 }}>{metadata.sector}</p>
-            </div>
-            <div style={{ gridColumn: '1 / span 2' }}>
-              <p className="muted-label">Objectives</p>
-              <p style={{ margin: 0 }}>{(metadata.objectives || []).join(', ')}</p>
-            </div>
-          </div>
-        </div>
       </div>
 
       <StartAssessmentModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         onStart={onStartAssessment}
-        initialMetadata={metadata}
+        initialMetadata={upcomingMetadata}
         currentFrameworkId={currentFrameworkId}
       />
     </div>

@@ -17,87 +17,147 @@ const defaultMetadata = () => ({
   language: 'en',
 });
 
-const buildInitialState = () => {
-  const saved = typeof window !== 'undefined' ? loadState() : null;
+const normalizeMetadata = (metadata = {}) => ({
+  ...defaultMetadata(),
+  ...metadata,
+  budgetAmount: metadata.budgetAmount || metadata.budget || '',
+  budgetCurrency: metadata.budgetCurrency || '$',
+  sector: metadata.sector || metadata.industry || 'MSSP',
+});
 
+const buildAssessment = ({ frameworkId = defaultFrameworkId, metadata } = {}) => ({
+  id: `assessment-${Date.now()}`,
+  frameworkId,
+  answers: {},
+  notes: {},
+  metadata: { ...defaultMetadata(), ...metadata },
+  actionPlan: { steps: [], raw: '' },
+});
+
+const hydrateAssessment = (assessment, fallbackMetadata) => {
+  if (!assessment) {
+    return buildAssessment({ frameworkId: defaultFrameworkId, metadata: fallbackMetadata });
+  }
+
+  return {
+    ...buildAssessment({ frameworkId: assessment.frameworkId || defaultFrameworkId, metadata: fallbackMetadata }),
+    ...assessment,
+    id: assessment.id || `assessment-${Date.now()}`,
+    metadata: normalizeMetadata(assessment.metadata || fallbackMetadata),
+    answers: assessment.answers || {},
+    notes: assessment.notes || {},
+    actionPlan: { steps: [], raw: '', ...(assessment.actionPlan || {}) },
+  };
+};
+
+const hydrateState = (saved) => {
   const defaults = {
-    frameworkId: defaultFrameworkId,
-    answers: {},
-    notes: {},
-    metadata: defaultMetadata(),
-    actionPlan: { steps: [], raw: '' },
     apiKey: '',
     apiBase: defaultApiBase,
     model: defaultModel,
     theme: 'light',
+    currentAssessment: buildAssessment(),
+    upcomingMetadata: defaultMetadata(),
     assessmentHistory: [],
   };
 
-  if (saved) {
-    const savedMetadata = saved.metadata || {};
-    const normalizedMetadata = {
-      ...defaultMetadata(),
-      ...savedMetadata,
-      budgetAmount: savedMetadata.budgetAmount || savedMetadata.budget || '',
-      budgetCurrency: savedMetadata.budgetCurrency || '$',
-      sector: savedMetadata.sector || savedMetadata.industry || 'MSSP',
-    };
+  if (!saved) return defaults;
 
-    return {
-      ...defaults,
-      ...saved,
-      metadata: normalizedMetadata,
-      actionPlan: { ...defaults.actionPlan, ...(saved.actionPlan || {}) },
-      apiBase: defaultApiBase,
-      model: defaultModel,
-      assessmentHistory: saved.assessmentHistory || [],
-    };
-  }
+  const seedMetadata = normalizeMetadata(saved.metadata || saved.currentAssessment?.metadata || {});
+  const hydrated = {
+    ...defaults,
+    ...saved,
+    currentAssessment: hydrateAssessment(
+      saved.currentAssessment || {
+        frameworkId: saved.frameworkId,
+        answers: saved.answers,
+        notes: saved.notes,
+        metadata: seedMetadata,
+        actionPlan: saved.actionPlan,
+      },
+      seedMetadata
+    ),
+    upcomingMetadata: saved.upcomingMetadata ? normalizeMetadata(saved.upcomingMetadata) : seedMetadata,
+    apiBase: defaultApiBase,
+    model: defaultModel,
+    assessmentHistory: (saved.assessmentHistory || []).map((entry) => hydrateAssessment(entry, entry.metadata)),
+  };
 
-  return defaults;
+  return hydrated;
+};
+
+const buildInitialState = () => {
+  const saved = typeof window !== 'undefined' ? loadState() : null;
+  return hydrateState(saved);
 };
 
 export const useAssessmentStore = create(
   devtools((set, get) => ({
     ...buildInitialState(),
-    setFramework: (frameworkId) => set({ frameworkId, answers: {}, notes: {}, actionPlan: { steps: [], raw: '' } }),
-    setAnswer: (code, value) => set((state) => ({ answers: { ...state.answers, [code]: value } })),
-    setNote: (code, value) => set((state) => ({ notes: { ...state.notes, [code]: value } })),
-    setMetadata: (metadata) => set({ metadata: { ...get().metadata, ...metadata } }),
-    setTheme: (theme) => set({ theme }),
-    setLanguage: (language) => set({ metadata: { ...get().metadata, language } }),
-    setApiKey: (apiKey) => set({ apiKey }),
-    setApiBase: (apiBase) => set({ apiBase }),
-    setModel: (model) => set({ model }),
-    setActionPlan: (actionPlan) => set({ actionPlan }),
-    importState: (state) => set(() => state),
-    startAssessment: ({ frameworkId, metadata }) =>
-      set((state) => {
-        const baseMetadata = { ...defaultMetadata(), language: state.metadata.language };
-        return {
-          frameworkId: frameworkId || defaultFrameworkId,
+    setFramework: (frameworkId) =>
+      set((state) => ({
+        currentAssessment: {
+          ...state.currentAssessment,
+          frameworkId,
           answers: {},
           notes: {},
           actionPlan: { steps: [], raw: '' },
-          metadata: { ...baseMetadata, ...metadata },
-          apiKey: state.apiKey,
-          apiBase: state.apiBase,
-          model: state.model,
-          theme: state.theme,
-          assessmentHistory: state.assessmentHistory,
+        },
+      })),
+    setAnswer: (code, value) =>
+      set((state) => ({
+        currentAssessment: {
+          ...state.currentAssessment,
+          answers: { ...state.currentAssessment.answers, [code]: value },
+        },
+      })),
+    setNote: (code, value) =>
+      set((state) => ({
+        currentAssessment: {
+          ...state.currentAssessment,
+          notes: { ...state.currentAssessment.notes, [code]: value },
+        },
+      })),
+    setMetadata: (metadata) =>
+      set((state) => ({
+        currentAssessment: {
+          ...state.currentAssessment,
+          metadata: { ...state.currentAssessment.metadata, ...metadata },
+        },
+      })),
+    setUpcomingMetadata: (metadata) =>
+      set((state) => ({ upcomingMetadata: { ...state.upcomingMetadata, ...metadata } })),
+    setTheme: (theme) => set({ theme }),
+    setLanguage: (language) =>
+      set((state) => ({
+        currentAssessment: {
+          ...state.currentAssessment,
+          metadata: { ...state.currentAssessment.metadata, language },
+        },
+        upcomingMetadata: { ...state.upcomingMetadata, language },
+      })),
+    setApiKey: (apiKey) => set({ apiKey }),
+    setApiBase: (apiBase) => set({ apiBase }),
+    setModel: (model) => set({ model }),
+    setActionPlan: (actionPlan) =>
+      set((state) => ({ currentAssessment: { ...state.currentAssessment, actionPlan } })),
+    importState: (state) => set(() => hydrateState(state)),
+    startAssessment: ({ frameworkId, metadata }) =>
+      set((state) => {
+        const startingMetadata = { ...defaultMetadata(), ...state.upcomingMetadata, ...metadata };
+        return {
+          ...state,
+          currentAssessment: buildAssessment({ frameworkId: frameworkId || defaultFrameworkId, metadata: startingMetadata }),
+          upcomingMetadata: startingMetadata,
         };
       }),
     saveAssessmentToHistory: (label) =>
       set((state) => {
         const snapshot = {
-          id: `${Date.now()}`,
-          label: label || state.metadata.name || 'Saved assessment',
+          ...state.currentAssessment,
+          id: state.currentAssessment.id || `${Date.now()}`,
+          label: label || state.currentAssessment.metadata.name || 'Saved assessment',
           savedAt: new Date().toISOString(),
-          frameworkId: state.frameworkId,
-          answers: state.answers,
-          notes: state.notes,
-          metadata: state.metadata,
-          actionPlan: state.actionPlan,
         };
 
         return { assessmentHistory: [snapshot, ...(state.assessmentHistory || [])] };
@@ -108,7 +168,7 @@ export const useAssessmentStore = create(
         if (!existing) return state;
         return {
           ...state,
-          ...existing,
+          currentAssessment: { ...existing },
           apiKey: state.apiKey,
           apiBase: state.apiBase,
           model: state.model,
@@ -120,8 +180,9 @@ export const useAssessmentStore = create(
       set((state) => ({ assessmentHistory: (state.assessmentHistory || []).filter((entry) => entry.id !== id) })),
     reset: () => set(buildInitialState()),
     scores: () => {
-      const framework = frameworks[get().frameworkId];
-      return computeScores(framework, get().answers);
+      const activeAssessment = get().currentAssessment;
+      const framework = frameworks[activeAssessment.frameworkId];
+      return computeScores(framework, activeAssessment.answers);
     },
   }))
 );

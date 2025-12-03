@@ -6,15 +6,15 @@ import { frameworks } from '../utils/frameworks';
 
 const ActionPlan = forwardRef((_, ref) => {
   const [loading, setLoading] = useState(false);
-  const frameworkId = useAssessmentStore((s) => s.frameworkId);
-  const answers = useAssessmentStore((s) => s.answers);
+  const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
+  const answers = useAssessmentStore((s) => s.currentAssessment.answers);
   const scores = useAssessmentStore((s) => s.scores)();
-  const metadata = useAssessmentStore((s) => s.metadata);
+  const metadata = useAssessmentStore((s) => s.currentAssessment.metadata);
   const apiKey = useAssessmentStore((s) => s.apiKey);
   const setApiKey = useAssessmentStore((s) => s.setApiKey);
   const apiBase = useAssessmentStore((s) => s.apiBase);
   const model = useAssessmentStore((s) => s.model);
-  const actionPlan = useAssessmentStore((s) => s.actionPlan);
+  const actionPlan = useAssessmentStore((s) => s.currentAssessment.actionPlan);
   const setActionPlan = useAssessmentStore((s) => s.setActionPlan);
 
   const handleGenerate = async () => {
@@ -32,6 +32,10 @@ const ActionPlan = forwardRef((_, ref) => {
     setActionPlan(result);
     setLoading(false);
   };
+
+  const formattedBudget = metadata.budgetAmount
+    ? `${metadata.budgetCurrency || '$'}${metadata.budgetAmount}`
+    : 'Not set';
 
   return (
     <div className="card" ref={ref} id="action-plan">
@@ -54,7 +58,7 @@ const ActionPlan = forwardRef((_, ref) => {
       <div className="flex-between" style={{ margin: '0.5rem 0' }}>
         <div>
           <p>Objectives: {(metadata.objectives || []).join(', ')}</p>
-          <p>Budget: {metadata.budget}</p>
+          <p>Budget: {formattedBudget}</p>
         </div>
         <button className="primary" onClick={handleGenerate} disabled={loading}>
           {loading ? 'Generating…' : 'Generate action plan'}

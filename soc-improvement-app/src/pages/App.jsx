@@ -6,9 +6,7 @@ import { useAssessmentStore } from '../hooks/useAssessmentStore';
 const App = () => {
   const [view, setView] = useState('home');
   const theme = useAssessmentStore((s) => s.theme);
-  const answers = useAssessmentStore((s) => s.answers);
-  const notes = useAssessmentStore((s) => s.notes);
-  const actionPlan = useAssessmentStore((s) => s.actionPlan);
+  const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
   const startAssessment = useAssessmentStore((s) => s.startAssessment);
   const assessmentHistory = useAssessmentStore((s) => s.assessmentHistory);
   const loadAssessmentFromHistory = useAssessmentStore((s) => s.loadAssessmentFromHistory);
@@ -20,7 +18,9 @@ const App = () => {
   }, [theme]);
 
   const hasActiveAssessment =
-    Object.keys(answers || {}).length > 0 || Object.keys(notes || {}).length > 0 || Boolean(actionPlan?.raw);
+    Object.keys(currentAssessment?.answers || {}).length > 0 ||
+    Object.keys(currentAssessment?.notes || {}).length > 0 ||
+    Boolean(currentAssessment?.actionPlan?.raw);
 
   const handleStart = (payload) => {
     if (hasActiveAssessment) {
@@ -43,6 +43,7 @@ const App = () => {
       onSaveSnapshot={() => saveAssessmentToHistory('Saved from home')}
       assessmentHistory={assessmentHistory}
       hasActiveAssessment={hasActiveAssessment}
+      currentAssessment={currentAssessment}
     />
   ) : (
     <Assessment onBack={() => setView('home')} />

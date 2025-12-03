@@ -4,8 +4,8 @@ import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { frameworks } from '../utils/frameworks';
 
 const ScoreBoard = forwardRef((_, ref) => {
-  const frameworkId = useAssessmentStore((s) => s.frameworkId);
-  const answers = useAssessmentStore((s) => s.answers);
+  const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
+  const answers = useAssessmentStore((s) => s.currentAssessment.answers);
   const scores = useAssessmentStore((s) => s.scores)();
 
   const radarData = useMemo(
