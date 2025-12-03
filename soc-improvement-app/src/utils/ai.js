@@ -1,5 +1,13 @@
 const buildPrompt = ({ frameworkName, answers, scores, metadata }) => {
-  return `You are an SOC consultant. Build a concise, prioritized action plan.\nFramework: ${frameworkName}\nOrganization: ${metadata.name || 'Unknown'} (${metadata.size || 'size n/a'}) with budget ${metadata.budget || 'n/a'}.\nObjectives: ${(metadata.objectives || []).join(', ') || 'Not specified'}.\nScores: ${JSON.stringify(scores)}\nAnswers: ${JSON.stringify(answers)}\nRespond with 5-8 actionable steps, each including rationale and expected impact.`;
+  const budget = metadata.budgetAmount
+    ? `${metadata.budgetCurrency || '$'}${metadata.budgetAmount}`
+    : 'n/a';
+
+  return `You are an SOC consultant. Build a concise, prioritized action plan.\nFramework: ${frameworkName}\nOrganization: ${
+    metadata.name || 'Unknown'
+  } (${metadata.size || 'size n/a'}) in sector ${metadata.sector || 'n/a'} with budget ${budget}.\nObjectives: ${
+    (metadata.objectives || []).join(', ') || 'Not specified'
+  }.\nScores: ${JSON.stringify(scores)}\nAnswers: ${JSON.stringify(answers)}\nRespond with 5-8 actionable steps, each including rationale and expected impact.`;
 };
 
 export const generateActionPlan = async ({

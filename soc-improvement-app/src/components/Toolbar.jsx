@@ -7,8 +7,6 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef }) => {
   const fileRef = useRef();
   const state = useAssessmentStore();
   const setMetadata = useAssessmentStore((s) => s.setMetadata);
-  const setTheme = useAssessmentStore((s) => s.setTheme);
-  const setLanguage = useAssessmentStore((s) => s.setLanguage);
   const importState = useAssessmentStore((s) => s.importState);
 
   const handleImport = async (event) => {
@@ -39,45 +37,55 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef }) => {
       <input type="file" accept="application/json" ref={fileRef} style={{ display: 'none' }} onChange={handleImport} />
 
       <div className="flex" style={{ gap: '1rem', flexWrap: 'wrap' }}>
-        <div style={{ minWidth: '240px' }}>
-          <label>Name</label>
+        <div style={{ minWidth: '220px' }}>
+          <label>Organization name</label>
           <input value={state.metadata.name} onChange={(e) => setMetadata({ name: e.target.value })} />
         </div>
-        <div style={{ minWidth: '200px' }}>
-          <label>Budget</label>
-          <input value={state.metadata.budget} onChange={(e) => setMetadata({ budget: e.target.value })} />
+        <div style={{ minWidth: '180px' }}>
+          <label>Budget amount</label>
+          <input
+            value={state.metadata.budgetAmount}
+            onChange={(e) => setMetadata({ budgetAmount: e.target.value })}
+            placeholder="e.g. 250000"
+          />
         </div>
+        <div style={{ minWidth: '140px' }}>
+          <label>Currency</label>
+          <select value={state.metadata.budgetCurrency} onChange={(e) => setMetadata({ budgetCurrency: e.target.value })}>
+            <option value="$">USD ($)</option>
+            <option value="€">EUR (€)</option>
+            <option value="£">GBP (£)</option>
+            <option value="¥">JPY (¥)</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="flex" style={{ gap: '1rem', flexWrap: 'wrap' }}>
         <div style={{ minWidth: '200px' }}>
           <label>Size</label>
           <input value={state.metadata.size} onChange={(e) => setMetadata({ size: e.target.value })} />
         </div>
+        <div style={{ minWidth: '200px' }}>
+          <label>Sector</label>
+          <select value={state.metadata.sector} onChange={(e) => setMetadata({ sector: e.target.value })}>
+            <option value="MSSP">MSSP</option>
+            <option value="Technology">Technology</option>
+            <option value="Finance">Finance</option>
+            <option value="Healthcare">Healthcare</option>
+            <option value="Government">Government</option>
+            <option value="Manufacturing">Manufacturing</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
       </div>
 
-      <div className="flex-between" style={{ gap: '1rem', flexWrap: 'wrap' }}>
-        <div>
-          <label>Objectives</label>
-          <input
-            value={(state.metadata.objectives || []).join(', ')}
-            onChange={(e) => setMetadata({ objectives: e.target.value.split(',').map((o) => o.trim()).filter(Boolean) })}
-          />
-        </div>
-        <div className="flex" style={{ gap: '0.5rem' }}>
-          <div>
-            <label>Language</label>
-            <select value={state.metadata.language} onChange={(e) => setLanguage(e.target.value)}>
-              <option value="en">English</option>
-              <option value="es">Español</option>
-              <option value="fr">Français</option>
-            </select>
-          </div>
-          <div>
-            <label>Theme</label>
-            <select value={state.theme} onChange={(e) => setTheme(e.target.value)}>
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
-            </select>
-          </div>
-        </div>
+      <div>
+        <label>Objectives</label>
+        <input
+          value={(state.metadata.objectives || []).join(', ')}
+          onChange={(e) => setMetadata({ objectives: e.target.value.split(',').map((o) => o.trim()).filter(Boolean) })}
+          placeholder="Separate with commas to track multiple objectives"
+        />
       </div>
     </div>
   );
