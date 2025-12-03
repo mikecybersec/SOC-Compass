@@ -144,7 +144,30 @@ export const useAssessmentStore = create(
     setModel: (model) => set({ model }),
     setActionPlan: (actionPlan) =>
       set((state) => ({ currentAssessment: { ...state.currentAssessment, actionPlan } })),
-    autoSaveAssessment: () => set({ lastSavedAt: timestampNow() }),
+    autoSaveAssessment: () =>
+      set((state) => {
+        const currentAssessment = {
+          ...state.currentAssessment,
+          id: state.currentAssessment.id || `assessment-${Date.now()}`,
+        };
+
+        const updatedHistory = (state.assessmentHistory || []).map((entry) =>
+          entry.id === currentAssessment.id
+            ? {
+                ...entry,
+                ...currentAssessment,
+                label: entry.label || currentAssessment.metadata?.name || 'Saved assessment',
+                savedAt: new Date().toISOString(),
+              }
+            : entry
+        );
+
+        return {
+          currentAssessment,
+          assessmentHistory: updatedHistory,
+          lastSavedAt: timestampNow(),
+        };
+      }),
     importState: (state) => set(() => hydrateState(state)),
     startAssessment: ({ frameworkId, metadata }) =>
       set((state) => {
