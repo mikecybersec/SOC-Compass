@@ -1,0 +1,48 @@
+{
+  "name": "SIM3",
+  "tree": {
+    "Organization": {
+      "Governance": [
+        {
+          "code": "SIM3-ORG1",
+          "text": "Documented SOC governance charter exists.",
+          "item_type": "question",
+          "answer_options": ["No", "Partial", "Mostly", "Yes"],
+          "question_type": "Control",
+          "guidance": {
+            "1": "No governance charter defined.",
+            "2": "Draft governance charter exists.",
+            "3": "Charter approved but not reviewed.",
+            "4": "Charter approved and regularly reviewed."
+          }
+        },
+        {
+          "code": "SIM3-ORG2",
+          "text": "Clear escalation paths are in place.",
+          "item_type": "note",
+          "placeholder": "Describe escalation paths"
+        }
+      ],
+      "Funding": [
+        {
+          "code": "SIM3-FUN1",
+          "text": "SOC budget reviewed at least annually.",
+          "item_type": "question",
+          "answer_options": ["Never", "Ad-hoc", "Annual", "Quarterly"],
+          "question_type": "Control"
+        }
+      ]
+    },
+    "People": {
+      "Training": [
+        {
+          "code": "SIM3-PEO1",
+          "text": "Analysts receive yearly training.",
+          "item_type": "question",
+          "answer_options": ["No", "Some", "Yes"],
+          "question_type": "Capability"
+        }
+      ]
+    }
+  }
+}

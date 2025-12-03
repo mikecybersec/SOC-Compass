@@ -1,0 +1,33 @@
+{
+  "name": "MITRE INFORM",
+  "tree": {
+    "Foundations": {
+      "Visibility": [
+        {
+          "code": "INF-FOU1",
+          "text": "Asset inventory coverage across environments.",
+          "item_type": "question",
+          "answer_options": ["Unknown", "Partial", "Mostly", "Complete"],
+          "question_type": "Metric"
+        },
+        {
+          "code": "INF-FOU2",
+          "text": "What are the key data sources available?",
+          "item_type": "note",
+          "placeholder": "EDR, NDR, Cloud logs, etc"
+        }
+      ]
+    },
+    "Outcomes": {
+      "Contain": [
+        {
+          "code": "INF-CON1",
+          "text": "Time to contain incidents is measured.",
+          "item_type": "question",
+          "answer_options": ["No", "Sometimes", "Mostly", "Always"],
+          "question_type": "Outcome"
+        }
+      ]
+    }
+  }
+}
