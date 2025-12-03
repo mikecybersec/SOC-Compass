@@ -883,6 +883,83 @@ label {
   box-shadow: var(--shadow);
 }
 
+.trusted-panel {
+  width: min(320px, 42%);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 10px 30px -24px rgba(15, 23, 42, 0.35);
+  padding: 1rem;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.trusted-title {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.trusted-carousel {
+  position: relative;
+  overflow: hidden;
+  height: 148px;
+}
+
+.trusted-carousel::before,
+.trusted-carousel::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 32px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.trusted-carousel::before {
+  top: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
+}
+
+.trusted-carousel::after {
+  bottom: 0;
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
+}
+
+.trusted-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  animation: trusted-scroll 14s linear infinite;
+}
+
+.trusted-item {
+  padding: 0.65rem 0.8rem;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.035);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  color: #7b8393;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+@keyframes trusted-scroll {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
 .hero-card {
   width: min(440px, 45%);
   align-self: stretch;
@@ -1361,6 +1438,14 @@ label {
 
   .hero-panel {
     width: 100%;
+  }
+
+  .trusted-panel {
+    width: 100%;
+  }
+
+  .trusted-carousel {
+    height: 132px;
   }
 
   .hero-footnote {
