@@ -5,40 +5,43 @@ import AssessmentInfo from './AssessmentInfo';
 import Reporting from './Reporting';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import Navbar from '../components/Navbar';
+import Dialog from '../components/ui/Dialog';
+import Button from '../components/ui/Button';
+import { Input, Select } from '../components/ui/Input';
 
 const ApiKeyModal = ({ open, onClose, apiKey, setApiKey, apiBase, setApiBase, model, setModel }) => {
   if (!open) return null;
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal">
-        <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
-          <h2>API configuration</h2>
-          <button className="secondary" onClick={onClose}>
-            Close
-          </button>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      title="API configuration"
+      description="Centralize your API credentials for the assessment workspace."
+    >
+      <div className="grid-3">
+        <div className="ui-field">
+          <label className="ui-label">API Key</label>
+          <Input
+            type="password"
+            placeholder="Paste your provider key"
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+          />
+          <p className="ui-field-help">Stored locally in your browser.</p>
         </div>
-        <div className="flex" style={{ gap: '0.75rem', flexWrap: 'wrap' }}>
-          <div style={{ minWidth: '240px', flex: 1 }}>
-            <label>API Key</label>
-            <input
-              type="password"
-              placeholder="Paste your provider key"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-            />
-          </div>
-          <div style={{ minWidth: '200px', flex: 1 }}>
-            <label>Model</label>
-            <input value={model} onChange={(e) => setModel(e.target.value)} />
-          </div>
-          <div style={{ minWidth: '220px', flex: 1 }}>
-            <label>API Base URL</label>
-            <input value={apiBase} onChange={(e) => setApiBase(e.target.value)} />
-          </div>
+        <div className="ui-field">
+          <label className="ui-label">Model</label>
+          <Input value={model} onChange={(e) => setModel(e.target.value)} />
+          <p className="ui-field-help">e.g. gpt-4o-mini, llama-3.1-70b</p>
+        </div>
+        <div className="ui-field">
+          <label className="ui-label">API Base URL</label>
+          <Input value={apiBase} onChange={(e) => setApiBase(e.target.value)} />
+          <p className="ui-field-help">Override if using a proxy or self-hosted endpoint.</p>
         </div>
       </div>
-    </div>
+    </Dialog>
   );
 };
 
@@ -46,33 +49,35 @@ const PreferencesModal = ({ open, onClose, language, setLanguage, theme, setThem
   if (!open) return null;
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal">
-        <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
-          <h2>System preferences</h2>
-          <button className="secondary" onClick={onClose}>
-            Close
-          </button>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      title="System preferences"
+      description="Tune the UI to match your preferences."
+    >
+      <div className="grid-2">
+        <div className="ui-field">
+          <label className="ui-label">Language</label>
+          <Select value={language} onChange={(e) => setLanguage(e.target.value)}>
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+          </Select>
         </div>
-        <div className="flex" style={{ gap: '1rem', flexWrap: 'wrap' }}>
-          <div style={{ minWidth: '200px' }}>
-            <label>Language</label>
-            <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-              <option value="en">English</option>
-              <option value="es">Español</option>
-              <option value="fr">Français</option>
-            </select>
-          </div>
-          <div style={{ minWidth: '200px' }}>
-            <label>Theme</label>
-            <select value={theme} onChange={(e) => setTheme(e.target.value)}>
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
-            </select>
-          </div>
+        <div className="ui-field">
+          <label className="ui-label">Theme</label>
+          <Select value={theme} onChange={(e) => setTheme(e.target.value)}>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </Select>
         </div>
       </div>
-    </div>
+      <div className="ui-dialog-footer">
+        <Button variant="primary" onClick={onClose}>
+          Save preferences
+        </Button>
+      </div>
+    </Dialog>
   );
 };
 

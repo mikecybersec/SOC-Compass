@@ -1,4 +1,6 @@
 import React from 'react';
+import Button from './ui/Button';
+import Badge from './ui/Badge';
 
 const Navbar = ({
   onGoHome,
@@ -14,30 +16,49 @@ const Navbar = ({
   };
 
   return (
-    <nav className="top-nav">
-      <div className="nav-brand" onClick={onGoHome} role="button" tabIndex={0} onKeyDown={handleBrandKey}>
-        <span>SOC Compass</span>
+    <header className="command-bar">
+      <div className="command-brand" onClick={onGoHome} role="button" tabIndex={0} onKeyDown={handleBrandKey}>
+        <div className="brand-mark">⚡</div>
+        <div>
+          <div className="brand-title">SOC Compass</div>
+          <div className="brand-subtitle">Assessments Workspace</div>
+        </div>
+        <Badge variant="info" className="brand-badge">
+          Live
+        </Badge>
       </div>
-      <div className="nav-links">
-        <button className="nav-link" onClick={onGoHome}>
+
+      <nav className="command-actions" aria-label="Primary navigation">
+        <Button variant="ghost" size="sm" onClick={onGoHome}>
           Home
-        </button>
-        <div className="nav-dropdown">
-          <button className="nav-link">Assessments</button>
-          <div className="dropdown-menu">
-            <button onClick={onNewAssessment}>New Assessment</button>
-            <button onClick={onExistingAssessments}>Existing Assessments</button>
+        </Button>
+        <div className="command-menu">
+          <Button variant="outline" size="sm">Assessments</Button>
+          <div className="command-sheet">
+            <Button variant="ghost" size="sm" onClick={onNewAssessment}>
+              New Assessment
+            </Button>
+            <Button variant="ghost" size="sm" onClick={onExistingAssessments}>
+              Existing Assessments
+            </Button>
           </div>
         </div>
-        <div className="nav-dropdown">
-          <button className="nav-link">Administration</button>
-          <div className="dropdown-menu">
-            <button onClick={onOpenApiModal}>API Key</button>
-            <button onClick={onOpenPreferences}>System Preferences</button>
+        <div className="command-menu">
+          <Button variant="outline" size="sm">Administration</Button>
+          <div className="command-sheet">
+            <Button variant="ghost" size="sm" onClick={onOpenApiModal}>
+              API Key
+            </Button>
+            <Button variant="ghost" size="sm" onClick={onOpenPreferences}>
+              System Preferences
+            </Button>
           </div>
         </div>
-      </div>
-    </nav>
+        <Button variant="primary" size="sm" onClick={onNewAssessment}>
+          New workspace
+        </Button>
+      </nav>
+    </header>
   );
 };
 

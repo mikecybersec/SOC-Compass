@@ -1,6 +1,19 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { frameworks } from '../utils/frameworks';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
+import Button from '../components/ui/Button';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '../components/ui/Card';
+import { Input, Select } from '../components/ui/Input';
+import Label from '../components/ui/Label';
+import Badge from '../components/ui/Badge';
+import Dialog from '../components/ui/Dialog';
 
 const objectiveOptions = [
   'Reduce MTTR',
@@ -19,41 +32,42 @@ const ModeSelectionModal = ({ open, onClose, onSelectSolo }) => {
   if (!open) return null;
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal">
-        <div className="flex-between" style={{ marginBottom: '1rem' }}>
-          <h2>Select mode</h2>
-          <button className="secondary" onClick={onClose}>
-            Close
-          </button>
-        </div>
-        <div className="mode-select-grid">
-          <button className="mode-card" onClick={onSelectSolo}>
-            <div className="flex-between" style={{ alignItems: 'flex-start' }}>
-              <div>
-                <h3 style={{ margin: 0 }}>Solo</h3>
-                <p className="mode-subtitle">
-                  I don't need assistance with interpreting any evidence, I will self-score the assessment.
-                </p>
-              </div>
-            </div>
-          </button>
-          <button className="mode-card disabled" disabled>
-            <div className="flex-between" style={{ alignItems: 'flex-start' }}>
-              <div>
-                <h3 style={{ margin: 0 }}>Assisted Mode</h3>
-                <p className="mode-subtitle">
-                  Compass will help you by reviewing attached Standard Operating Procedures, diagrams and evidence and score any
-                  relevant aspects of the assessment, speeding up your assessment delivery.
-                </p>
-                <p className="mode-subtext">Up to 50% faster</p>
-              </div>
-              <span className="mode-badge">Coming Soon</span>
-            </div>
-          </button>
-        </div>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      title="Choose how you want to run the assessment"
+      description="Switch between self-guided and guided modes without losing your work."
+    >
+      <div className="mode-grid">
+        <Card className="mode-card elevated">
+          <CardHeader>
+            <CardTitle>Solo</CardTitle>
+            <CardDescription>
+              Self-score the assessment with streamlined navigation and inline guidance.
+            </CardDescription>
+          </CardHeader>
+          <CardFooter>
+            <Button variant="primary" onClick={onSelectSolo}>
+              Start solo workspace
+            </Button>
+          </CardFooter>
+        </Card>
+        <Card className="mode-card disabled">
+          <CardHeader>
+            <CardTitle>Assisted Mode</CardTitle>
+            <CardDescription>
+              Compass will review attached artefacts and propose scores automatically.
+            </CardDescription>
+          </CardHeader>
+          <CardFooter className="mode-footer">
+            <Badge variant="warning">Coming soon</Badge>
+            <Button variant="secondary" disabled>
+              Enable assistance
+            </Button>
+          </CardFooter>
+        </Card>
       </div>
-    </div>
+    </Dialog>
   );
 };
 
@@ -110,28 +124,29 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
   if (!open) return null;
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal">
-        <div className="flex-between" style={{ marginBottom: '1rem' }}>
-          <h2>{startMode === 'solo' ? 'New Solo Assessment' : 'Start a new assessment'}</h2>
-          <button className="secondary" onClick={onClose}>
-            Close
-          </button>
-        </div>
-        <form onSubmit={handleSubmit} className="shadcn-form">
-          <div className="form-grid">
-            <div className="form-card">
-              <div className="form-card-header">
-                <div>
-                  <p className="form-eyebrow">Workspace</p>
-                  <h3 className="form-title">Assessment details</h3>
-                  <p className="form-description">Provide a title and select a framework to tailor the questions.</p>
-                </div>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      title={startMode === 'solo' ? 'New Solo Assessment' : 'Start a new assessment'}
+      description="Set up your workspace metadata so Compass can personalize results."
+    >
+      <form id="start-assessment-form" onSubmit={handleSubmit} className="shadcn-form">
+        <div className="form-grid">
+          <Card className="form-card">
+            <CardHeader className="form-card-header">
+              <div>
+                <p className="form-eyebrow">Workspace</p>
+                <CardTitle className="form-title">Assessment details</CardTitle>
+                <CardDescription className="form-description">
+                  Provide a title and select a framework to tailor the questions.
+                </CardDescription>
               </div>
+            </CardHeader>
+            <CardContent>
               <div className="form-item">
-                <label className="form-label">Assessment Title</label>
+                <Label className="form-label">Assessment Title</Label>
                 <p className="form-help">Visible in the workspace header and export files.</p>
-                <input
+                <Input
                   className="form-control"
                   value={form.assessmentTitle}
                   onChange={(e) => setForm({ ...form, assessmentTitle: e.target.value })}
@@ -141,9 +156,9 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
               </div>
               <div className="form-grid-inline">
                 <div className="form-item">
-                  <label className="form-label">Organisation Name</label>
+                  <Label className="form-label">Organisation Name</Label>
                   <p className="form-help">Displayed on reports and exports.</p>
-                  <input
+                  <Input
                     className="form-control"
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -151,9 +166,9 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
                   />
                 </div>
                 <div className="form-item">
-                  <label className="form-label">Assessment type</label>
+                  <Label className="form-label">Assessment type</Label>
                   <p className="form-help">Choose the framework that best matches your scope.</p>
-                  <select
+                  <Select
                     className="form-control"
                     value={form.frameworkId}
                     onChange={(e) => setForm({ ...form, frameworkId: e.target.value })}
@@ -168,7 +183,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
                         </option>
                       );
                     })}
-                  </select>
+                  </Select>
                   {selectedFramework && (
                     <p className="form-footnote">
                       Estimated time to complete: ~{selectedFramework.estimatedMinutes} minutes
@@ -177,20 +192,24 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
                   )}
                 </div>
               </div>
-            </div>
-            <div className="form-card">
-              <div className="form-card-header">
-                <div>
-                  <p className="form-eyebrow">Organization</p>
-                  <h3 className="form-title">Context</h3>
-                  <p className="form-description">Add budget and industry context to personalize guidance.</p>
-                </div>
+            </CardContent>
+          </Card>
+          <Card className="form-card">
+            <CardHeader className="form-card-header">
+              <div>
+                <p className="form-eyebrow">Organization</p>
+                <CardTitle className="form-title">Context</CardTitle>
+                <CardDescription className="form-description">
+                  Add budget and industry context to personalize guidance.
+                </CardDescription>
               </div>
+            </CardHeader>
+            <CardContent>
               <div className="form-grid-inline">
                 <div className="form-item">
-                  <label className="form-label">Budget amount</label>
+                  <Label className="form-label">Budget amount</Label>
                   <p className="form-help">Used to tailor investment recommendations.</p>
-                  <input
+                  <Input
                     className="form-control"
                     value={form.budgetAmount}
                     onChange={(e) => setForm({ ...form, budgetAmount: e.target.value })}
@@ -199,9 +218,9 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
                   />
                 </div>
                 <div className="form-item form-item-compact">
-                  <label className="form-label">Currency</label>
+                  <Label className="form-label">Currency</Label>
                   <p className="form-help">Display symbol for budget fields.</p>
-                  <select
+                  <Select
                     className="form-control"
                     value={form.budgetCurrency}
                     onChange={(e) => setForm({ ...form, budgetCurrency: e.target.value })}
@@ -210,23 +229,23 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
                     <option value="€">EUR (€)</option>
                     <option value="£">GBP (£)</option>
                     <option value="¥">JPY (¥)</option>
-                  </select>
+                  </Select>
                 </div>
               </div>
               <div className="form-grid-inline">
                 <div className="form-item">
-                  <label className="form-label">Size</label>
+                  <Label className="form-label">Size</Label>
                   <p className="form-help">Team or organization size.</p>
-                  <input
+                  <Input
                     className="form-control"
                     value={form.size}
                     onChange={(e) => setForm({ ...form, size: e.target.value })}
                   />
                 </div>
                 <div className="form-item">
-                  <label className="form-label">Sector</label>
+                  <Label className="form-label">Sector</Label>
                   <p className="form-help">Used to contextualize suggested actions.</p>
-                  <select
+                  <Select
                     className="form-control"
                     value={form.sector}
                     onChange={(e) => setForm({ ...form, sector: e.target.value })}
@@ -238,57 +257,63 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
                     <option value="Government">Government</option>
                     <option value="Manufacturing">Manufacturing</option>
                     <option value="Other">Other</option>
-                  </select>
+                  </Select>
                 </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
+        </div>
 
-          <div className="form-card">
-            <div className="form-card-header">
-              <div>
-                <p className="form-eyebrow">Objectives</p>
-                <h3 className="form-title">Primary goals</h3>
-                <p className="form-description">Select the outcomes you want the assessment to prioritize.</p>
-              </div>
+        <Card className="form-card">
+          <CardHeader className="form-card-header">
+            <div>
+              <p className="form-eyebrow">Objectives</p>
+              <CardTitle className="form-title">Primary goals</CardTitle>
+              <CardDescription className="form-description">
+                Select the outcomes you want the assessment to prioritize.
+              </CardDescription>
             </div>
+          </CardHeader>
+          <CardContent>
             <div className="pill-list">
               {objectiveOptions.map((option) => (
-                <button
+                <Button
                   key={option}
                   type="button"
-                  className={`pill ${selectedObjectives.includes(option) ? 'pill-active' : ''}`}
+                  variant={selectedObjectives.includes(option) ? 'primary' : 'outline'}
+                  size="sm"
+                  className="pill-button"
                   onClick={() => toggleObjective(option)}
                 >
                   {option}
-                </button>
+                </Button>
               ))}
             </div>
             <div className="flex" style={{ gap: '0.5rem', marginTop: '0.75rem' }}>
-              <input
+              <Input
                 className="form-control"
                 placeholder="Add a custom objective"
                 value={customObjective}
                 onChange={(e) => setCustomObjective(e.target.value)}
               />
-              <button type="button" className="secondary" onClick={addCustomObjective}>
+              <Button type="button" variant="secondary" onClick={addCustomObjective}>
                 Add
-              </button>
+              </Button>
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          <div className="form-footer">
-            <div>
-              <p className="form-description">Metadata will populate the assessment workspace.</p>
-              <p className="form-footnote">You can update these details later in Settings.</p>
-            </div>
-            <button className="primary" type="submit">
-              Create Assessment Workspace
-            </button>
+        <CardFooter className="form-footer">
+          <div>
+            <p className="form-description">Metadata will populate the assessment workspace.</p>
+            <p className="form-footnote">You can update these details later in Settings.</p>
           </div>
-        </form>
-      </div>
-    </div>
+          <Button variant="primary" type="submit" form="start-assessment-form">
+            Create Assessment Workspace
+          </Button>
+        </CardFooter>
+      </form>
+    </Dialog>
   );
 };
 
@@ -332,44 +357,82 @@ const Home = ({
 
   return (
     <div className="home">
-      <header className="home-hero card enterprise-hero">
+      <header className="home-hero glass-hero">
         <div className="hero-copy">
+          <Badge variant="info" className="hero-badge">
+            New
+          </Badge>
           <h1>Deliver every SOC assessment from one place</h1>
           <p className="hero-subtitle">
-            SOC Compass enables SOC Leaders & Consultants to deliver capability maturity assessments from dedicated workspaces,
-            providing tailored action plans, roadmaps and reports.
+            SOC Compass enables SOC Leaders & Consultants to deliver capability maturity assessments from dedicated
+            workspaces, providing tailored action plans, roadmaps and reports.
           </p>
           <div className="hero-actions">
-            <button className="primary" onClick={onOpenStartModal}>
-              Start new assessment
-            </button>
+            <Button onClick={onOpenStartModal}>Start new assessment</Button>
             {hasActiveAssessment && (
-              <button className="secondary" onClick={onContinueAssessment}>
+              <Button variant="secondary" onClick={onContinueAssessment}>
                 Continue current assessment
-              </button>
+              </Button>
             )}
           </div>
+          <div className="hero-meta">
+            <span>Autogenerated action plans</span>
+            <span>Interactive scoring workspace</span>
+            <span>Export-ready reports</span>
+          </div>
         </div>
+        <Card className="hero-card">
+          <CardHeader>
+            <CardTitle>Active workspace</CardTitle>
+            <CardDescription>Quick stats from your current assessment.</CardDescription>
+          </CardHeader>
+          <CardContent className="hero-grid">
+            <div>
+              <p className="hero-label">Framework</p>
+              <p className="hero-value">{frameworks[currentAssessment.frameworkId]?.name || 'Not selected'}</p>
+            </div>
+            <div>
+              <p className="hero-label">Objectives</p>
+              <p className="hero-value">{currentAssessment?.metadata?.objectives?.length || 0}</p>
+            </div>
+            <div>
+              <p className="hero-label">Action items</p>
+              <p className="hero-value">{currentAssessment?.actionPlan?.items?.length || 0}</p>
+            </div>
+            <div>
+              <p className="hero-label">Theme</p>
+              <p className="hero-value">{theme === 'dark' ? 'Dark' : 'Light'}</p>
+            </div>
+          </CardContent>
+          <CardFooter className="hero-footer">
+            <Button variant="ghost" onClick={onSaveSnapshot} disabled={!hasActiveAssessment}>
+              Save current assessment
+            </Button>
+            <Button variant="outline" onClick={onSelectSoloMode}>
+              Switch mode
+            </Button>
+          </CardFooter>
+        </Card>
       </header>
 
       <div className="home-grid">
-        <div className="card">
-          <div className="flex-between" style={{ alignItems: 'flex-start' }}>
+        <Card>
+          <CardHeader className="flex-between align-start">
             <div>
-              <h3>Active assessments</h3>
-              <p style={{ color: 'var(--muted)' }}>
+              <CardTitle>Active assessments</CardTitle>
+              <CardDescription>
                 Each entry keeps its own metadata, notes, action plan, and status. Completed assessments are hidden from this
                 view.
-              </p>
+              </CardDescription>
             </div>
-            <div className="flex" style={{ gap: '0.5rem' }}>
-              <button className="secondary" onClick={onSaveSnapshot} disabled={!hasActiveAssessment}>
-                Save current assessment
-              </button>
-            </div>
-          </div>
+            <Button variant="secondary" onClick={onSaveSnapshot} disabled={!hasActiveAssessment}>
+              Save current assessment
+            </Button>
+          </CardHeader>
           {activeHistory.length === 0 ? (
-            <p style={{ color: 'var(--muted)' }}>No active assessments yet.</p>
+            <CardContent>
+              <p style={{ color: 'var(--muted)' }}>No active assessments yet.</p>
+            </CardContent>
           ) : (
             <div className="assessment-table" role="table" aria-label="Active assessments table">
               <div className="assessment-row assessment-header" role="row">
@@ -414,65 +477,72 @@ const Home = ({
                       <span className={`status-pill status-${statusClass}`}>{statusText}</span>
                     </div>
                     <div className="actions-col" role="cell">
-                      <button className="ghost-button" onClick={() => onLoadAssessment(item.id)}>
+                      <Button variant="ghost" size="sm" onClick={() => onLoadAssessment(item.id)}>
                         Open
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 );
               })}
             </div>
           )}
-        </div>
-
+        </Card>
       </div>
 
       <div className="home-grid settings-grid">
-        <div className="card">
-          <h3>API key & model</h3>
-          <p style={{ color: 'var(--muted)' }}>Centralize your LLM configuration before starting an assessment.</p>
-          <div className="flex" style={{ gap: '0.75rem', flexWrap: 'wrap' }}>
-            <div style={{ minWidth: '240px' }}>
-              <label>API Key</label>
-              <input
-                type="password"
-                placeholder="Paste your provider key"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-              />
+        <Card>
+          <CardHeader>
+            <CardTitle>API key & model</CardTitle>
+            <CardDescription>Centralize your LLM configuration before starting an assessment.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex" style={{ gap: '0.75rem', flexWrap: 'wrap' }}>
+              <div className="ui-field" style={{ minWidth: '240px', flex: 1 }}>
+                <Label>API Key</Label>
+                <Input
+                  type="password"
+                  placeholder="Paste your provider key"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                />
+              </div>
+              <div className="ui-field" style={{ minWidth: '200px', flex: 1 }}>
+                <Label>Model</Label>
+                <Input value={model} onChange={(e) => setModel(e.target.value)} />
+              </div>
+              <div className="ui-field" style={{ minWidth: '220px', flex: 1 }}>
+                <Label>API Base URL</Label>
+                <Input value={apiBase} onChange={(e) => setApiBase(e.target.value)} />
+              </div>
             </div>
-            <div style={{ minWidth: '200px' }}>
-              <label>Model</label>
-              <input value={model} onChange={(e) => setModel(e.target.value)} />
-            </div>
-            <div style={{ minWidth: '220px' }}>
-              <label>API Base URL</label>
-              <input value={apiBase} onChange={(e) => setApiBase(e.target.value)} />
-            </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
-        <div className="card">
-          <h3>Preferences</h3>
-          <p style={{ color: 'var(--muted)' }}>Language and theme apply across the interface without touching assessment metadata.</p>
-          <div className="flex" style={{ gap: '1rem', flexWrap: 'wrap' }}>
-            <div style={{ minWidth: '200px' }}>
-              <label>Language</label>
-              <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-                <option value="en">English</option>
-                <option value="es">Español</option>
-                <option value="fr">Français</option>
-              </select>
+        <Card>
+          <CardHeader>
+            <CardTitle>Preferences</CardTitle>
+            <CardDescription>Language and theme apply across the interface without touching assessment metadata.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex" style={{ gap: '1rem', flexWrap: 'wrap' }}>
+              <div className="ui-field" style={{ minWidth: '200px' }}>
+                <Label>Language</Label>
+                <Select value={language} onChange={(e) => setLanguage(e.target.value)}>
+                  <option value="en">English</option>
+                  <option value="es">Español</option>
+                  <option value="fr">Français</option>
+                </Select>
+              </div>
+              <div className="ui-field" style={{ minWidth: '200px' }}>
+                <Label>Theme</Label>
+                <Select value={theme} onChange={(e) => setTheme(e.target.value)}>
+                  <option value="light">Light</option>
+                  <option value="dark">Dark</option>
+                </Select>
+              </div>
             </div>
-            <div style={{ minWidth: '200px' }}>
-              <label>Theme</label>
-              <select value={theme} onChange={(e) => setTheme(e.target.value)}>
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-              </select>
-            </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
 
       <ModeSelectionModal open={modeModalOpen} onClose={onCloseModeModal} onSelectSolo={onSelectSoloMode} />
