@@ -1,8 +1,27 @@
 import React from 'react';
+import {
+  ClipboardDocumentListIcon,
+  ChartBarSquareIcon,
+  ShieldCheckIcon,
+  SparklesIcon,
+  Squares2X2Icon,
+  InformationCircleIcon,
+  RectangleGroupIcon,
+} from '@heroicons/react/24/outline';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 
 const Sidebar = ({ aspects, currentKey, onSelect, onOpenAssessmentInfo, assessmentInfoActive = false }) => {
   const answers = useAssessmentStore((s) => s.currentAssessment.answers);
+
+  const domainIcons = {
+    Governance: ClipboardDocumentListIcon,
+    Detection: ChartBarSquareIcon,
+    Response: ShieldCheckIcon,
+    Improvement: SparklesIcon,
+    Technology: Squares2X2Icon,
+  };
+
+  const getDomainIcon = (domain) => domainIcons[domain] || RectangleGroupIcon;
 
   const grouped = aspects.reduce((acc, item) => {
     acc[item.domain] = acc[item.domain] || [];
@@ -24,9 +43,7 @@ const Sidebar = ({ aspects, currentKey, onSelect, onOpenAssessmentInfo, assessme
             className={`sidebar-link ${assessmentInfoActive ? 'active' : ''}`}
             onClick={handleAssessmentInfoClick}
           >
-            <span className="sidebar-icon" aria-hidden>
-              ℹ️
-            </span>
+            <InformationCircleIcon className="sidebar-icon" aria-hidden />
             <span className="sidebar-label">Assessment info</span>
           </button>
           <div className="sidebar-divider" aria-hidden />
@@ -52,9 +69,10 @@ const Sidebar = ({ aspects, currentKey, onSelect, onOpenAssessmentInfo, assessme
                   className={`sidebar-link ${active ? 'active' : ''}`}
                   onClick={() => onSelect(key)}
                 >
-                  <span className="sidebar-icon" aria-hidden>
-                    ⬤
-                  </span>
+                  {React.createElement(getDomainIcon(aspect.domain), {
+                    className: 'sidebar-icon',
+                    'aria-hidden': true,
+                  })}
                   <span className="sidebar-label">{aspect.aspect}</span>
                   <span className="sidebar-meta">{completion}%</span>
                 </button>
