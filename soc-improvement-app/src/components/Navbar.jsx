@@ -18,7 +18,7 @@ const Navbar = ({
     <header className="command-bar">
       <div className="command-brand" onClick={onGoHome} role="button" tabIndex={0} onKeyDown={handleBrandKey}>
         <img
-          src="https://www.shadcn.io/icon/oi-compass"
+          src="/compass.png"
           alt="SOC Compass logo"
           className="brand-mark"
         />
