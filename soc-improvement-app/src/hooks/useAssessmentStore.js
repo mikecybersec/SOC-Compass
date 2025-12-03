@@ -146,7 +146,13 @@ export const useAssessmentStore = create(
         },
         upcomingMetadata: { ...state.upcomingMetadata, language },
       })),
-    setSidebarAssessmentCollapsed: (sidebarAssessmentCollapsed) => set({ sidebarAssessmentCollapsed }),
+    setSidebarAssessmentCollapsed: (sidebarAssessmentCollapsed) =>
+      set((state) => ({
+        sidebarAssessmentCollapsed:
+          typeof sidebarAssessmentCollapsed === 'function'
+            ? sidebarAssessmentCollapsed(state.sidebarAssessmentCollapsed)
+            : sidebarAssessmentCollapsed,
+      })),
     setApiKey: (apiKey) => set({ apiKey }),
     setApiBase: (apiBase) => set({ apiBase }),
     setModel: (model) => set({ model }),
