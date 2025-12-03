@@ -22,7 +22,12 @@ const AssessmentInfo = ({ onBack, scoresRef, actionPlanRef }) => {
 
   return (
     <div className="app-shell">
-      <Sidebar aspects={aspects} currentKey={activeAspectKey} onSelect={handleSelectAspect} />
+      <Sidebar
+        aspects={aspects}
+        currentKey={activeAspectKey}
+        onSelect={handleSelectAspect}
+        assessmentInfoActive
+      />
       <div className="main">
         <div className="flex-between" style={{ alignItems: 'flex-end' }}>
           <div>

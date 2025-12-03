@@ -151,20 +151,120 @@ button, input, select, textarea {
 
 .app-shell {
   display: grid;
-  grid-template-columns: 260px 1fr;
+  grid-template-columns: 240px 1fr;
   min-height: 100vh;
 }
 
 .sidebar {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(242, 237, 255, 0.95));
   border-right: 1px solid var(--border);
-  padding: 1rem;
+  padding: 1.25rem 1rem;
   position: sticky;
   top: 78px;
   align-self: start;
+  width: 240px;
   max-height: calc(100vh - 78px);
   overflow-y: auto;
   box-shadow: inset -1px 0 0 var(--border);
+}
+
+.sidebar-heading {
+  margin: 0 0 0.35rem;
+}
+
+.sidebar-section {
+  margin-bottom: 0.65rem;
+}
+
+.sidebar-section-label {
+  font-weight: 700;
+  margin: 0 0 0.35rem;
+  color: var(--muted);
+}
+
+.sidebar-links {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.sidebar-nav {
+  display: grid;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.sidebar-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.55rem 0.9rem 0.55rem 1.2rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease, transform 0.12s ease;
+}
+
+.sidebar-link::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 999px;
+  background: transparent;
+  transition: background 0.16s ease;
+}
+
+.sidebar-link:hover {
+  background: rgba(116, 88, 255, 0.08);
+  border-color: var(--border);
+  transform: translateY(-1px);
+}
+
+.sidebar-link.active {
+  background: rgba(116, 88, 255, 0.16);
+  color: var(--accent-strong);
+  border-color: rgba(116, 88, 255, 0.32);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 10px 24px -18px rgba(116, 88, 255, 0.7);
+}
+
+.sidebar-link.active::before {
+  background: var(--accent);
+}
+
+.sidebar-icon {
+  display: grid;
+  place-items: center;
+  width: 1.25rem;
+  color: var(--muted);
+}
+
+.sidebar-link.active .sidebar-icon {
+  color: var(--accent-strong);
+}
+
+.sidebar-label {
+  font-weight: 700;
+}
+
+.sidebar-meta {
+  margin-left: auto;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.sidebar-link.active .sidebar-meta {
+  color: var(--accent-strong);
+}
+
+.sidebar-divider {
+  border-bottom: 1px solid var(--border);
+  margin: 0.25rem 0 0.25rem;
 }
 
 .main {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 
-const Sidebar = ({ aspects, currentKey, onSelect, onOpenAssessmentInfo }) => {
+const Sidebar = ({ aspects, currentKey, onSelect, onOpenAssessmentInfo, assessmentInfoActive = false }) => {
   const answers = useAssessmentStore((s) => s.currentAssessment.answers);
 
   const grouped = aspects.reduce((acc, item) => {
@@ -10,21 +10,33 @@ const Sidebar = ({ aspects, currentKey, onSelect, onOpenAssessmentInfo }) => {
     return acc;
   }, {});
 
+  const showAssessmentInfo = Boolean(onOpenAssessmentInfo) || assessmentInfoActive;
+  const handleAssessmentInfoClick = () => {
+    if (onOpenAssessmentInfo) onOpenAssessmentInfo();
+  };
+
   return (
     <aside className="sidebar">
-      {onOpenAssessmentInfo && (
-        <div style={{ display: 'grid', gap: '0.5rem', marginBottom: '1rem' }}>
-          <button className="secondary" onClick={onOpenAssessmentInfo} style={{ justifyContent: 'flex-start' }}>
-            <span>Assessment info</span>
+      {showAssessmentInfo && (
+        <div className="sidebar-nav">
+          <button
+            type="button"
+            className={`sidebar-link ${assessmentInfoActive ? 'active' : ''}`}
+            onClick={handleAssessmentInfoClick}
+          >
+            <span className="sidebar-icon" aria-hidden>
+              ℹ️
+            </span>
+            <span className="sidebar-label">Assessment info</span>
           </button>
-          <div className="section-divider" aria-hidden />
+          <div className="sidebar-divider" aria-hidden />
         </div>
       )}
-      <h3>SOC Domains</h3>
+      <h3 className="sidebar-heading">SOC Domains</h3>
       {Object.entries(grouped).map(([domain, domainAspects]) => (
-        <div key={domain} style={{ marginBottom: '1rem' }}>
-          <p style={{ fontWeight: 700 }}>{domain}</p>
-          <div style={{ display: 'grid', gap: '0.25rem' }}>
+        <div key={domain} className="sidebar-section">
+          <p className="sidebar-section-label">{domain}</p>
+          <div className="sidebar-links">
             {domainAspects.map((aspect) => {
               const key = `${aspect.domain}::${aspect.aspect}`;
               const active = key === currentKey;
@@ -36,12 +48,15 @@ const Sidebar = ({ aspects, currentKey, onSelect, onOpenAssessmentInfo }) => {
               return (
                 <button
                   key={key}
-                  className={active ? 'primary' : 'secondary'}
+                  type="button"
+                  className={`sidebar-link ${active ? 'active' : ''}`}
                   onClick={() => onSelect(key)}
-                  style={{ textAlign: 'left', display: 'flex', justifyContent: 'space-between', gap: '0.5rem' }}
                 >
-                  <span>{aspect.aspect}</span>
-                  <span className="muted-label">{completion}%</span>
+                  <span className="sidebar-icon" aria-hidden>
+                    ⬤
+                  </span>
+                  <span className="sidebar-label">{aspect.aspect}</span>
+                  <span className="sidebar-meta">{completion}%</span>
                 </button>
               );
             })}
