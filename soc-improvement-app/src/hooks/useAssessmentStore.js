@@ -9,6 +9,7 @@ const defaultModel = 'grok-4-latest';
 const timestampNow = () => new Date().toISOString();
 
 const defaultMetadata = () => ({
+  assessmentTitle: 'New assessment',
   name: 'My SOC',
   budgetAmount: '',
   budgetCurrency: '$',
@@ -22,6 +23,7 @@ const defaultMetadata = () => ({
 const normalizeMetadata = (metadata = {}) => ({
   ...defaultMetadata(),
   ...metadata,
+  assessmentTitle: metadata.assessmentTitle || metadata.name || 'New assessment',
   budgetAmount: metadata.budgetAmount || metadata.budget || '',
   budgetCurrency: metadata.budgetCurrency || '$',
   sector: metadata.sector || metadata.industry || 'MSSP',
@@ -173,7 +175,11 @@ export const useAssessmentStore = create(
             ? {
                 ...entry,
                 ...currentAssessment,
-                label: entry.label || currentAssessment.metadata?.name || 'Saved assessment',
+                label:
+                  entry.label ||
+                  currentAssessment.metadata?.assessmentTitle ||
+                  currentAssessment.metadata?.name ||
+                  'Saved assessment',
                 savedAt: new Date().toISOString(),
               }
             : entry
@@ -201,7 +207,11 @@ export const useAssessmentStore = create(
         const snapshot = {
           ...state.currentAssessment,
           id: state.currentAssessment.id || `${Date.now()}`,
-          label: label || state.currentAssessment.metadata.name || 'Saved assessment',
+          label:
+            label ||
+            state.currentAssessment.metadata.assessmentTitle ||
+            state.currentAssessment.metadata.name ||
+            'Saved assessment',
           savedAt: new Date().toISOString(),
         };
 
