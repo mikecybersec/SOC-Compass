@@ -334,16 +334,6 @@ const Home = ({
   startMode,
 }) => {
   const upcomingMetadata = useAssessmentStore((s) => s.upcomingMetadata);
-  const theme = useAssessmentStore((s) => s.theme);
-  const language = useAssessmentStore((s) => s.upcomingMetadata.language);
-  const setTheme = useAssessmentStore((s) => s.setTheme);
-  const setLanguage = useAssessmentStore((s) => s.setLanguage);
-  const apiKey = useAssessmentStore((s) => s.apiKey);
-  const setApiKey = useAssessmentStore((s) => s.setApiKey);
-  const apiBase = useAssessmentStore((s) => s.apiBase);
-  const setApiBase = useAssessmentStore((s) => s.setApiBase);
-  const model = useAssessmentStore((s) => s.model);
-  const setModel = useAssessmentStore((s) => s.setModel);
   const currentFrameworkId = currentAssessment.frameworkId;
 
   const sortedHistory = useMemo(
@@ -446,62 +436,6 @@ const Home = ({
               })}
             </div>
           )}
-        </Card>
-      </div>
-
-      <div className="home-grid settings-grid">
-        <Card>
-          <CardHeader>
-            <CardTitle>API key & model</CardTitle>
-            <CardDescription>Centralize your LLM configuration before starting an assessment.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex" style={{ gap: '0.75rem', flexWrap: 'wrap' }}>
-              <div className="ui-field" style={{ minWidth: '240px', flex: 1 }}>
-                <Label>API Key</Label>
-                <Input
-                  type="password"
-                  placeholder="Paste your provider key"
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                />
-              </div>
-              <div className="ui-field" style={{ minWidth: '200px', flex: 1 }}>
-                <Label>Model</Label>
-                <Input value={model} onChange={(e) => setModel(e.target.value)} />
-              </div>
-              <div className="ui-field" style={{ minWidth: '220px', flex: 1 }}>
-                <Label>API Base URL</Label>
-                <Input value={apiBase} onChange={(e) => setApiBase(e.target.value)} />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Preferences</CardTitle>
-            <CardDescription>Language and theme apply across the interface without touching assessment metadata.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex" style={{ gap: '1rem', flexWrap: 'wrap' }}>
-              <div className="ui-field" style={{ minWidth: '200px' }}>
-                <Label>Language</Label>
-                <Select value={language} onChange={(e) => setLanguage(e.target.value)}>
-                  <option value="en">English</option>
-                  <option value="es">Español</option>
-                  <option value="fr">Français</option>
-                </Select>
-              </div>
-              <div className="ui-field" style={{ minWidth: '200px' }}>
-                <Label>Theme</Label>
-                <Select value={theme} onChange={(e) => setTheme(e.target.value)}>
-                  <option value="light">Light</option>
-                  <option value="dark">Dark</option>
-                </Select>
-              </div>
-            </div>
-          </CardContent>
         </Card>
       </div>
 
