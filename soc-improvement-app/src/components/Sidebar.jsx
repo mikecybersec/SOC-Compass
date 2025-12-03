@@ -25,6 +25,7 @@ const Sidebar = ({
   );
 
   const showAssessmentInfo = Boolean(onOpenAssessmentInfo) || assessmentInfoActive;
+  const showAssessmentState = !assessmentInfoActive && !reportingActive;
   const handleAssessmentInfoClick = () => {
     if (onOpenAssessmentInfo) onOpenAssessmentInfo();
   };
@@ -68,7 +69,7 @@ const Sidebar = ({
                 <div className="sidebar-links">
                   {domainAspects.map((aspect) => {
                     const key = `${aspect.domain}::${aspect.aspect}`;
-                    const active = key === currentKey;
+                    const active = showAssessmentState && key === currentKey;
                     const totalQuestions = aspect.questionCount || 0;
                     const answered = aspect.questions.filter(
                       (q) => q.type === 'question' && answers[q.code]
