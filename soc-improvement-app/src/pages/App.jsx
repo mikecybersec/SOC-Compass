@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Home from './Home';
 import Assessment from './Assessment';
+import AssessmentInfo from './AssessmentInfo';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import Navbar from '../components/Navbar';
 
@@ -79,6 +80,8 @@ const App = () => {
   const [startModalOpen, setStartModalOpen] = useState(false);
   const [apiModalOpen, setApiModalOpen] = useState(false);
   const [preferencesModalOpen, setPreferencesModalOpen] = useState(false);
+  const scoresRef = useRef();
+  const actionPlanRef = useRef();
   const theme = useAssessmentStore((s) => s.theme);
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
   const startAssessment = useAssessmentStore((s) => s.startAssessment);
@@ -131,7 +134,7 @@ const App = () => {
         onOpenApiModal={() => setApiModalOpen(true)}
         onOpenPreferences={() => setPreferencesModalOpen(true)}
       />
-      {view === 'home' ? (
+      {view === 'home' && (
         <Home
           onStartAssessment={handleStart}
           onContinueAssessment={() => setView('assessment')}
@@ -144,8 +147,17 @@ const App = () => {
           onOpenStartModal={() => setStartModalOpen(true)}
           onCloseStartModal={() => setStartModalOpen(false)}
         />
-      ) : (
-        <Assessment onBack={() => setView('home')} />
+      )}
+      {view === 'assessment' && (
+        <Assessment
+          onBack={() => setView('home')}
+          onOpenAssessmentInfo={() => setView('assessmentInfo')}
+          scoresRef={scoresRef}
+          actionPlanRef={actionPlanRef}
+        />
+      )}
+      {view === 'assessmentInfo' && (
+        <AssessmentInfo onBack={() => setView('assessment')} scoresRef={scoresRef} actionPlanRef={actionPlanRef} />
       )}
       <ApiKeyModal
         open={apiModalOpen}
