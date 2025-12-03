@@ -1,73 +1,51 @@
-import React, { useMemo, useState, useEffect, useRef } from 'react';
-import FrameworkSelector from '../components/FrameworkSelector';
-import Sidebar from '../components/Sidebar';
-import QuestionPanel from '../components/QuestionPanel';
-import ScoreBoard from '../components/ScoreBoard';
-import ActionPlan from '../components/ActionPlan';
-import Toolbar from '../components/Toolbar';
-import { frameworks } from '../utils/frameworks';
+import React, { useEffect, useState } from 'react';
+import Home from './Home';
+import Assessment from './Assessment';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 
 const App = () => {
-  const frameworkId = useAssessmentStore((s) => s.frameworkId);
+  const [view, setView] = useState('home');
   const theme = useAssessmentStore((s) => s.theme);
-  const metadata = useAssessmentStore((s) => s.metadata);
-  const [aspectKey, setAspectKey] = useState(null);
-  const scoresRef = useRef();
-  const actionPlanRef = useRef();
-  const metaRef = useRef();
-
-  const currentFramework = frameworks[frameworkId];
-
-  const aspectLookup = useMemo(() => {
-    const map = {};
-    currentFramework.aspects.forEach((a) => {
-      map[`${a.domain}::${a.aspect}`] = a;
-    });
-    return map;
-  }, [currentFramework]);
-
-  useEffect(() => {
-    if (!aspectKey && currentFramework.aspects.length) {
-      setAspectKey(`${currentFramework.aspects[0].domain}::${currentFramework.aspects[0].aspect}`);
-    }
-  }, [aspectKey, currentFramework]);
+  const answers = useAssessmentStore((s) => s.answers);
+  const notes = useAssessmentStore((s) => s.notes);
+  const actionPlan = useAssessmentStore((s) => s.actionPlan);
+  const startAssessment = useAssessmentStore((s) => s.startAssessment);
+  const assessmentHistory = useAssessmentStore((s) => s.assessmentHistory);
+  const loadAssessmentFromHistory = useAssessmentStore((s) => s.loadAssessmentFromHistory);
+  const saveAssessmentToHistory = useAssessmentStore((s) => s.saveAssessmentToHistory);
 
   useEffect(() => {
     const root = document.documentElement;
     root.classList.toggle('dark', theme === 'dark');
   }, [theme]);
 
-  const activeAspect = aspectKey ? aspectLookup[aspectKey] : null;
+  const hasActiveAssessment =
+    Object.keys(answers || {}).length > 0 || Object.keys(notes || {}).length > 0 || Boolean(actionPlan?.raw);
 
-  return (
-    <div className="app-shell">
-      <Sidebar aspects={currentFramework.aspects} currentKey={aspectKey} onSelect={setAspectKey} />
-      <main className="main">
-        <div ref={metaRef} className="card">
-          <div className="flex-between">
-            <div>
-              <p className="badge">Privacy-first / Offline-first</p>
-              <h1>SOC Improvement App</h1>
-              <p style={{ color: 'var(--muted)' }}>
-                Self-hosted React app for assessing SOC maturity against SOC-CMM, SIM3, and MITRE INFORM. Answers stay in your browser.
-              </p>
-            </div>
-            <div style={{ textAlign: 'right' }}>
-              <p>{metadata.name}</p>
-              <p>Budget: {metadata.budget}</p>
-              <p>Size: {metadata.size}</p>
-            </div>
-          </div>
-        </div>
+  const handleStart = (payload) => {
+    if (hasActiveAssessment) {
+      saveAssessmentToHistory('Previous assessment snapshot');
+    }
+    startAssessment(payload);
+    setView('assessment');
+  };
 
-        <FrameworkSelector />
-        <Toolbar scoresRef={scoresRef} actionPlanRef={actionPlanRef} metaRef={metaRef} />
-        <QuestionPanel aspect={activeAspect} />
-        <ScoreBoard ref={scoresRef} />
-        <ActionPlan ref={actionPlanRef} />
-      </main>
-    </div>
+  const handleLoad = (id) => {
+    loadAssessmentFromHistory(id);
+    setView('assessment');
+  };
+
+  return view === 'home' ? (
+    <Home
+      onStartAssessment={handleStart}
+      onContinueAssessment={() => setView('assessment')}
+      onLoadAssessment={handleLoad}
+      onSaveSnapshot={() => saveAssessmentToHistory('Saved from home')}
+      assessmentHistory={assessmentHistory}
+      hasActiveAssessment={hasActiveAssessment}
+    />
+  ) : (
+    <Assessment onBack={() => setView('home')} />
   );
 };
 
