@@ -7,7 +7,7 @@ import ActionPlan from '../components/ActionPlan';
 import { frameworks } from '../utils/frameworks';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 
-const Assessment = ({ onBack, scoresRef, actionPlanRef, onOpenAssessmentInfo }) => {
+const Assessment = ({ onBack, scoresRef, actionPlanRef, onOpenAssessmentInfo, onOpenReporting }) => {
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
   const lastSavedAt = useAssessmentStore((s) => s.lastSavedAt);
   const autoSaveAssessment = useAssessmentStore((s) => s.autoSaveAssessment);
@@ -73,6 +73,7 @@ const Assessment = ({ onBack, scoresRef, actionPlanRef, onOpenAssessmentInfo }) 
         currentKey={activeAspectKey}
         onSelect={setActiveAspectKey}
         onOpenAssessmentInfo={onOpenAssessmentInfo}
+        onOpenReporting={onOpenReporting}
       />
       <main className="main">
         <div className="section-divider" aria-hidden />
