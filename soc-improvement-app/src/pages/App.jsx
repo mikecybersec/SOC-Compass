@@ -76,6 +76,18 @@ const PreferencesModal = ({ open, onClose, language, setLanguage, theme, setThem
   );
 };
 
+const AutoSave = () => {
+  const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
+  const autoSaveAssessment = useAssessmentStore((s) => s.autoSaveAssessment);
+
+  useEffect(() => {
+    const handle = setTimeout(() => autoSaveAssessment(), 800);
+    return () => clearTimeout(handle);
+  }, [currentAssessment, autoSaveAssessment]);
+
+  return null;
+};
+
 const App = () => {
   const [view, setView] = useState('home');
   const [startModalOpen, setStartModalOpen] = useState(false);
@@ -136,6 +148,7 @@ const App = () => {
 
   return (
     <>
+      <AutoSave />
       <Navbar
         onGoHome={() => setView('home')}
         onNewAssessment={() => {

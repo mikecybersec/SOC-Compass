@@ -163,10 +163,10 @@ export const useAssessmentStore = create(
     setActiveAspectKey: (activeAspectKey) => set({ activeAspectKey }),
     autoSaveAssessment: () =>
       set((state) => {
-        const currentAssessment = {
-          ...state.currentAssessment,
-          id: state.currentAssessment.id || `assessment-${Date.now()}`,
-        };
+        const currentAssessment =
+          state.currentAssessment.id !== undefined && state.currentAssessment.id !== null
+            ? state.currentAssessment
+            : { ...state.currentAssessment, id: `assessment-${Date.now()}` };
 
         const updatedHistory = (state.assessmentHistory || []).map((entry) =>
           entry.id === currentAssessment.id
