@@ -130,7 +130,6 @@ const App = () => {
     <>
       <Navbar
         onGoHome={() => setView('home')}
-        activeView={view}
         onNewAssessment={() => {
           setView('home');
           setStartModalOpen(true);
@@ -138,8 +137,6 @@ const App = () => {
         onExistingAssessments={() => setView('home')}
         onOpenApiModal={() => setApiModalOpen(true)}
         onOpenPreferences={() => setPreferencesModalOpen(true)}
-        onOpenAssessmentInfo={handleViewAssessmentInfo}
-        assessmentInfoDisabled={!currentAssessment}
       />
       {view === 'home' && (
         <Home
@@ -155,7 +152,14 @@ const App = () => {
           onCloseStartModal={() => setStartModalOpen(false)}
         />
       )}
-      {view === 'assessment' && <Assessment onBack={() => setView('home')} scoresRef={scoresRef} actionPlanRef={actionPlanRef} />}
+      {view === 'assessment' && (
+        <Assessment
+          onBack={() => setView('home')}
+          scoresRef={scoresRef}
+          actionPlanRef={actionPlanRef}
+          onOpenAssessmentInfo={handleViewAssessmentInfo}
+        />
+      )}
       {view === 'assessmentInfo' && (
         <AssessmentInfo onBack={() => setView('assessment')} scoresRef={scoresRef} actionPlanRef={actionPlanRef} />
       )}

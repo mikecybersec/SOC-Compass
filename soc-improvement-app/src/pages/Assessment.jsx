@@ -7,7 +7,7 @@ import ActionPlan from '../components/ActionPlan';
 import { frameworks } from '../utils/frameworks';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 
-const Assessment = ({ onBack, scoresRef, actionPlanRef }) => {
+const Assessment = ({ onBack, scoresRef, actionPlanRef, onOpenAssessmentInfo }) => {
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
   const lastSavedAt = useAssessmentStore((s) => s.lastSavedAt);
   const autoSaveAssessment = useAssessmentStore((s) => s.autoSaveAssessment);
@@ -62,7 +62,12 @@ const Assessment = ({ onBack, scoresRef, actionPlanRef }) => {
 
   return (
     <div className="app-shell">
-      <Sidebar aspects={currentFramework.aspects} currentKey={aspectKey} onSelect={setAspectKey} />
+      <Sidebar
+        aspects={currentFramework.aspects}
+        currentKey={aspectKey}
+        onSelect={setAspectKey}
+        onOpenAssessmentInfo={onOpenAssessmentInfo}
+      />
       <main className="main">
         <div className="section-divider" aria-hidden />
         <FrameworkSelector />
