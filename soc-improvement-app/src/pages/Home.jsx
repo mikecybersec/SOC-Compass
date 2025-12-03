@@ -381,11 +381,18 @@ const Home = ({
         </div>
       </header>
 
-      <ul className="assessment-types" aria-label="Assessment types available">
-        {["SOC-CMM", "SIM3", "MITRE Inform", "MITRE ATT&CK"].map((type) => (
-          <li key={type}>{type}</li>
-        ))}
-      </ul>
+      <section className="assessment-banner" aria-label="Assessment frameworks available">
+        <p className="assessment-eyebrow">Deliver assessments aligned to</p>
+        <div className="assessment-track">
+          <div className="assessment-fade assessment-fade-left" aria-hidden="true" />
+          <ul className="assessment-types" aria-label="Assessment types available">
+            {["SOC-CMM", "SIM3", "MITRE Inform", "MITRE ATT&CK"].map((type) => (
+              <li key={type}>{type}</li>
+            ))}
+          </ul>
+          <div className="assessment-fade assessment-fade-right" aria-hidden="true" />
+        </div>
+      </section>
 
       <div className="home-grid">
         <Card>
