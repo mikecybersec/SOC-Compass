@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 
-const QuestionPanel = ({ aspect }) => {
+const QuestionPanel = ({ aspect, nextAspect, onNextAspect }) => {
   const answers = useAssessmentStore((s) => s.currentAssessment.answers);
   const notes = useAssessmentStore((s) => s.currentAssessment.notes);
   const setAnswer = useAssessmentStore((s) => s.setAnswer);
@@ -14,6 +14,10 @@ const QuestionPanel = ({ aspect }) => {
       </div>
     );
   }
+
+  const totalQuestions = aspect.questions.filter((q) => q.type === 'question').length;
+  const answered = aspect.questions.filter((q) => q.type === 'question' && answers[q.code]).length;
+  const completion = totalQuestions === 0 ? 0 : Math.round((answered / totalQuestions) * 100);
 
   return (
     <div className="card">
@@ -63,6 +67,27 @@ const QuestionPanel = ({ aspect }) => {
             </div>
           </div>
         ))}
+      </div>
+
+      <div
+        className="flex-between"
+        style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--border)' }}
+      >
+        <div>
+          <p className="muted-label">Aspect completion</p>
+          <p style={{ margin: 0, fontWeight: 700 }}>
+            {answered} / {totalQuestions || '0'} answered ({completion}%)
+          </p>
+        </div>
+        {nextAspect ? (
+          <button className="secondary" onClick={onNextAspect}>
+            Next Aspect: {nextAspect.aspect} →
+          </button>
+        ) : (
+          <p className="muted-label" style={{ margin: 0 }}>
+            Last aspect in this framework
+          </p>
+        )}
       </div>
     </div>
   );

@@ -27,6 +27,10 @@ const Assessment = ({ onBack }) => {
   const metaRef = useRef();
 
   const currentFramework = frameworks[frameworkId];
+  const aspectKeys = useMemo(
+    () => currentFramework.aspects.map((a) => `${a.domain}::${a.aspect}`),
+    [currentFramework]
+  );
 
   const aspectLookup = useMemo(() => {
     const map = {};
@@ -62,6 +66,9 @@ const Assessment = ({ onBack }) => {
   }, [lastSavedAt]);
 
   const activeAspect = aspectKey ? aspectLookup[aspectKey] : null;
+  const currentIndex = aspectKeys.indexOf(aspectKey);
+  const nextAspectKey = currentIndex >= 0 && currentIndex < aspectKeys.length - 1 ? aspectKeys[currentIndex + 1] : null;
+  const nextAspect = nextAspectKey ? aspectLookup[nextAspectKey] : null;
 
   return (
     <div className="app-shell">
@@ -96,7 +103,7 @@ const Assessment = ({ onBack }) => {
 
         <FrameworkSelector />
         <Toolbar scoresRef={scoresRef} actionPlanRef={actionPlanRef} metaRef={metaRef} />
-        <QuestionPanel aspect={activeAspect} />
+        <QuestionPanel aspect={activeAspect} nextAspect={nextAspect} onNextAspect={() => nextAspectKey && setAspectKey(nextAspectKey)} />
         <ScoreBoard ref={scoresRef} />
         <ActionPlan ref={actionPlanRef} />
       </main>

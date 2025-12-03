@@ -2,6 +2,9 @@ import socCmm from '../../frameworks/soc_cmm.json';
 import sim3 from '../../frameworks/sim3.json';
 import inform from '../../frameworks/inform.json';
 
+const minutesPerQuestion = 1.5;
+const minimumEstimateMinutes = 10;
+
 const mapQuestion = (question) => ({
   code: question.code,
   text: question.text,
@@ -17,35 +20,40 @@ const flattenTree = (tree) => {
   const aspects = [];
   Object.entries(tree || {}).forEach(([domain, aspectMap]) => {
     Object.entries(aspectMap || {}).forEach(([aspect, questions]) => {
+      const mappedQuestions = questions.map(mapQuestion);
       aspects.push({
         domain,
         aspect,
-        questions: questions.map(mapQuestion),
+        questions: mappedQuestions,
+        questionCount: mappedQuestions.filter((q) => q.type === 'question').length,
       });
     });
   });
   return aspects;
 };
 
+const buildFramework = (id, name, data) => {
+  const aspects = flattenTree(data.tree);
+  const questionCount = aspects.reduce((total, aspect) => total + (aspect.questionCount || 0), 0);
+  const estimatedMinutes = Math.max(
+    minimumEstimateMinutes,
+    Math.round(questionCount * minutesPerQuestion)
+  );
+
+  return {
+    id,
+    name,
+    data,
+    aspects,
+    questionCount,
+    estimatedMinutes,
+  };
+};
+
 export const frameworks = {
-  soc_cmm: {
-    id: 'soc_cmm',
-    name: 'SOC-CMM',
-    data: socCmm,
-    aspects: flattenTree(socCmm.tree),
-  },
-  sim3: {
-    id: 'sim3',
-    name: 'SIM3',
-    data: sim3,
-    aspects: flattenTree(sim3.tree),
-  },
-  inform: {
-    id: 'inform',
-    name: 'MITRE INFORM',
-    data: inform,
-    aspects: flattenTree(inform.tree),
-  },
+  soc_cmm: buildFramework('soc_cmm', 'SOC-CMM', socCmm),
+  sim3: buildFramework('sim3', 'SIM3', sim3),
+  inform: buildFramework('inform', 'MITRE INFORM', inform),
 };
 
 export const defaultFrameworkId = 'soc_cmm';
