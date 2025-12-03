@@ -169,6 +169,9 @@ const Home = ({
   assessmentHistory,
   hasActiveAssessment,
   currentAssessment,
+  startModalOpen,
+  onOpenStartModal,
+  onCloseStartModal,
 }) => {
   const upcomingMetadata = useAssessmentStore((s) => s.upcomingMetadata);
   const theme = useAssessmentStore((s) => s.theme);
@@ -181,10 +184,7 @@ const Home = ({
   const setApiBase = useAssessmentStore((s) => s.setApiBase);
   const model = useAssessmentStore((s) => s.model);
   const setModel = useAssessmentStore((s) => s.setModel);
-  const setUpcomingMetadata = useAssessmentStore((s) => s.setUpcomingMetadata);
   const currentFrameworkId = currentAssessment.frameworkId;
-
-  const [modalOpen, setModalOpen] = useState(false);
 
   const sortedHistory = useMemo(
     () => (assessmentHistory || []).sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt)),
@@ -195,14 +195,13 @@ const Home = ({
     <div className="home">
       <header className="home-hero card enterprise-hero">
         <div className="hero-copy">
-          <p className="badge">Enterprise landing · Offline by default</p>
           <h1>Control every SOC assessment from one place</h1>
           <p className="hero-subtitle">
             Metadata is now scoped per assessment, so consultants and multi-SOC teams can launch dedicated workspaces without
             overwriting client details.
           </p>
           <div className="hero-actions">
-            <button className="primary" onClick={() => setModalOpen(true)}>
+            <button className="primary" onClick={onOpenStartModal}>
               Start new assessment
             </button>
             {hasActiveAssessment && (
@@ -229,42 +228,9 @@ const Home = ({
             </div>
           </div>
         </div>
-        <div className="hero-panel">
-          <p className="muted-label" style={{ marginTop: 0 }}>Per-assessment metadata</p>
-          <h3 style={{ margin: '0 0 0.4rem' }}>{currentAssessment.metadata.name}</h3>
-          <p style={{ color: 'var(--muted)', margin: '0 0 0.75rem' }}>
-            Keep budgets, objectives, and sector data locked to each assessment. Switching between SOCs no longer overwrites
-            another client profile.
-          </p>
-          <div className="metadata-grid compact-grid">
-            <div>
-              <p className="muted-label">Budget</p>
-              <p style={{ margin: 0 }}>
-                {currentAssessment.metadata.budgetCurrency}
-                {currentAssessment.metadata.budgetAmount || 'Not set'}
-              </p>
-            </div>
-            <div>
-              <p className="muted-label">Size</p>
-              <p style={{ margin: 0 }}>{currentAssessment.metadata.size}</p>
-            </div>
-            <div>
-              <p className="muted-label">Sector</p>
-              <p style={{ margin: 0 }}>{currentAssessment.metadata.sector}</p>
-            </div>
-            <div style={{ gridColumn: '1 / span 2' }}>
-              <p className="muted-label">Objectives</p>
-              <p style={{ margin: 0 }}>{(currentAssessment.metadata.objectives || []).join(', ')}</p>
-            </div>
-          </div>
-          <div className="hero-footnote">
-            <span>Language: {language?.toUpperCase()}</span>
-            <span>Theme: {theme}</span>
-          </div>
-        </div>
       </header>
 
-      <div className="home-grid enterprise-grid">
+      <div className="home-grid">
         <div className="card">
           <div className="flex-between" style={{ alignItems: 'flex-start' }}>
             <div>
@@ -305,87 +271,6 @@ const Home = ({
           )}
         </div>
 
-        <div className="card gradient-card next-metadata-card">
-          <div className="flex-between" style={{ alignItems: 'flex-start' }}>
-            <div>
-              <h3>Next assessment metadata</h3>
-              <p style={{ color: 'var(--muted)' }}>
-                Configure the next SOC before you launch. Values stay tied to the assessment you create.
-              </p>
-            </div>
-            <button className="secondary" onClick={() => setUpcomingMetadata(currentAssessment.metadata)}>
-              Use active metadata
-            </button>
-          </div>
-          <div className="metadata-grid">
-            <div>
-              <p className="muted-label">Organisation</p>
-              <p style={{ margin: 0, fontWeight: 600 }}>{upcomingMetadata.name}</p>
-            </div>
-            <div>
-              <p className="muted-label">Budget</p>
-              <p style={{ margin: 0 }}>
-                {upcomingMetadata.budgetCurrency || '$'}
-                {upcomingMetadata.budgetAmount || 'Not set'}
-              </p>
-            </div>
-            <div>
-              <p className="muted-label">Size</p>
-              <p style={{ margin: 0 }}>{upcomingMetadata.size}</p>
-            </div>
-            <div>
-              <p className="muted-label">Sector</p>
-              <p style={{ margin: 0 }}>{upcomingMetadata.sector}</p>
-            </div>
-            <div style={{ gridColumn: '1 / span 2' }}>
-              <p className="muted-label">Objectives</p>
-              <p style={{ margin: 0 }}>{(upcomingMetadata.objectives || []).join(', ')}</p>
-            </div>
-          </div>
-          <div className="inline-form">
-            <div>
-              <label>Organisation Name</label>
-              <input
-                value={upcomingMetadata.name}
-                onChange={(e) => setUpcomingMetadata({ name: e.target.value })}
-                placeholder="SOC name for the next run"
-              />
-            </div>
-            <div>
-              <label>Sector</label>
-              <select
-                value={upcomingMetadata.sector}
-                onChange={(e) => setUpcomingMetadata({ sector: e.target.value })}
-              >
-                <option value="MSSP">MSSP</option>
-                <option value="Technology">Technology</option>
-                <option value="Finance">Finance</option>
-                <option value="Healthcare">Healthcare</option>
-                <option value="Government">Government</option>
-                <option value="Manufacturing">Manufacturing</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <div>
-              <label>Objectives</label>
-              <input
-                value={(upcomingMetadata.objectives || []).join(', ')}
-                onChange={(e) =>
-                  setUpcomingMetadata({
-                    objectives: e.target.value
-                      .split(',')
-                      .map((item) => item.trim())
-                      .filter(Boolean),
-                  })
-                }
-                placeholder="Comma separated"
-              />
-            </div>
-          </div>
-          <div className="flex" style={{ justifyContent: 'flex-end', gap: '0.5rem' }}>
-            <button className="secondary" onClick={() => setModalOpen(true)}>Start with these values</button>
-          </div>
-        </div>
       </div>
 
       <div className="home-grid settings-grid">
@@ -437,8 +322,8 @@ const Home = ({
       </div>
 
       <StartAssessmentModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
+        open={startModalOpen}
+        onClose={onCloseStartModal}
         onStart={onStartAssessment}
         initialMetadata={upcomingMetadata}
         currentFrameworkId={currentFrameworkId}
