@@ -120,6 +120,11 @@ button, input, select, textarea {
   background: var(--card);
   border-right: 1px solid var(--border);
   padding: 1rem;
+  position: sticky;
+  top: 72px;
+  align-self: start;
+  max-height: calc(100vh - 72px);
+  overflow-y: auto;
 }
 
 .main {
