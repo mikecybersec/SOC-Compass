@@ -613,6 +613,11 @@ label {
   border-radius: 999px;
   font-size: 0.85rem;
   border: 1px solid var(--border-strong, var(--border));
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.75rem;
 }
 
 .pill-list {

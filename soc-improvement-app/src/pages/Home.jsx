@@ -57,7 +57,7 @@ const ModeSelectionModal = ({ open, onClose, onSelectSolo }) => {
   );
 };
 
-const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, currentFrameworkId }) => {
+const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, currentFrameworkId, startMode }) => {
   const [selectedObjectives, setSelectedObjectives] = useState(initialMetadata.objectives || []);
   const [form, setForm] = useState({
     name: initialMetadata.name || '',
@@ -111,7 +111,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
     <div className="modal-backdrop">
       <div className="modal">
         <div className="flex-between" style={{ marginBottom: '1rem' }}>
-          <h2>Start a new assessment</h2>
+          <h2>{startMode === 'solo' ? 'New Solo Assessment' : 'Start a new assessment'}</h2>
           <button className="secondary" onClick={onClose}>
             Close
           </button>
@@ -210,7 +210,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
           <div className="flex-between" style={{ marginTop: '0.5rem' }}>
             <p style={{ color: 'var(--muted)' }}>Metadata will populate the assessment workspace.</p>
             <button className="primary" type="submit">
-              Start assessment
+              Create Assessment Workspace
             </button>
           </div>
         </form>
@@ -233,6 +233,7 @@ const Home = ({
   modeModalOpen,
   onCloseModeModal,
   onSelectSoloMode,
+  startMode,
 }) => {
   const upcomingMetadata = useAssessmentStore((s) => s.upcomingMetadata);
   const theme = useAssessmentStore((s) => s.theme);
@@ -372,6 +373,7 @@ const Home = ({
         onStart={onStartAssessment}
         initialMetadata={upcomingMetadata}
         currentFrameworkId={currentFrameworkId}
+        startMode={startMode}
       />
     </div>
   );
