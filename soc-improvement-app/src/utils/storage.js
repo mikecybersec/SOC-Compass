@@ -4,7 +4,9 @@ export const loadState = () => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    // Never restore sensitive values like API keys from previous sessions
+    return { ...parsed, apiKey: '' };
   } catch (error) {
     console.warn('Unable to parse saved state', error);
     return null;
@@ -13,7 +15,9 @@ export const loadState = () => {
 
 export const saveState = (state) => {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const { apiKey, ...safeState } = state;
+    // Do not persist secrets such as API keys to localStorage
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(safeState));
   } catch (error) {
     console.warn('Unable to persist state', error);
   }

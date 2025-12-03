@@ -16,6 +16,7 @@ const ActionPlan = forwardRef((_, ref) => {
 
   const handleGenerate = async () => {
     setLoading(true);
+    setActionPlan({ steps: [], error: undefined });
     const result = await generateActionPlan({
       apiKey,
       frameworkName: frameworks[frameworkId].name,
@@ -51,6 +52,11 @@ const ActionPlan = forwardRef((_, ref) => {
           {loading ? 'Generating…' : 'Generate action plan'}
         </button>
       </div>
+      {actionPlan.error && (
+        <p style={{ color: 'var(--danger, #c23d3d)', marginTop: '-0.4rem' }}>
+          {actionPlan.error}
+        </p>
+      )}
       <div>
         {actionPlan.steps?.length ? (
           <ol>

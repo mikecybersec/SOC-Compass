@@ -30,7 +30,19 @@ export const generateActionPlan = async ({ apiKey, model = 'gpt-4o-mini', framew
     });
 
     if (!response.ok) {
-      throw new Error('AI provider rejected the request');
+      let message = 'AI provider rejected the request';
+      try {
+        const errorPayload = await response.json();
+        message = errorPayload?.error?.message || message;
+      } catch (error) {
+        // ignore parse errors and fall back to default message
+      }
+
+      if (response.status === 401 || response.status === 403) {
+        message = 'The API key was rejected. Please verify your key or permissions and try again.';
+      }
+
+      throw new Error(message);
     }
 
     const payload = await response.json();
