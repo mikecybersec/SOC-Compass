@@ -381,6 +381,12 @@ const Home = ({
         </div>
       </header>
 
+      <ul className="assessment-types" aria-label="Assessment types available">
+        {["SOC-CMM", "SIM3", "MITRE Inform", "MITRE ATT&CK"].map((type) => (
+          <li key={type}>{type}</li>
+        ))}
+      </ul>
+
       <div className="home-grid">
         <Card>
               <CardHeader className="flex-between align-start">

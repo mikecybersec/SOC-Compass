@@ -894,6 +894,36 @@ label {
   box-shadow: var(--shadow);
 }
 
+.assessment-types {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.5rem;
+  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  flex-wrap: wrap;
+}
+
+.assessment-types li {
+  position: relative;
+  padding-right: 1rem;
+}
+
+.assessment-types li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+}
+
 .trusted-panel {
   width: min(320px, 42%);
   border-radius: 16px;
