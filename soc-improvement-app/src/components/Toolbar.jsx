@@ -83,6 +83,17 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef }) => {
             <option value="Other">Other</option>
           </select>
         </div>
+        <div style={{ minWidth: '200px' }}>
+          <label>Status</label>
+          <select
+            value={state.currentAssessment.metadata.status}
+            onChange={(e) => setMetadata({ status: e.target.value })}
+          >
+            <option value="Not Started">Not Started</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
       </div>
 
       <div>
