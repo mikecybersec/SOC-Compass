@@ -211,10 +211,10 @@ const Home = ({
     <div className="home">
       <header className="home-hero card enterprise-hero">
         <div className="hero-copy">
-          <h1>Control every SOC assessment from one place</h1>
+          <h1>Deliver every SOC assessment from one place</h1>
           <p className="hero-subtitle">
-            Metadata is now scoped per assessment, so consultants and multi-SOC teams can launch dedicated workspaces without
-            overwriting client details.
+            SOC Compass enables SOC Leaders & Consultants to deliver capability maturity assessments from dedicated workspaces,
+            providing tailored action plans, roadmaps and reports.
           </p>
           <div className="hero-actions">
             <button className="primary" onClick={onOpenStartModal}>
