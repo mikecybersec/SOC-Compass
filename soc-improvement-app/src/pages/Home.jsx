@@ -26,6 +26,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
     frameworkId: getInitialFrameworkId(currentFrameworkId),
   });
   const [customObjective, setCustomObjective] = useState('');
+  const selectedFramework = frameworks[getInitialFrameworkId(form.frameworkId)];
 
   useEffect(() => {
     if (!open) return;
@@ -157,6 +158,12 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
                 );
               })}
             </select>
+            {selectedFramework && (
+              <p className="muted-label" style={{ marginTop: '0.35rem' }}>
+                Estimated time to complete: ~{selectedFramework.estimatedMinutes} minutes
+                {selectedFramework.questionCount ? ` • ${selectedFramework.questionCount} questions` : ''}
+              </p>
+            )}
           </div>
           <div className="flex-between" style={{ marginTop: '0.5rem' }}>
             <p style={{ color: 'var(--muted)' }}>Metadata will populate the assessment workspace.</p>
