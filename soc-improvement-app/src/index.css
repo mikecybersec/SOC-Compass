@@ -207,6 +207,7 @@ button, input, select, textarea {
   display: flex;
   align-items: center;
   gap: 0.7rem;
+  justify-content: flex-start;
   width: 100%;
   padding: 0.85rem 0.95rem 0.85rem 1.25rem;
   background: transparent;
@@ -260,8 +261,14 @@ button, input, select, textarea {
 }
 
 .sidebar-label {
-  font-weight: 600;
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 500;
   letter-spacing: 0.01em;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sidebar-meta {
