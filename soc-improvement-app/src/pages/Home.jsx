@@ -373,38 +373,6 @@ const Home = ({
             )}
           </div>
         </div>
-        <Card className="hero-card">
-          <CardHeader>
-            <CardTitle>Active workspace</CardTitle>
-            <CardDescription>Quick stats from your current assessment.</CardDescription>
-          </CardHeader>
-          <CardContent className="hero-grid">
-            <div>
-              <p className="hero-label">Framework</p>
-              <p className="hero-value">{frameworks[currentAssessment.frameworkId]?.name || 'Not selected'}</p>
-            </div>
-            <div>
-              <p className="hero-label">Objectives</p>
-              <p className="hero-value">{currentAssessment?.metadata?.objectives?.length || 0}</p>
-            </div>
-            <div>
-              <p className="hero-label">Action items</p>
-              <p className="hero-value">{currentAssessment?.actionPlan?.items?.length || 0}</p>
-            </div>
-            <div>
-              <p className="hero-label">Theme</p>
-              <p className="hero-value">{theme === 'dark' ? 'Dark' : 'Light'}</p>
-            </div>
-          </CardContent>
-          <CardFooter className="hero-footer">
-            <Button variant="ghost" onClick={onSaveSnapshot} disabled={!hasActiveAssessment}>
-              Save current assessment
-            </Button>
-            <Button variant="outline" onClick={onSelectSoloMode}>
-              Switch mode
-            </Button>
-          </CardFooter>
-        </Card>
       </header>
 
       <div className="home-grid">

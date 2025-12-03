@@ -17,10 +17,13 @@ const Navbar = ({
   return (
     <header className="command-bar">
       <div className="command-brand" onClick={onGoHome} role="button" tabIndex={0} onKeyDown={handleBrandKey}>
-        <div className="brand-mark">⚡</div>
+        <img
+          src="https://www.shadcn.io/icon/oi-compass"
+          alt="SOC Compass logo"
+          className="brand-mark"
+        />
         <div>
           <div className="brand-title">SOC Compass</div>
-          <div className="brand-subtitle">Assessments Workspace</div>
         </div>
       </div>
 
@@ -50,9 +53,6 @@ const Navbar = ({
             </Button>
           </div>
         </div>
-        <Button variant="primary" size="sm" onClick={onNewAssessment}>
-          New workspace
-        </Button>
       </nav>
     </header>
   );
