@@ -12,9 +12,7 @@ const ActionPlan = forwardRef((_, ref) => {
   const apiKey = useAssessmentStore((s) => s.apiKey);
   const setApiKey = useAssessmentStore((s) => s.setApiKey);
   const apiBase = useAssessmentStore((s) => s.apiBase);
-  const setApiBase = useAssessmentStore((s) => s.setApiBase);
   const model = useAssessmentStore((s) => s.model);
-  const setModel = useAssessmentStore((s) => s.setModel);
   const actionPlan = useAssessmentStore((s) => s.actionPlan);
   const setActionPlan = useAssessmentStore((s) => s.setActionPlan);
 
@@ -39,7 +37,7 @@ const ActionPlan = forwardRef((_, ref) => {
       <div className="flex-between">
         <div>
           <h3>AI Action Plan</h3>
-          <p style={{ color: 'var(--muted)' }}>Use Grok/OpenAI compatible key. Key is never stored on the server.</p>
+          <p style={{ color: 'var(--muted)' }}>Use a Grok-compatible key. Key is never stored on the server.</p>
         </div>
         <input
           type="password"
@@ -49,6 +47,9 @@ const ActionPlan = forwardRef((_, ref) => {
           style={{ maxWidth: '260px' }}
         />
       </div>
+      <p style={{ margin: '-0.3rem 0 0.5rem', color: 'var(--muted)' }}>
+        💡 Requests use Grok 4 Latest via https://api.x.ai/v1/. Provide your Grok API key to generate a plan.
+      </p>
       <div className="flex-between" style={{ margin: '0.5rem 0' }}>
         <div>
           <p>Objectives: {(metadata.objectives || []).join(', ')}</p>
@@ -57,22 +58,6 @@ const ActionPlan = forwardRef((_, ref) => {
         <button className="primary" onClick={handleGenerate} disabled={loading}>
           {loading ? 'Generating…' : 'Generate action plan'}
         </button>
-      </div>
-      <div className="flex" style={{ gap: '0.5rem', marginBottom: '0.5rem' }}>
-        <input
-          type="text"
-          placeholder="Model (e.g., gpt-4o-mini, llama-3.1-8b-instant)"
-          value={model}
-          onChange={(e) => setModel(e.target.value)}
-          style={{ flex: 1 }}
-        />
-        <input
-          type="text"
-          placeholder="API base URL (e.g., https://api.openai.com/v1)"
-          value={apiBase}
-          onChange={(e) => setApiBase(e.target.value)}
-          style={{ flex: 1 }}
-        />
       </div>
       {actionPlan.error && (
         <p style={{ color: 'var(--danger, #c23d3d)', marginTop: '-0.4rem' }}>

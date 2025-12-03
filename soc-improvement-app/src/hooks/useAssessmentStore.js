@@ -6,6 +6,8 @@ import { loadState, saveState } from '../utils/storage';
 
 const buildInitialState = () => {
   const saved = typeof window !== 'undefined' ? loadState() : null;
+  const defaultApiBase = 'https://api.x.ai/v1/';
+  const defaultModel = 'grok-4-latest';
   const defaults = {
     frameworkId: defaultFrameworkId,
     answers: {},
@@ -19,8 +21,8 @@ const buildInitialState = () => {
     },
     actionPlan: { steps: [] },
     apiKey: '',
-    apiBase: 'https://api.openai.com/v1',
-    model: 'gpt-4o-mini',
+    apiBase: defaultApiBase,
+    model: defaultModel,
     theme: 'light',
   };
 
@@ -29,6 +31,8 @@ const buildInitialState = () => {
       ...defaults,
       ...saved,
       metadata: { ...defaults.metadata, ...(saved.metadata || {}) },
+      apiBase: defaultApiBase,
+      model: defaultModel,
     };
   }
 
