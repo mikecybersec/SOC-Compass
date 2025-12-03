@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import AssessmentInfoSummary from '../components/AssessmentInfoSummary';
+import DomainProgressOverview from '../components/DomainProgressOverview';
 import Sidebar from '../components/Sidebar';
 import Toolbar from '../components/Toolbar';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
@@ -11,6 +12,7 @@ const AssessmentInfo = ({ onBack, scoresRef, actionPlanRef, onOpenReporting }) =
   const lastSavedAt = useAssessmentStore((s) => s.lastSavedAt);
   const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
   const setActiveAspectKey = useAssessmentStore((s) => s.setActiveAspectKey);
+  const answers = useAssessmentStore((s) => s.currentAssessment.answers);
   const summaryRef = useRef();
   const frameworkName = frameworks[frameworkId]?.name;
   const aspects = frameworks[frameworkId]?.aspects || [];
@@ -42,6 +44,8 @@ const AssessmentInfo = ({ onBack, scoresRef, actionPlanRef, onOpenReporting }) =
             Back to assessment
           </button>
         </div>
+
+        <DomainProgressOverview frameworkId={frameworkId} answers={answers} />
 
         <div className="section-divider" aria-hidden />
 
