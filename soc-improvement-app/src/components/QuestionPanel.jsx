@@ -2,8 +2,8 @@ import React from 'react';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 
 const QuestionPanel = ({ aspect }) => {
-  const answers = useAssessmentStore((s) => s.answers);
-  const notes = useAssessmentStore((s) => s.notes);
+  const answers = useAssessmentStore((s) => s.currentAssessment.answers);
+  const notes = useAssessmentStore((s) => s.currentAssessment.notes);
   const setAnswer = useAssessmentStore((s) => s.setAnswer);
   const setNote = useAssessmentStore((s) => s.setNote);
 

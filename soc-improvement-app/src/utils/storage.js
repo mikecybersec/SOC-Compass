@@ -28,7 +28,8 @@ export const exportAssessment = (state) => {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = `${state.metadata.name || 'soc-assessment'}.json`;
+  const exportName = state.currentAssessment?.metadata?.name || state.metadata?.name || 'soc-assessment';
+  link.download = `${exportName}.json`;
   link.click();
   URL.revokeObjectURL(url);
 };

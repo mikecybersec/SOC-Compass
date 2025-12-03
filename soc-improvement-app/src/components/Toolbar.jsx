@@ -39,19 +39,22 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef }) => {
       <div className="flex" style={{ gap: '1rem', flexWrap: 'wrap' }}>
         <div style={{ minWidth: '220px' }}>
           <label>Organization name</label>
-          <input value={state.metadata.name} onChange={(e) => setMetadata({ name: e.target.value })} />
+          <input value={state.currentAssessment.metadata.name} onChange={(e) => setMetadata({ name: e.target.value })} />
         </div>
         <div style={{ minWidth: '180px' }}>
           <label>Budget amount</label>
           <input
-            value={state.metadata.budgetAmount}
+            value={state.currentAssessment.metadata.budgetAmount}
             onChange={(e) => setMetadata({ budgetAmount: e.target.value })}
             placeholder="e.g. 250000"
           />
         </div>
         <div style={{ minWidth: '140px' }}>
           <label>Currency</label>
-          <select value={state.metadata.budgetCurrency} onChange={(e) => setMetadata({ budgetCurrency: e.target.value })}>
+          <select
+            value={state.currentAssessment.metadata.budgetCurrency}
+            onChange={(e) => setMetadata({ budgetCurrency: e.target.value })}
+          >
             <option value="$">USD ($)</option>
             <option value="€">EUR (€)</option>
             <option value="£">GBP (£)</option>
@@ -63,11 +66,14 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef }) => {
       <div className="flex" style={{ gap: '1rem', flexWrap: 'wrap' }}>
         <div style={{ minWidth: '200px' }}>
           <label>Size</label>
-          <input value={state.metadata.size} onChange={(e) => setMetadata({ size: e.target.value })} />
+          <input value={state.currentAssessment.metadata.size} onChange={(e) => setMetadata({ size: e.target.value })} />
         </div>
         <div style={{ minWidth: '200px' }}>
           <label>Sector</label>
-          <select value={state.metadata.sector} onChange={(e) => setMetadata({ sector: e.target.value })}>
+          <select
+            value={state.currentAssessment.metadata.sector}
+            onChange={(e) => setMetadata({ sector: e.target.value })}
+          >
             <option value="MSSP">MSSP</option>
             <option value="Technology">Technology</option>
             <option value="Finance">Finance</option>
@@ -82,7 +88,7 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef }) => {
       <div>
         <label>Objectives</label>
         <input
-          value={(state.metadata.objectives || []).join(', ')}
+          value={(state.currentAssessment.metadata.objectives || []).join(', ')}
           onChange={(e) => setMetadata({ objectives: e.target.value.split(',').map((o) => o.trim()).filter(Boolean) })}
           placeholder="Separate with commas to track multiple objectives"
         />

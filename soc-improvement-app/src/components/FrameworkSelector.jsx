@@ -3,7 +3,7 @@ import { frameworks } from '../utils/frameworks';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 
 const FrameworkSelector = () => {
-  const frameworkId = useAssessmentStore((s) => s.frameworkId);
+  const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
   const setFramework = useAssessmentStore((s) => s.setFramework);
 
   return (

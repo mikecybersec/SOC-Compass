@@ -141,16 +141,104 @@ label {
   gap: 1rem;
 }
 
+.enterprise-hero {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.06), rgba(15, 23, 42, 0.04));
+  border: 1px solid var(--border);
+  gap: 2rem;
+}
+
+.hero-copy {
+  flex: 1;
+}
+
+.hero-subtitle {
+  color: var(--muted);
+  max-width: 780px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 0.75rem 0 0.5rem;
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.stat-chip {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.75rem 0.9rem;
+  background: rgba(15, 23, 42, 0.03);
+}
+
+.stat-value {
+  margin: 0.2rem 0;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.hero-panel {
+  width: min(420px, 40%);
+  padding: 1rem;
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(37, 99, 235, 0.14), rgba(37, 99, 235, 0.06));
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  box-shadow: 0 25px 40px -30px rgba(15, 23, 42, 0.4);
+}
+
+.compact-grid {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.hero-footnote {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+}
+
 .home-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 1rem;
 }
 
+.enterprise-grid {
+  grid-template-columns: minmax(0, 2fr) minmax(320px, 1.15fr);
+  align-items: stretch;
+}
+
 .metadata-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 0.5rem 1rem;
+}
+
+.gradient-card {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(15, 23, 42, 0.04));
+  border-color: rgba(37, 99, 235, 0.3);
+}
+
+.next-metadata-card h3 {
+  margin-top: 0;
+}
+
+.inline-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.settings-grid {
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
 }
 
 .modal-backdrop {
@@ -217,4 +305,23 @@ label {
 .muted-label {
   margin: 0;
   color: var(--muted);
+}
+
+@media (max-width: 900px) {
+  .home-hero {
+    flex-direction: column;
+  }
+
+  .hero-panel {
+    width: 100%;
+  }
+
+  .hero-footnote {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .enterprise-grid {
+    grid-template-columns: 1fr;
+  }
 }
