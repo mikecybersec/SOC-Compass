@@ -34,6 +34,9 @@ const trustedRoles = [
   'SOC Consultants',
   'Security Architects',
   'Infosec Managers',
+  'MSSP',
+  'Enterprises',
+  'SMBs',
 ];
 
 const ModeSelectionModal = ({ open, onClose, onSelectSolo }) => {
@@ -380,12 +383,11 @@ const Home = ({
 
       <div className="home-grid">
         <Card>
-          <CardHeader className="flex-between align-start">
+              <CardHeader className="flex-between align-start">
             <div>
               <CardTitle>Active assessments</CardTitle>
               <CardDescription>
-                Each entry keeps its own metadata, notes, action plan, and status. Completed assessments are hidden from this
-                view.
+                View your active assessments here. Note that completed assessments are hidden from this view.
               </CardDescription>
             </div>
           </CardHeader>
