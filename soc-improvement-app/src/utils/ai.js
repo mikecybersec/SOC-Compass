@@ -4,8 +4,8 @@ const buildPrompt = ({ frameworkName, answers, scores, metadata }) => {
 
 export const generateActionPlan = async ({
   apiKey,
-  apiBase = 'https://api.openai.com/v1',
-  model = 'gpt-4o-mini',
+  apiBase = 'https://api.x.ai/v1/',
+  model = 'grok-4-latest',
   frameworkName,
   answers,
   scores,
@@ -19,8 +19,8 @@ export const generateActionPlan = async ({
     };
   }
 
-  const normalizedBase = (apiBase?.trim() || 'https://api.openai.com/v1').replace(/\/+$/, '')
-    || 'https://api.openai.com/v1';
+  const normalizedBase = (apiBase?.trim() || 'https://api.x.ai/v1/').replace(/\/+$/, '')
+    || 'https://api.x.ai/v1';
   const prompt = buildPrompt({ frameworkName, answers, scores, metadata });
 
   try {
