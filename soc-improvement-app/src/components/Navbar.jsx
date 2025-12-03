@@ -1,6 +1,5 @@
 import React from 'react';
 import Button from './ui/Button';
-import Badge from './ui/Badge';
 
 const Navbar = ({
   onGoHome,
@@ -23,9 +22,6 @@ const Navbar = ({
           <div className="brand-title">SOC Compass</div>
           <div className="brand-subtitle">Assessments Workspace</div>
         </div>
-        <Badge variant="info" className="brand-badge">
-          Live
-        </Badge>
       </div>
 
       <nav className="command-actions" aria-label="Primary navigation">
