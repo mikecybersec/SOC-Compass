@@ -61,6 +61,7 @@ const hydrateState = (saved) => {
     upcomingMetadata: defaultMetadata(),
     assessmentHistory: [],
     lastSavedAt: timestampNow(),
+    activeAspectKey: null,
   };
 
   if (!saved) return defaults;
@@ -106,6 +107,7 @@ export const useAssessmentStore = create(
           notes: {},
           actionPlan: { steps: [], raw: '' },
         },
+        activeAspectKey: null,
       })),
     setAnswer: (code, value) =>
       set((state) => ({
@@ -144,6 +146,7 @@ export const useAssessmentStore = create(
     setModel: (model) => set({ model }),
     setActionPlan: (actionPlan) =>
       set((state) => ({ currentAssessment: { ...state.currentAssessment, actionPlan } })),
+    setActiveAspectKey: (activeAspectKey) => set({ activeAspectKey }),
     autoSaveAssessment: () =>
       set((state) => {
         const currentAssessment = {
@@ -176,6 +179,7 @@ export const useAssessmentStore = create(
           ...state,
           currentAssessment: buildAssessment({ frameworkId: frameworkId || defaultFrameworkId, metadata: startingMetadata }),
           upcomingMetadata: startingMetadata,
+          activeAspectKey: null,
         };
       }),
     saveAssessmentToHistory: (label) =>
