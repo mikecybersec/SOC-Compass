@@ -28,6 +28,14 @@ const disabledFrameworks = ['sim3', 'inform'];
 const getInitialFrameworkId = (frameworkId) =>
   disabledFrameworks.includes(frameworkId) ? 'soc_cmm' : frameworkId;
 
+const trustedRoles = [
+  'SOC Managers',
+  'SOC Leaders',
+  'SOC Consultants',
+  'Security Architects',
+  'Infosec Managers',
+];
+
 const ModeSelectionModal = ({ open, onClose, onSelectSolo }) => {
   if (!open) return null;
 
@@ -354,6 +362,18 @@ const Home = ({
           </p>
           <div className="hero-actions">
             <Button onClick={onOpenStartModal}>Start new assessment</Button>
+          </div>
+        </div>
+        <div className="trusted-panel" aria-label="Trusted audience carousel">
+          <p className="trusted-title">Trusted By</p>
+          <div className="trusted-carousel" aria-hidden="true">
+            <div className="trusted-list">
+              {[...trustedRoles, ...trustedRoles].map((role, index) => (
+                <div className="trusted-item" key={`${role}-${index}`}>
+                  {role}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </header>
