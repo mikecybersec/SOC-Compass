@@ -1,4 +1,6 @@
-# SOC-Compass
+# SOC Compass
+
+![SOC Compass](./logo.jpg)
 
 ## The problem
 When security professionals take on the role of SOC Leader/Manager, they don't all come via the same linear path i.e. some will:
