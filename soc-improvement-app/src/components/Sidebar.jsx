@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 
 const Sidebar = ({
@@ -12,7 +12,8 @@ const Sidebar = ({
 }) => {
   const answers = useAssessmentStore((s) => s.currentAssessment.answers);
 
-  const [assessmentCollapsed, setAssessmentCollapsed] = useState(false);
+  const assessmentCollapsed = useAssessmentStore((s) => s.sidebarAssessmentCollapsed);
+  const setAssessmentCollapsed = useAssessmentStore((s) => s.setSidebarAssessmentCollapsed);
 
   const grouped = useMemo(
     () =>
