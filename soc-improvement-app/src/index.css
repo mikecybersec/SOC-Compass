@@ -172,13 +172,14 @@ button, input, select, textarea {
   background: var(--sidebar-bg);
   border: 1px solid #e5e5e5;
   border-radius: 20px;
-  padding: 1.4rem 1.1rem;
+  padding: 1.2rem 1rem;
   position: sticky;
   top: 78px;
   align-self: start;
   width: 240px;
   max-height: calc(100vh - 78px);
   overflow-y: auto;
+  overflow-x: hidden;
   box-shadow: 0 14px 38px rgba(17, 24, 39, 0.08);
 }
 
@@ -214,10 +215,10 @@ button, input, select, textarea {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 0.7rem;
+  gap: 0.6rem;
   justify-content: flex-start;
   width: 100%;
-  padding: 0.85rem 0.95rem 0.85rem 1.25rem;
+  padding: 0.75rem 0.85rem 0.75rem 1.05rem;
   background: transparent;
   border: 1px solid transparent;
   border-radius: 14px;
@@ -270,6 +271,7 @@ button, input, select, textarea {
 
 .sidebar-label {
   flex: 1;
+  min-width: 0;
   font-size: 0.9rem;
   font-weight: 500;
   letter-spacing: 0.01em;
