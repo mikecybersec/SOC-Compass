@@ -18,7 +18,7 @@ const Navbar = ({
     <header className="command-bar">
       <div className="command-brand" onClick={onGoHome} role="button" tabIndex={0} onKeyDown={handleBrandKey}>
         <img
-          src="/compass.png"
+          src="/Compass.jpeg"
           alt="SOC Compass logo"
           className="brand-mark"
         />

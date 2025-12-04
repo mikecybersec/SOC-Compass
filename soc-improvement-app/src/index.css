@@ -353,8 +353,9 @@ h6 {
 }
 
 .brand-mark {
-  width: 38px;
-  height: 38px;
+  height: 36px;
+  width: auto;
+  max-width: 52px;
   display: block;
   object-fit: contain;
 }
