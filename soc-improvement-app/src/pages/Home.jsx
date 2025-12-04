@@ -482,14 +482,18 @@ const Home = ({
       >
         <p style={{ margin: '0 0 1rem', lineHeight: 1.6 }}>
           Hey there, thank you for trying SOC Compass. We&apos;d love to see more people using this, help us out with some
-          feedback or provide a testimonial by emailing michael@vanguardcybersecurity.co.uk or DM&apos;ing @mikecybersec on
-          X.
+          feedback or provide a testimonial by emailing
+          {' '}
+          <a href="mailto:michael@vanguardcybersecurity.co.uk">michael@vanguardcybersecurity.co.uk</a>
+          {' '}
+          or DM&apos;ing
+          {' '}
+          <a href="https://x.com/mikecybersec" target="_blank" rel="noreferrer noopener">
+            @mikecybersec
+          </a>
+          {' '}
+          on X.
         </p>
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button variant="primary" onClick={() => setFeedbackModalOpen(false)}>
-            Close
-          </Button>
-        </div>
       </Dialog>
     </div>
   );
