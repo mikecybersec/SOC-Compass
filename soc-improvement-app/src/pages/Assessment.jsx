@@ -1,6 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import QuestionPanel from '../components/QuestionPanel';
+import ScoreBoard from '../components/ScoreBoard';
+import ActionPlan from '../components/ActionPlan';
+import { frameworks } from '../utils/frameworks';
+import { useAssessmentStore } from '../hooks/useAssessmentStore';
+
+const Assessment = ({ onBack, onOpenAssessmentInfo, scoresRef, actionPlanRef }) => {
 import { frameworks } from '../utils/frameworks';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 
@@ -10,6 +16,7 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting }) => {
   const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
   const setActiveAspectKey = useAssessmentStore((s) => s.setActiveAspectKey);
   const frameworkId = currentAssessment.frameworkId;
+  const [aspectKey, setAspectKey] = useState(null);
   const [showSaveToast, setShowSaveToast] = useState(false);
   const hydratedRef = useRef(false);
 
@@ -58,6 +65,16 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting }) => {
     <div className="app-shell">
       <Sidebar
         aspects={currentFramework.aspects}
+        currentKey={aspectKey}
+        onSelect={setAspectKey}
+        onOpenAssessmentInfo={onOpenAssessmentInfo}
+      />
+      <main className="main">
+        <div className="section-divider" aria-hidden />
+        <FrameworkSelector />
+        <QuestionPanel aspect={activeAspect} nextAspect={nextAspect} onNextAspect={() => nextAspectKey && setAspectKey(nextAspectKey)} />
+        <ScoreBoard ref={scoresRef} />
+        <ActionPlan ref={actionPlanRef} />
         currentKey={activeAspectKey}
         onSelect={setActiveAspectKey}
         onOpenAssessmentInfo={onOpenAssessmentInfo}
