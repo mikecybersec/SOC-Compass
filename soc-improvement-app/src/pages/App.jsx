@@ -204,6 +204,7 @@ const App = () => {
               onOpenReporting={handleViewReporting}
               metaRef={metaRef}
               scoresRef={scoresRef}
+              onDeleteAssessment={() => setView('home')}
             />
           )}
           {view === 'reporting' && (
