@@ -367,7 +367,7 @@ const Home = ({
             workspaces, providing tailored action plans, roadmaps and reports.
           </p>
           <div className="hero-actions">
-            <Button onClick={onOpenStartModal}>Start new assessments</Button>
+            <Button onClick={onOpenStartModal}>Get Started</Button>
             <a className="hero-link-button" href="#active-assessments">
               Active Assessments
             </a>
