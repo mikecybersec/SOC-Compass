@@ -42,7 +42,18 @@ const ModeSelectionModal = ({ open, onClose, onSelectSolo }) => {
       description="Switch between self-guided and guided modes without losing your work."
     >
       <div className="mode-grid">
-        <Card className="mode-card elevated">
+        <Card
+          className="mode-card elevated selectable-card"
+          role="button"
+          tabIndex={0}
+          onClick={onSelectSolo}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              onSelectSolo();
+            }
+          }}
+        >
           <CardHeader>
             <CardTitle>Solo</CardTitle>
             <CardDescription>
@@ -50,9 +61,7 @@ const ModeSelectionModal = ({ open, onClose, onSelectSolo }) => {
             </CardDescription>
           </CardHeader>
           <CardFooter>
-            <Button variant="primary" onClick={onSelectSolo}>
-              Start solo workspace
-            </Button>
+            <span className="card-action-hint">Start solo workspace</span>
           </CardFooter>
         </Card>
         <Card className="mode-card disabled">
