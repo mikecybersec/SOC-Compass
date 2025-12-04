@@ -86,6 +86,8 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
     frameworkId: getInitialFrameworkId(currentFrameworkId),
   });
   const [customObjective, setCustomObjective] = useState('');
+  const [step, setStep] = useState(0);
+  const [showLoading, setShowLoading] = useState(false);
   const selectedFramework = frameworks[getInitialFrameworkId(form.frameworkId)];
 
   useEffect(() => {
@@ -100,6 +102,9 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
       frameworkId: getInitialFrameworkId(currentFrameworkId),
     });
     setSelectedObjectives(initialMetadata.objectives || []);
+    setCustomObjective('');
+    setStep(0);
+    setShowLoading(false);
   }, [open, initialMetadata, currentFrameworkId]);
 
   const toggleObjective = (objective) => {
@@ -108,214 +113,273 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
     );
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const frameworkId = getInitialFrameworkId(form.frameworkId);
-    onStart({
-      frameworkId,
-      metadata: { ...form, objectives: selectedObjectives },
-    });
-    onClose();
-  };
-
   const addCustomObjective = () => {
     if (!customObjective.trim()) return;
     setSelectedObjectives((prev) => [...prev, customObjective.trim()]);
     setCustomObjective('');
   };
 
+  const steps = [
+    {
+      id: 'assessmentTitle',
+      title: 'Name your assessment',
+      description: 'Give this workspace a memorable title so everyone knows what it covers.',
+      render: () => (
+        <div className="wizard-field">
+          <label className="wizard-label">Assessment name</label>
+          <p className="wizard-helper">Press enter to keep moving forward.</p>
+          <div className="input-with-hint">
+            <Input
+              autoFocus
+              className="form-control"
+              value={form.assessmentTitle}
+              placeholder="e.g. SOC maturity uplift Q4"
+              onChange={(e) => setForm({ ...form, assessmentTitle: e.target.value })}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleNext();
+                }
+              }}
+            />
+            <span className="enter-hint" aria-hidden="true">
+              Enter ↵
+            </span>
+          </div>
+        </div>
+      ),
+      validate: () => Boolean(form.assessmentTitle.trim()),
+    },
+    {
+      id: 'name',
+      title: 'Who is this for?',
+      description: 'Add the organization to personalize reports and exports.',
+      render: () => (
+        <div className="wizard-field">
+          <label className="wizard-label">Organization name</label>
+          <p className="wizard-helper">This shows up on exports.</p>
+          <div className="input-with-hint">
+            <Input
+              className="form-control"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleNext();
+                }
+              }}
+            />
+            <span className="enter-hint" aria-hidden="true">
+              Enter ↵
+            </span>
+          </div>
+        </div>
+      ),
+      validate: () => Boolean(form.name.trim()),
+    },
+    {
+      id: 'framework',
+      title: 'Choose your framework',
+      description: 'Pick the assessment structure that matches your engagement.',
+      render: () => (
+        <div className="wizard-field">
+          <label className="wizard-label">Assessment type</label>
+          <Select
+            className="form-control"
+            value={form.frameworkId}
+            onChange={(e) => setForm({ ...form, frameworkId: e.target.value })}
+          >
+            {Object.values(frameworks).map((framework) => {
+              const isDisabled = disabledFrameworks.includes(framework.id);
+              const label = isDisabled ? `${framework.name} (Coming Soon)` : framework.name;
+              return (
+                <option key={framework.id} value={framework.id} disabled={isDisabled}>
+                  {label}
+                </option>
+              );
+            })}
+          </Select>
+          {selectedFramework && (
+            <p className="wizard-helper">
+              ~{selectedFramework.estimatedMinutes} minutes
+              {selectedFramework.questionCount ? ` • ${selectedFramework.questionCount} questions` : ''}
+            </p>
+          )}
+        </div>
+      ),
+      validate: () => Boolean(form.frameworkId),
+    },
+    {
+      id: 'context',
+      title: 'Add organization context',
+      description: 'Budget, size, and sector help tailor recommendations.',
+      render: () => (
+        <div className="wizard-grid">
+          <div className="wizard-field">
+            <label className="wizard-label">Budget amount</label>
+            <p className="wizard-helper">Used to shape investment guidance.</p>
+            <Input
+              className="form-control"
+              value={form.budgetAmount}
+              onChange={(e) => setForm({ ...form, budgetAmount: e.target.value })}
+              placeholder="e.g. 250000"
+            />
+          </div>
+          <div className="wizard-field compact">
+            <label className="wizard-label">Currency</label>
+            <Select
+              className="form-control"
+              value={form.budgetCurrency}
+              onChange={(e) => setForm({ ...form, budgetCurrency: e.target.value })}
+            >
+              <option value="$">USD ($)</option>
+              <option value="€">EUR (€)</option>
+              <option value="£">GBP (£)</option>
+              <option value="¥">JPY (¥)</option>
+            </Select>
+          </div>
+          <div className="wizard-field">
+            <label className="wizard-label">Size</label>
+            <Input
+              className="form-control"
+              value={form.size}
+              onChange={(e) => setForm({ ...form, size: e.target.value })}
+            />
+          </div>
+          <div className="wizard-field">
+            <label className="wizard-label">Sector</label>
+            <Select
+              className="form-control"
+              value={form.sector}
+              onChange={(e) => setForm({ ...form, sector: e.target.value })}
+            >
+              <option value="MSSP">MSSP</option>
+              <option value="Technology">Technology</option>
+              <option value="Finance">Finance</option>
+              <option value="Healthcare">Healthcare</option>
+              <option value="Government">Government</option>
+              <option value="Manufacturing">Manufacturing</option>
+              <option value="Other">Other</option>
+            </Select>
+          </div>
+        </div>
+      ),
+      validate: () => Boolean(form.budgetAmount.trim()),
+    },
+    {
+      id: 'objectives',
+      title: 'Prioritize objectives',
+      description: 'Select the outcomes you want the assessment to emphasize.',
+      render: () => (
+        <div className="wizard-field">
+          <div className="pill-list">
+            {objectiveOptions.map((option) => (
+              <Button
+                key={option}
+                type="button"
+                variant={selectedObjectives.includes(option) ? 'primary' : 'outline'}
+                size="sm"
+                className="pill-button"
+                onClick={() => toggleObjective(option)}
+              >
+                {option}
+              </Button>
+            ))}
+          </div>
+          <div className="flex" style={{ gap: '0.5rem', marginTop: '0.75rem' }}>
+            <Input
+              className="form-control"
+              placeholder="Add a custom objective"
+              value={customObjective}
+              onChange={(e) => setCustomObjective(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  addCustomObjective();
+                }
+              }}
+            />
+            <Button type="button" variant="secondary" onClick={addCustomObjective}>
+              Add
+            </Button>
+          </div>
+        </div>
+      ),
+      validate: () => true,
+    },
+  ];
+
+  const handleNext = () => {
+    if (!steps[step].validate()) return;
+    if (step === steps.length - 1) {
+      handleSubmit();
+      return;
+    }
+    setStep((prev) => Math.min(prev + 1, steps.length - 1));
+  };
+
+  const handleBack = () => setStep((prev) => Math.max(prev - 1, 0));
+
+  const handleSubmit = () => {
+    const frameworkId = getInitialFrameworkId(form.frameworkId);
+    setShowLoading(true);
+    setTimeout(() => {
+      onStart({
+        frameworkId,
+        metadata: { ...form, objectives: selectedObjectives },
+      });
+    }, 800);
+  };
+
   if (!open) return null;
+
+  if (showLoading) {
+    return (
+      <div className="wizard-loading-screen">
+        <div className="wizard-loading-spinner" aria-hidden="true" />
+        <div className="wizard-loading-copy">
+          <p className="wizard-loading-title">We're getting your SOC assessment workspace ready.</p>
+          <p className="wizard-loading-subtitle">Prepare for a mature SOC!</p>
+        </div>
+      </div>
+    );
+  }
+
+  const progress = Math.round(((step + 1) / steps.length) * 100);
+  const currentStep = steps[step];
 
   return (
     <Dialog
       open={open}
       onClose={onClose}
       title={startMode === 'solo' ? 'New Solo Assessment' : 'Start a new assessment'}
-      description="Set up your workspace metadata so Compass can personalize results."
+      description="A guided setup to personalize your workspace."
     >
-      <form id="start-assessment-form" onSubmit={handleSubmit} className="shadcn-form">
-        <div className="form-grid">
-          <Card className="form-card">
-            <CardHeader className="form-card-header">
-              <div>
-                <p className="form-eyebrow">Workspace</p>
-                <CardTitle className="form-title">Assessment details</CardTitle>
-                <CardDescription className="form-description">
-                  Provide a title and select a framework to tailor the questions.
-                </CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="form-item">
-                <Label className="form-label">Assessment Title</Label>
-                <p className="form-help">Visible in the workspace header and export files.</p>
-                <Input
-                  className="form-control"
-                  value={form.assessmentTitle}
-                  onChange={(e) => setForm({ ...form, assessmentTitle: e.target.value })}
-                  placeholder="e.g. SOC maturity uplift Q4"
-                  required
-                />
-              </div>
-              <div className="form-grid-inline">
-                <div className="form-item">
-                  <Label className="form-label">Organisation Name</Label>
-                  <p className="form-help">Displayed on reports and exports.</p>
-                  <Input
-                    className="form-control"
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    required
-                  />
-                </div>
-                <div className="form-item">
-                  <Label className="form-label">Assessment type</Label>
-                  <p className="form-help">Choose the framework that best matches your scope.</p>
-                  <Select
-                    className="form-control"
-                    value={form.frameworkId}
-                    onChange={(e) => setForm({ ...form, frameworkId: e.target.value })}
-                    required
-                  >
-                    {Object.values(frameworks).map((framework) => {
-                      const isDisabled = disabledFrameworks.includes(framework.id);
-                      const label = isDisabled ? `${framework.name} (Coming Soon)` : framework.name;
-                      return (
-                        <option key={framework.id} value={framework.id} disabled={isDisabled}>
-                          {label}
-                        </option>
-                      );
-                    })}
-                  </Select>
-                  {selectedFramework && (
-                    <p className="form-footnote">
-                      Estimated time to complete: ~{selectedFramework.estimatedMinutes} minutes
-                      {selectedFramework.questionCount ? ` • ${selectedFramework.questionCount} questions` : ''}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="form-card">
-            <CardHeader className="form-card-header">
-              <div>
-                <p className="form-eyebrow">Organization</p>
-                <CardTitle className="form-title">Context</CardTitle>
-                <CardDescription className="form-description">
-                  Add budget and industry context to personalize guidance.
-                </CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="form-grid-inline">
-                <div className="form-item">
-                  <Label className="form-label">Budget amount</Label>
-                  <p className="form-help">Used to tailor investment recommendations.</p>
-                  <Input
-                    className="form-control"
-                    value={form.budgetAmount}
-                    onChange={(e) => setForm({ ...form, budgetAmount: e.target.value })}
-                    placeholder="e.g. 250000"
-                    required
-                  />
-                </div>
-                <div className="form-item form-item-compact">
-                  <Label className="form-label">Currency</Label>
-                  <p className="form-help">Display symbol for budget fields.</p>
-                  <Select
-                    className="form-control"
-                    value={form.budgetCurrency}
-                    onChange={(e) => setForm({ ...form, budgetCurrency: e.target.value })}
-                  >
-                    <option value="$">USD ($)</option>
-                    <option value="€">EUR (€)</option>
-                    <option value="£">GBP (£)</option>
-                    <option value="¥">JPY (¥)</option>
-                  </Select>
-                </div>
-              </div>
-              <div className="form-grid-inline">
-                <div className="form-item">
-                  <Label className="form-label">Size</Label>
-                  <p className="form-help">Team or organization size.</p>
-                  <Input
-                    className="form-control"
-                    value={form.size}
-                    onChange={(e) => setForm({ ...form, size: e.target.value })}
-                  />
-                </div>
-                <div className="form-item">
-                  <Label className="form-label">Sector</Label>
-                  <p className="form-help">Used to contextualize suggested actions.</p>
-                  <Select
-                    className="form-control"
-                    value={form.sector}
-                    onChange={(e) => setForm({ ...form, sector: e.target.value })}
-                  >
-                    <option value="MSSP">MSSP</option>
-                    <option value="Technology">Technology</option>
-                    <option value="Finance">Finance</option>
-                    <option value="Healthcare">Healthcare</option>
-                    <option value="Government">Government</option>
-                    <option value="Manufacturing">Manufacturing</option>
-                    <option value="Other">Other</option>
-                  </Select>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+      <div className="wizard-progress">
+        <div className="wizard-progress-bar" style={{ width: `${progress}%` }} />
+        <p className="wizard-progress-label">
+          Step {step + 1} of {steps.length}
+        </p>
+      </div>
+      <div className="wizard-step">
+        <div className="wizard-step-header">
+          <p className="wizard-eyebrow">Interactive wizard</p>
+          <h3 className="wizard-title">{currentStep.title}</h3>
+          <p className="wizard-description">{currentStep.description}</p>
         </div>
-
-        <Card className="form-card">
-          <CardHeader className="form-card-header">
-            <div>
-              <p className="form-eyebrow">Objectives</p>
-              <CardTitle className="form-title">Primary goals</CardTitle>
-              <CardDescription className="form-description">
-                Select the outcomes you want the assessment to prioritize.
-              </CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="pill-list">
-              {objectiveOptions.map((option) => (
-                <Button
-                  key={option}
-                  type="button"
-                  variant={selectedObjectives.includes(option) ? 'primary' : 'outline'}
-                  size="sm"
-                  className="pill-button"
-                  onClick={() => toggleObjective(option)}
-                >
-                  {option}
-                </Button>
-              ))}
-            </div>
-            <div className="flex" style={{ gap: '0.5rem', marginTop: '0.75rem' }}>
-              <Input
-                className="form-control"
-                placeholder="Add a custom objective"
-                value={customObjective}
-                onChange={(e) => setCustomObjective(e.target.value)}
-              />
-              <Button type="button" variant="secondary" onClick={addCustomObjective}>
-                Add
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <CardFooter className="form-footer">
-          <div>
-            <p className="form-description">Metadata will populate the assessment workspace.</p>
-            <p className="form-footnote">You can update these details later in Settings.</p>
-          </div>
-          <Button variant="primary" type="submit" form="start-assessment-form">
-            Create Assessment Workspace
+        {currentStep.render()}
+      </div>
+      <div className="wizard-footer">
+        <Button variant="ghost" onClick={step === 0 ? onClose : handleBack}>
+          {step === 0 ? 'Cancel' : 'Back'}
+        </Button>
+        <div className="wizard-actions">
+          <Button variant="primary" onClick={handleNext}>
+            {step === steps.length - 1 ? 'Launch workspace' : 'Next'}
           </Button>
-        </CardFooter>
-      </form>
+        </div>
+      </div>
     </Dialog>
   );
 };
