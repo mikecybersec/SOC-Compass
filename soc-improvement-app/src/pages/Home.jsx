@@ -230,7 +230,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
               placeholder="e.g. 250000"
             />
           </div>
-          <div className="wizard-field compact currency-field">
+          <div className="wizard-field currency-field">
             <label className="wizard-label">Currency</label>
             <Select
               className="form-control"
