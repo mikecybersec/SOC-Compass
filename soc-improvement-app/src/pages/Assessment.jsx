@@ -1,12 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import QuestionPanel from '../components/QuestionPanel';
-import ScoreBoard from '../components/ScoreBoard';
 import ActionPlan from '../components/ActionPlan';
 import { frameworks } from '../utils/frameworks';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 
-const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, scoresRef, actionPlanRef }) => {
+const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, actionPlanRef }) => {
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
   const lastSavedAt = useAssessmentStore((s) => s.lastSavedAt);
   const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
@@ -73,7 +72,7 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, scoresRef, 
           nextAspect={nextAspect}
           onNextAspect={() => nextAspectKey && setActiveAspectKey(nextAspectKey)}
         />
-        <ScoreBoard ref={scoresRef} />
+        <div className="section-divider" aria-hidden />
         <ActionPlan ref={actionPlanRef} />
       </main>
 
