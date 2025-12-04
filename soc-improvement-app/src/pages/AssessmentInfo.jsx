@@ -49,10 +49,7 @@ const AssessmentInfo = ({ onBack, onOpenReporting, metaRef, scoresRef, actionPla
         onOpenReporting={onOpenReporting}
       />
       <div className="main">
-        <div className="flex-between" style={{ alignItems: 'flex-end' }}>
-          <div>
-            <h1>Assessment Info</h1>
-          </div>
+        <div className="flex-between" style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
           <div className="flex" style={{ gap: '0.5rem' }}>
             <Button variant="outline" className="danger-button" onClick={() => setConfirmDeleteOpen(true)}>
               Delete assessment

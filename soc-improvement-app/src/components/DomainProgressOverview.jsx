@@ -58,7 +58,7 @@ const DomainProgressOverview = ({ frameworkId, answers }) => {
       <div className="domain-progress-header">
         <div>
           <p className="badge">Assessment Progress</p>
-          <h2>Assessment progress by domain</h2>
+          <p className="card-heading">Assessment progress by domain</p>
           <p className="muted-label">Track how many answers are complete across Business, Process, Service and more.</p>
         </div>
         {domainProgress.length > chunkSize && (
