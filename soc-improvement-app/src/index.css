@@ -546,6 +546,7 @@ button, input, select, textarea {
   border-radius: 16px;
   padding: 1.2rem;
   box-shadow: var(--shadow);
+}
 .sidebar-heading {
   margin: 0 0 0.65rem;
   font-weight: 700;
@@ -610,35 +611,6 @@ button, input, select, textarea {
   transition: background 0.16s ease;
 }
 
-.assessment-summary .info-chips {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-top: 0.75rem;
-}
-
-.assessment-summary .info-chips span {
-  background: rgba(116, 88, 255, 0.08);
-  border: 1px solid var(--border);
-  color: var(--muted);
-  padding: 0.45rem 0.65rem;
-  border-radius: 10px;
-}
-
-.objective-list {
-  margin: 0.35rem 0 0;
-  padding-left: 1.2rem;
-  color: var(--text);
-}
-
-.objective-list li {
-  margin-bottom: 0.2rem;
-}
-
-
-.table th {
-  background: rgba(116, 88, 255, 0.08);
-  text-align: left;
 .sidebar-link:hover {
   background: rgba(15, 23, 42, 0.035);
   border-color: #e5e5e5;
