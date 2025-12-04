@@ -1515,6 +1515,24 @@ label {
   height: 100%;
 }
 
+.mode-card-header {
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.35rem;
+}
+
+.mode-card-title {
+  width: 100%;
+  text-align: center;
+}
+
+.mode-card-description {
+  width: 100%;
+  text-align: center;
+}
+
 .selectable-card {
   cursor: pointer;
   transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
@@ -1547,6 +1565,11 @@ label {
 
 .mode-footer {
   justify-content: space-between;
+}
+
+.mode-card-footer {
+  justify-content: center;
+  gap: 0.6rem;
 }
 
 .pill-button {
