@@ -1,12 +1,11 @@
 import React, { forwardRef } from 'react';
-import Button from './ui/Button';
 
 const formatBudget = (metadata) => {
   if (!metadata?.budgetAmount) return 'Budget: Not set';
   return `Budget: ${metadata.budgetCurrency || '$'}${metadata.budgetAmount}`;
 };
 
-const AssessmentInfoSummary = forwardRef(({ metadata, frameworkName, lastSavedAt, className = '', onEdit }, ref) => {
+const AssessmentInfoSummary = forwardRef(({ metadata, frameworkName, lastSavedAt, className = '' }, ref) => {
   const objectives = metadata?.objectives || [];
   return (
     <div className={`card assessment-summary ${className}`.trim()} ref={ref}>
@@ -16,11 +15,6 @@ const AssessmentInfoSummary = forwardRef(({ metadata, frameworkName, lastSavedAt
             <div>
               <p className="badge">Assessment Info</p>
             </div>
-            {onEdit && (
-              <Button variant="secondary" onClick={onEdit}>
-                Edit Assessment
-              </Button>
-            )}
           </div>
           <p style={{ color: 'var(--muted)' }}>
             Workspace details for the {frameworkName || 'selected'} framework. Update this info to keep exports aligned with the

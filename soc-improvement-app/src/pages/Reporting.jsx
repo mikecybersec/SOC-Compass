@@ -44,9 +44,6 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
             </p>
           </div>
           <div className="flex" style={{ gap: '0.5rem' }}>
-            <button className="secondary" onClick={onBack}>
-              Back to assessment
-            </button>
             <button className="secondary" onClick={handleExportJson}>
               Export JSON
             </button>
