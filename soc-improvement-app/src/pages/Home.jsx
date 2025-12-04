@@ -336,6 +336,7 @@ const Home = ({
 }) => {
   const upcomingMetadata = useAssessmentStore((s) => s.upcomingMetadata);
   const currentFrameworkId = currentAssessment.frameworkId;
+  const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
 
   const sortedHistory = useMemo(
     () => [...(assessmentHistory || [])].sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt)),
@@ -348,6 +349,14 @@ const Home = ({
 
   return (
     <div className="home">
+      <div className="announcement-wrapper">
+        <button className="announcement-pill" type="button" onClick={() => setFeedbackModalOpen(true)}>
+          <span className="announcement-dot" aria-hidden="true" />
+          <span className="announcement-text">We need feedback & testimonials</span>
+          <span className="announcement-arrow" aria-hidden="true">→</span>
+        </button>
+      </div>
+
       <header className="home-hero glass-hero">
         <div className="hero-copy">
           <h1 className="hero-title">
@@ -465,6 +474,23 @@ const Home = ({
         currentFrameworkId={currentFrameworkId}
         startMode={startMode}
       />
+      <Dialog
+        open={feedbackModalOpen}
+        onClose={() => setFeedbackModalOpen(false)}
+        title="We appreciate your feedback"
+        description="Help us improve SOC Compass"
+      >
+        <p style={{ margin: '0 0 1rem', lineHeight: 1.6 }}>
+          Hey there, thank you for trying SOC Compass. We&apos;d love to see more people using this, help us out with some
+          feedback or provide a testimonial by emailing michael@vanguardcybersecurity.co.uk or DM&apos;ing @mikecybersec on
+          X.
+        </p>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button variant="primary" onClick={() => setFeedbackModalOpen(false)}>
+            Close
+          </Button>
+        </div>
+      </Dialog>
     </div>
   );
 };
