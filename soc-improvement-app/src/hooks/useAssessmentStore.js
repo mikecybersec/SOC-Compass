@@ -68,6 +68,7 @@ const hydrateState = (saved) => {
     activeAspectKey: null,
     sidebarAssessmentCollapsed: true,
     sidebarDomainCollapsed: {},
+    skipNextAutoSave: false,
   };
 
   if (!saved) return defaults;
@@ -91,6 +92,7 @@ const hydrateState = (saved) => {
     model: defaultModel,
     assessmentHistory: (saved.assessmentHistory || []).map((entry) => hydrateAssessment(entry, entry.metadata)),
     lastSavedAt: saved.lastSavedAt || timestampNow(),
+    skipNextAutoSave: false,
     sidebarAssessmentCollapsed:
       saved && Object.prototype.hasOwnProperty.call(saved, 'sidebarAssessmentCollapsed')
         ? saved.sidebarAssessmentCollapsed
@@ -184,6 +186,10 @@ export const useAssessmentStore = create(
     setActiveAspectKey: (activeAspectKey) => set({ activeAspectKey }),
     autoSaveAssessment: () =>
       set((state) => {
+        if (state.skipNextAutoSave) {
+          return { skipNextAutoSave: false };
+        }
+
         const currentAssessment =
           state.currentAssessment.id !== undefined && state.currentAssessment.id !== null
             ? state.currentAssessment
@@ -277,6 +283,7 @@ export const useAssessmentStore = create(
           upcomingMetadata: defaultMetadata(),
           activeAspectKey: null,
           lastSavedAt: timestampNow(),
+          skipNextAutoSave: true,
         };
       }),
     removeAssessmentFromHistory: (id) =>
