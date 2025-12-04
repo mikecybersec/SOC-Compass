@@ -103,8 +103,6 @@ const App = () => {
   const scoresRef = useRef();
   const actionPlanRef = useRef();
   const [startMode, setStartMode] = useState(null);
-  const scoresRef = useRef();
-  const actionPlanRef = useRef();
   const metaRef = useRef();
   const theme = useAssessmentStore((s) => s.theme);
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
@@ -157,41 +155,6 @@ const App = () => {
 
   return (
     <>
-      <Navbar
-        onGoHome={() => setView('home')}
-        onNewAssessment={() => {
-          setView('home');
-          setStartModalOpen(true);
-        }}
-        onExistingAssessments={() => setView('home')}
-        onOpenApiModal={() => setApiModalOpen(true)}
-        onOpenPreferences={() => setPreferencesModalOpen(true)}
-      />
-      {view === 'home' && (
-        <Home
-          onStartAssessment={handleStart}
-          onContinueAssessment={() => setView('assessment')}
-          onLoadAssessment={handleLoad}
-          onSaveSnapshot={() => saveAssessmentToHistory('Saved from home')}
-          assessmentHistory={assessmentHistory}
-          hasActiveAssessment={hasActiveAssessment}
-          currentAssessment={currentAssessment}
-          startModalOpen={startModalOpen}
-          onOpenStartModal={() => setStartModalOpen(true)}
-          onCloseStartModal={() => setStartModalOpen(false)}
-        />
-      )}
-      {view === 'assessment' && (
-        <Assessment
-          onBack={() => setView('home')}
-          onOpenAssessmentInfo={() => setView('assessmentInfo')}
-          scoresRef={scoresRef}
-          actionPlanRef={actionPlanRef}
-        />
-      )}
-      {view === 'assessmentInfo' && (
-        <AssessmentInfo onBack={() => setView('assessment')} scoresRef={scoresRef} actionPlanRef={actionPlanRef} />
-      )}
       <AutoSave />
       <div className="app-container">
         <Navbar
