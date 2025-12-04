@@ -102,8 +102,8 @@ const App = () => {
   const [preferencesModalOpen, setPreferencesModalOpen] = useState(false);
   const scoresRef = useRef();
   const actionPlanRef = useRef();
-  const metaRef = useRef();
   const [startMode, setStartMode] = useState(null);
+  const metaRef = useRef();
   const theme = useAssessmentStore((s) => s.theme);
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
   const startAssessment = useAssessmentStore((s) => s.startAssessment);
