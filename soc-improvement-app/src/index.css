@@ -388,7 +388,7 @@ h6 {
 .command-menu .command-sheet {
   display: none;
   position: absolute;
-  top: calc(100% + 6px);
+  top: 100%;
   right: 0;
   min-width: 220px;
   padding: 0.35rem;
