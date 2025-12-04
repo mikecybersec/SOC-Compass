@@ -103,6 +103,7 @@ const App = () => {
   const [startMode, setStartMode] = useState(null);
   const scoresRef = useRef();
   const actionPlanRef = useRef();
+  const metaRef = useRef();
   const theme = useAssessmentStore((s) => s.theme);
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
   const startAssessment = useAssessmentStore((s) => s.startAssessment);
@@ -201,15 +202,16 @@ const App = () => {
           {view === 'assessmentInfo' && (
             <AssessmentInfo
               onBack={() => setView('assessment')}
-              scoresRef={scoresRef}
-              actionPlanRef={actionPlanRef}
               onOpenReporting={handleViewReporting}
+              metaRef={metaRef}
             />
           )}
           {view === 'reporting' && (
             <Reporting
               onBack={() => setView('assessment')}
               actionPlanRef={actionPlanRef}
+              scoresRef={scoresRef}
+              metaRef={metaRef}
               onOpenAssessmentInfo={handleViewAssessmentInfo}
               onOpenReporting={handleViewReporting}
             />

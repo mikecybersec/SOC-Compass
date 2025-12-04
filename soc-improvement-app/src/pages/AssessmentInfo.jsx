@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import AssessmentInfoSummary from '../components/AssessmentInfoSummary';
 import DomainProgressOverview from '../components/DomainProgressOverview';
 import Sidebar from '../components/Sidebar';
@@ -7,15 +7,13 @@ import Dialog from '../components/ui/Dialog';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { frameworks } from '../utils/frameworks';
 
-const AssessmentInfo = ({ onBack, scoresRef, actionPlanRef, onOpenReporting }) => {
+const AssessmentInfo = ({ onBack, onOpenReporting, metaRef }) => {
   const metadata = useAssessmentStore((s) => s.currentAssessment.metadata);
   const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
   const lastSavedAt = useAssessmentStore((s) => s.lastSavedAt);
   const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
   const setActiveAspectKey = useAssessmentStore((s) => s.setActiveAspectKey);
   const answers = useAssessmentStore((s) => s.currentAssessment.answers);
-  const summaryRef = useRef();
-  const [isLocked, setIsLocked] = useState(true);
   const [metadataModalOpen, setMetadataModalOpen] = useState(false);
   const frameworkName = frameworks[frameworkId]?.name;
   const aspects = frameworks[frameworkId]?.aspects || [];
@@ -53,7 +51,7 @@ const AssessmentInfo = ({ onBack, scoresRef, actionPlanRef, onOpenReporting }) =
           </div>
         </div>
         <AssessmentInfoSummary
-          ref={summaryRef}
+          ref={metaRef}
           metadata={metadata}
           frameworkName={frameworkName}
           lastSavedAt={lastSavedAt}
@@ -64,18 +62,13 @@ const AssessmentInfo = ({ onBack, scoresRef, actionPlanRef, onOpenReporting }) =
         <DomainProgressOverview frameworkId={frameworkId} answers={answers} />
       </div>
 
-      <Dialog
-        open={metadataModalOpen}
-        onClose={() => setMetadataModalOpen(false)}
-        title="Edit assessment metadata"
-        description="Update the engagement details, control exports, and manage objectives."
-      >
+        <Dialog
+          open={metadataModalOpen}
+          onClose={() => setMetadataModalOpen(false)}
+          title="Edit assessment metadata"
+          description="Update the engagement details and manage objectives."
+        >
         <Toolbar
-          scoresRef={scoresRef}
-          actionPlanRef={actionPlanRef}
-          metaRef={summaryRef}
-          locked={isLocked}
-          onToggleLock={() => setIsLocked((prev) => !prev)}
         />
       </Dialog>
     </div>
