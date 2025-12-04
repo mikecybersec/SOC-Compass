@@ -232,6 +232,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
           </div>
           <div className="wizard-field currency-field">
             <label className="wizard-label">Currency</label>
+            <p className="wizard-helper">Applies to the budget amount.</p>
             <Select
               className="form-control"
               value={form.budgetCurrency}
