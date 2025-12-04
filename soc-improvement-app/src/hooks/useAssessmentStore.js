@@ -66,7 +66,7 @@ const hydrateState = (saved) => {
     assessmentHistory: [],
     lastSavedAt: timestampNow(),
     activeAspectKey: null,
-    sidebarAssessmentCollapsed: false,
+    sidebarAssessmentCollapsed: true,
     sidebarDomainCollapsed: {},
   };
 
@@ -165,7 +165,8 @@ export const useAssessmentStore = create(
     setSidebarDomainCollapsed: (domain, collapsed) =>
       set((state) => {
         const current = state.sidebarDomainCollapsed || {};
-        const currentValue = Boolean(current[domain]);
+        const currentValue =
+          current[domain] === undefined ? true : Boolean(current[domain]);
         const nextValue =
           typeof collapsed === 'function' ? collapsed(currentValue) : Boolean(collapsed);
         return {
