@@ -93,13 +93,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
     frameworkId: getInitialFrameworkId(currentFrameworkId),
   });
   const [customObjective, setCustomObjective] = useState('');
-  const [activeTab, setActiveTab] = useState('workspace');
   const selectedFramework = frameworks[getInitialFrameworkId(form.frameworkId)];
-  const formTabs = [
-    { id: 'workspace', label: 'Workspace' },
-    { id: 'organization', label: 'Organization' },
-    { id: 'objectives', label: 'Objectives' },
-  ];
 
   useEffect(() => {
     if (!open) return;
@@ -113,7 +107,6 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
       frameworkId: getInitialFrameworkId(currentFrameworkId),
     });
     setSelectedObjectives(initialMetadata.objectives || []);
-    setActiveTab('workspace');
   }, [open, initialMetadata, currentFrameworkId]);
 
   const toggleObjective = (objective) => {
@@ -148,33 +141,12 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
       description="Set up your workspace metadata so Compass can personalize results."
     >
       <form id="start-assessment-form" onSubmit={handleSubmit} className="shadcn-form">
-        <div className="form-tabs" role="tablist" aria-label="New assessment sections">
-          {formTabs.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              role="tab"
-              id={`${tab.id}-tab`}
-              aria-selected={activeTab === tab.id}
-              aria-controls={`${tab.id}-panel`}
-              className={`form-tab ${activeTab === tab.id ? 'active' : ''}`}
-              onClick={() => setActiveTab(tab.id)}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {activeTab === 'workspace' && (
-          <Card
-            className="form-card"
-            role="tabpanel"
-            aria-labelledby="workspace-tab"
-            id="workspace-panel"
-          >
+        <div className="form-grid">
+          <Card className="form-card">
             <CardHeader className="form-card-header">
               <div>
                 <p className="form-eyebrow">Workspace</p>
+                <CardTitle className="form-title">Assessment details</CardTitle>
                 <CardDescription className="form-description">
                   Provide a title and select a framework to tailor the questions.
                 </CardDescription>
@@ -232,18 +204,11 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
               </div>
             </CardContent>
           </Card>
-        )}
-
-        {activeTab === 'organization' && (
-          <Card
-            className="form-card"
-            role="tabpanel"
-            aria-labelledby="organization-tab"
-            id="organization-panel"
-          >
+          <Card className="form-card">
             <CardHeader className="form-card-header">
               <div>
                 <p className="form-eyebrow">Organization</p>
+                <CardTitle className="form-title">Context</CardTitle>
                 <CardDescription className="form-description">
                   Add budget and industry context to personalize guidance.
                 </CardDescription>
@@ -307,52 +272,46 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
               </div>
             </CardContent>
           </Card>
-        )}
+        </div>
 
-        {activeTab === 'objectives' && (
-          <Card
-            className="form-card"
-            role="tabpanel"
-            aria-labelledby="objectives-tab"
-            id="objectives-panel"
-          >
-            <CardHeader className="form-card-header">
-              <div>
-                <p className="form-eyebrow">Objectives</p>
-                <CardDescription className="form-description">
-                  Select the outcomes you want the assessment to prioritize.
-                </CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="pill-list">
-                {objectiveOptions.map((option) => (
-                  <Button
-                    key={option}
-                    type="button"
-                    variant={selectedObjectives.includes(option) ? 'primary' : 'outline'}
-                    size="sm"
-                    className="pill-button"
-                    onClick={() => toggleObjective(option)}
-                  >
-                    {option}
-                  </Button>
-                ))}
-              </div>
-              <div className="flex" style={{ gap: '0.5rem', marginTop: '0.75rem' }}>
-                <Input
-                  className="form-control"
-                  placeholder="Add a custom objective"
-                  value={customObjective}
-                  onChange={(e) => setCustomObjective(e.target.value)}
-                />
-                <Button type="button" variant="secondary" onClick={addCustomObjective}>
-                  Add
+        <Card className="form-card">
+          <CardHeader className="form-card-header">
+            <div>
+              <p className="form-eyebrow">Objectives</p>
+              <CardTitle className="form-title">Primary goals</CardTitle>
+              <CardDescription className="form-description">
+                Select the outcomes you want the assessment to prioritize.
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="pill-list">
+              {objectiveOptions.map((option) => (
+                <Button
+                  key={option}
+                  type="button"
+                  variant={selectedObjectives.includes(option) ? 'primary' : 'outline'}
+                  size="sm"
+                  className="pill-button"
+                  onClick={() => toggleObjective(option)}
+                >
+                  {option}
                 </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+              ))}
+            </div>
+            <div className="flex" style={{ gap: '0.5rem', marginTop: '0.75rem' }}>
+              <Input
+                className="form-control"
+                placeholder="Add a custom objective"
+                value={customObjective}
+                onChange={(e) => setCustomObjective(e.target.value)}
+              />
+              <Button type="button" variant="secondary" onClick={addCustomObjective}>
+                Add
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         <CardFooter className="form-footer">
           <div>
