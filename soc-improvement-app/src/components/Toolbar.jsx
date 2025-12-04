@@ -82,6 +82,22 @@ const Toolbar = () => {
               </select>
             </div>
             <div className="metadata-field">
+              <label>How long has your SOC been established?</label>
+              <select
+                value={state.currentAssessment.metadata.socAge}
+                onChange={(e) => setMetadata({ socAge: e.target.value })}
+              >
+                <option value="" disabled hidden>
+                  Select SOC age
+                </option>
+                <option value="0-6 months">0-6 months</option>
+                <option value="6-12 months">6-12 months</option>
+                <option value="1-2 years">1-2 years</option>
+                <option value="2-5 years">2-5 years</option>
+                <option value="5+ years">5+ years</option>
+              </select>
+            </div>
+            <div className="metadata-field">
               <label>Size</label>
               <input
                 value={state.currentAssessment.metadata.size}
