@@ -352,14 +352,16 @@ const Home = ({
         <div className="hero-copy">
           <h1 className="hero-title">
             Deliver every SOC assessment from one place
-            <span className="hero-caret" aria-hidden="true">|</span>
           </h1>
           <p className="hero-subtitle">
             SOC Compass enables SOC Leaders & Consultants to deliver capability maturity assessments from dedicated
             workspaces, providing tailored action plans, roadmaps and reports.
           </p>
           <div className="hero-actions">
-            <Button onClick={onOpenStartModal}>Start new assessment</Button>
+            <Button onClick={onOpenStartModal}>Start new assessments</Button>
+            <a className="hero-link-button" href="#active-assessments">
+              Active Assessments
+            </a>
           </div>
         </div>
         <div className="trusted-panel" aria-label="Trusted audience carousel">
@@ -390,8 +392,8 @@ const Home = ({
       </section>
 
       <div className="home-grid">
-        <Card>
-              <CardHeader className="flex-between align-start">
+        <Card id="active-assessments">
+          <CardHeader className="flex-between align-start">
             <div>
               <CardTitle>Active assessments</CardTitle>
               <CardDescription>
