@@ -3,6 +3,7 @@ import AssessmentInfoSummary from '../components/AssessmentInfoSummary';
 import DomainProgressOverview from '../components/DomainProgressOverview';
 import Sidebar from '../components/Sidebar';
 import Toolbar from '../components/Toolbar';
+import Dialog from '../components/ui/Dialog';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { frameworks } from '../utils/frameworks';
 
@@ -15,6 +16,7 @@ const AssessmentInfo = ({ onBack, scoresRef, actionPlanRef, onOpenReporting }) =
   const answers = useAssessmentStore((s) => s.currentAssessment.answers);
   const summaryRef = useRef();
   const [isLocked, setIsLocked] = useState(true);
+  const [metadataModalOpen, setMetadataModalOpen] = useState(false);
   const frameworkName = frameworks[frameworkId]?.name;
   const aspects = frameworks[frameworkId]?.aspects || [];
 
@@ -41,9 +43,14 @@ const AssessmentInfo = ({ onBack, scoresRef, actionPlanRef, onOpenReporting }) =
               diving into the assessment sections.
             </p>
           </div>
-          <button className="secondary" onClick={onBack}>
-            Back to assessment
-          </button>
+          <div className="flex" style={{ gap: '0.5rem' }}>
+            <button className="secondary" onClick={onBack}>
+              Back to assessment
+            </button>
+            <button className="primary" onClick={() => setMetadataModalOpen(true)}>
+              Edit Assessment
+            </button>
+          </div>
         </div>
         <AssessmentInfoSummary
           ref={summaryRef}
@@ -55,7 +62,14 @@ const AssessmentInfo = ({ onBack, scoresRef, actionPlanRef, onOpenReporting }) =
         <div className="section-divider" aria-hidden />
 
         <DomainProgressOverview frameworkId={frameworkId} answers={answers} />
+      </div>
 
+      <Dialog
+        open={metadataModalOpen}
+        onClose={() => setMetadataModalOpen(false)}
+        title="Edit assessment metadata"
+        description="Update the engagement details, control exports, and manage objectives."
+      >
         <Toolbar
           scoresRef={scoresRef}
           actionPlanRef={actionPlanRef}
@@ -63,7 +77,7 @@ const AssessmentInfo = ({ onBack, scoresRef, actionPlanRef, onOpenReporting }) =
           locked={isLocked}
           onToggleLock={() => setIsLocked((prev) => !prev)}
         />
-      </div>
+      </Dialog>
     </div>
   );
 };

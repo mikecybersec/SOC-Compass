@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { LockClosedIcon, LockOpenIcon } from '@heroicons/react/24/outline';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { exportAssessment, importAssessment } from '../utils/storage';
 import { exportPdf } from '../utils/pdf';
@@ -44,13 +45,12 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef, locked, onToggleLock }) =>
         </div>
         <div className="flex" style={{ gap: '0.5rem' }}>
           <button
-            className="ghost-button"
+            className="icon-button lock-toggle"
             onClick={onToggleLock}
             aria-label={locked ? 'Unlock editing' : 'Lock editing'}
             title={locked ? 'Unlock editing' : 'Lock editing'}
-            style={{ color: 'var(--muted)' }}
           >
-            {locked ? '🔒' : '🔓'}
+            {locked ? <LockClosedIcon aria-hidden className="icon-muted" /> : <LockOpenIcon aria-hidden className="icon-muted" />}
           </button>
           <button className="secondary" onClick={() => fileRef.current?.click()}>Import</button>
           <button className="secondary" onClick={() => exportAssessment(state)}>Export JSON</button>
@@ -67,6 +67,7 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef, locked, onToggleLock }) =>
             value={state.currentAssessment.metadata.assessmentTitle}
             onChange={(e) => setMetadata({ assessmentTitle: e.target.value })}
             disabled={locked}
+            className={locked ? 'locked-field' : ''}
           />
         </div>
         <div style={{ minWidth: '220px' }}>
@@ -75,6 +76,7 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef, locked, onToggleLock }) =>
             value={state.currentAssessment.metadata.name}
             onChange={(e) => setMetadata({ name: e.target.value })}
             disabled={locked}
+            className={locked ? 'locked-field' : ''}
           />
         </div>
         <div style={{ minWidth: '180px' }}>
@@ -84,6 +86,7 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef, locked, onToggleLock }) =>
             onChange={(e) => setMetadata({ budgetAmount: e.target.value })}
             placeholder="e.g. 250000"
             disabled={locked}
+            className={locked ? 'locked-field' : ''}
           />
         </div>
         <div style={{ minWidth: '140px' }}>
@@ -92,6 +95,7 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef, locked, onToggleLock }) =>
             value={state.currentAssessment.metadata.budgetCurrency}
             onChange={(e) => setMetadata({ budgetCurrency: e.target.value })}
             disabled={locked}
+            className={locked ? 'locked-field' : ''}
           >
             <option value="$">USD ($)</option>
             <option value="€">EUR (€)</option>
@@ -108,6 +112,7 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef, locked, onToggleLock }) =>
             value={state.currentAssessment.metadata.size}
             onChange={(e) => setMetadata({ size: e.target.value })}
             disabled={locked}
+            className={locked ? 'locked-field' : ''}
           />
         </div>
         <div style={{ minWidth: '200px' }}>
@@ -116,6 +121,7 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef, locked, onToggleLock }) =>
             value={state.currentAssessment.metadata.sector}
             onChange={(e) => setMetadata({ sector: e.target.value })}
             disabled={locked}
+            className={locked ? 'locked-field' : ''}
           >
             <option value="MSSP">MSSP</option>
             <option value="Technology">Technology</option>
@@ -132,6 +138,7 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef, locked, onToggleLock }) =>
             value={state.currentAssessment.metadata.status}
             onChange={(e) => setMetadata({ status: e.target.value })}
             disabled={locked}
+            className={locked ? 'locked-field' : ''}
           >
             <option value="Not Started">Not Started</option>
             <option value="In Progress">In Progress</option>
@@ -150,6 +157,7 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef, locked, onToggleLock }) =>
               className={`pill-button ${objectives.includes(option) ? 'primary' : 'ghost-button'}`}
               onClick={() => toggleObjective(option)}
               disabled={locked}
+              data-locked={locked}
             >
               {option}
             </button>
