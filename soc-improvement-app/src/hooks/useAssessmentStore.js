@@ -20,6 +20,28 @@ const defaultMetadata = () => ({
   status: 'Not Started',
 });
 
+const hasAssessmentContent = (assessment) => {
+  if (!assessment) return false;
+
+  const answers = assessment.answers || {};
+  const notes = assessment.notes || {};
+  const actionPlan = assessment.actionPlan || {};
+  const metadata = assessment.metadata || {};
+
+  const hasAnswers = Object.keys(answers).length > 0;
+  const hasNotes = Object.keys(notes).length > 0;
+  const hasActionPlan = Boolean(actionPlan.raw?.trim()) || (actionPlan.steps || []).length > 0;
+
+  const defaults = defaultMetadata();
+  const trackedKeys = ['assessmentTitle', 'name', 'budgetAmount', 'budgetCurrency', 'size', 'sector', 'language', 'status'];
+
+  const metadataChanged =
+    (metadata.objectives || []).join('|') !== (defaults.objectives || []).join('|') ||
+    trackedKeys.some((key) => (metadata[key] ?? defaults[key]) !== defaults[key]);
+
+  return hasAnswers || hasNotes || hasActionPlan || metadataChanged;
+};
+
 const normalizeMetadata = (metadata = {}) => ({
   ...defaultMetadata(),
   ...metadata,
@@ -197,6 +219,11 @@ export const useAssessmentStore = create(
 
         const history = state.assessmentHistory || [];
         const existsInHistory = history.some((entry) => entry.id === currentAssessment.id);
+        const isWorthSaving = hasAssessmentContent(currentAssessment);
+
+        if (!isWorthSaving && !existsInHistory) {
+          return { currentAssessment, lastSavedAt: state.lastSavedAt };
+        }
 
         const updatedHistory = existsInHistory
           ? history.map((entry) =>
