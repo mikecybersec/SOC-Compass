@@ -2,11 +2,10 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import QuestionPanel from '../components/QuestionPanel';
 import ScoreBoard from '../components/ScoreBoard';
-import ActionPlan from '../components/ActionPlan';
 import { frameworks } from '../utils/frameworks';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 
-const Assessment = ({ onBack, scoresRef, actionPlanRef, onOpenAssessmentInfo, onOpenReporting }) => {
+const Assessment = ({ onBack, scoresRef, onOpenAssessmentInfo, onOpenReporting }) => {
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
   const lastSavedAt = useAssessmentStore((s) => s.lastSavedAt);
   const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
@@ -73,7 +72,6 @@ const Assessment = ({ onBack, scoresRef, actionPlanRef, onOpenAssessmentInfo, on
           onNextAspect={() => nextAspectKey && setActiveAspectKey(nextAspectKey)}
         />
         <ScoreBoard ref={scoresRef} />
-        <ActionPlan ref={actionPlanRef} />
       </main>
 
       <div className={`toast ${showSaveToast ? 'toast-visible' : ''}`}>Changes saved to assessment</div>
