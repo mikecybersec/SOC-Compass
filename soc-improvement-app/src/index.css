@@ -95,6 +95,24 @@ body {
   box-shadow: none;
 }
 
+.danger-button {
+  color: #b91c1c;
+  border-color: #fecdd3;
+}
+
+.danger-button.ui-btn-primary {
+  background: linear-gradient(135deg, #f87171, #b91c1c);
+  color: #fff;
+  border-color: transparent;
+}
+
+.danger-button.ui-btn-outline,
+.danger-button.ui-btn-secondary {
+  background: #fff5f5;
+  color: #b91c1c;
+  border-color: #fecdd3;
+}
+
 .ui-btn:hover:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: 0 12px 24px -14px rgba(15, 23, 42, 0.18);
@@ -230,6 +248,12 @@ body {
   display: flex;
   justify-content: flex-end;
   padding-top: 0.75rem;
+}
+
+.confirm-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
 }
 
 .ui-field {
@@ -1858,6 +1882,12 @@ label {
   padding: 1.25rem;
   background: var(--bg-surface);
   box-shadow: var(--shadow-soft);
+}
+
+.wizard-error {
+  margin: 0.35rem 0 0;
+  color: #b91c1c;
+  font-weight: 600;
 }
 
 .wizard-step-header {

@@ -265,6 +265,20 @@ export const useAssessmentStore = create(
           assessmentHistory: state.assessmentHistory,
         };
       }),
+    deleteCurrentAssessment: () =>
+      set((state) => {
+        const currentId = state.currentAssessment?.id;
+        const remainingHistory = (state.assessmentHistory || []).filter((entry) => entry.id !== currentId);
+
+        return {
+          ...state,
+          currentAssessment: buildAssessment(),
+          assessmentHistory: remainingHistory,
+          upcomingMetadata: defaultMetadata(),
+          activeAspectKey: null,
+          lastSavedAt: timestampNow(),
+        };
+      }),
     removeAssessmentFromHistory: (id) =>
       set((state) => ({ assessmentHistory: (state.assessmentHistory || []).filter((entry) => entry.id !== id) })),
     reset: () => set(buildInitialState()),

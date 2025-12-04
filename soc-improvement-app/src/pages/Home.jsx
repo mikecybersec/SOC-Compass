@@ -90,6 +90,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
   const [customObjective, setCustomObjective] = useState('');
   const [step, setStep] = useState(0);
   const [showLoading, setShowLoading] = useState(false);
+  const [stepError, setStepError] = useState('');
   const selectedFramework = frameworks[getInitialFrameworkId(form.frameworkId)];
 
   useEffect(() => {
@@ -99,6 +100,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
     setCustomObjective('');
     setStep(0);
     setShowLoading(false);
+    setStepError('');
   }, [open, initialMetadata, currentFrameworkId]);
 
   const toggleObjective = (objective) => {
@@ -142,7 +144,10 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
           </div>
         </div>
       ),
-      validate: () => Boolean(form.assessmentTitle.trim()),
+      validate: () =>
+        form.assessmentTitle.trim().length > 0
+          ? true
+          : 'Assessment name must have at least one character.',
     },
     {
       id: 'name',
@@ -171,7 +176,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
           </div>
         </div>
       ),
-      validate: () => Boolean(form.name.trim()),
+      validate: () => (form.name.trim().length > 0 ? true : 'Organization name must have at least one character.'),
     },
     {
       id: 'framework',
@@ -203,7 +208,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
           )}
         </div>
       ),
-      validate: () => Boolean(form.frameworkId),
+      validate: () => (form.frameworkId ? true : 'Please choose an assessment type.'),
     },
     {
       id: 'context',
@@ -239,7 +244,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
             <Input
               className="form-control"
               value={form.size}
-              placeholder="e.g. 30-person SOC"
+              placeholder="30"
               onChange={(e) => setForm({ ...form, size: e.target.value })}
             />
           </div>
@@ -264,7 +269,13 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
           </div>
         </div>
       ),
-      validate: () => Boolean(form.budgetAmount.trim()),
+      validate: () => {
+        if (!form.budgetAmount.trim()) return 'Budget amount must have at least one character.';
+        if (!(form.budgetCurrency || '').toString().trim()) return 'Currency must have at least one character.';
+        if (!form.size.trim()) return 'Size must have at least one character.';
+        if (!form.sector.trim()) return 'Sector must have at least one character.';
+        return true;
+      },
     },
     {
       id: 'objectives',
@@ -310,7 +321,14 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
   ];
 
   const handleNext = () => {
-    if (!steps[step].validate()) return;
+    const validationResult = steps[step].validate();
+    if (validationResult !== true) {
+      setStepError(
+        typeof validationResult === 'string' ? validationResult : 'Please ensure this step has at least one character.'
+      );
+      return;
+    }
+    setStepError('');
     if (step === steps.length - 1) {
       handleSubmit();
       return;
@@ -318,9 +336,13 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
     setStep((prev) => Math.min(prev + 1, steps.length - 1));
   };
 
-  const handleBack = () => setStep((prev) => Math.max(prev - 1, 0));
+  const handleBack = () => {
+    setStepError('');
+    setStep((prev) => Math.max(prev - 1, 0));
+  };
 
   const handleSubmit = () => {
+    setStepError('');
     const frameworkId = getInitialFrameworkId(form.frameworkId);
     setShowLoading(true);
     setTimeout(() => {
@@ -368,6 +390,11 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
           <p className="wizard-description">{currentStep.description}</p>
         </div>
         {currentStep.render()}
+        {stepError && (
+          <p className="wizard-error" role="alert">
+            {stepError}
+          </p>
+        )}
       </div>
       <div className="wizard-footer">
         <Button variant="ghost" onClick={step === 0 ? onClose : handleBack}>
