@@ -615,10 +615,11 @@ button, input, select, textarea {
 .sidebar-label {
   flex: 1;
   min-width: 0;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.01em;
   text-align: left;
+  max-width: 12rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
