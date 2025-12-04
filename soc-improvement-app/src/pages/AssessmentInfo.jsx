@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import AssessmentInfoSummary from '../components/AssessmentInfoSummary';
 import DomainProgressOverview from '../components/DomainProgressOverview';
 import Sidebar from '../components/Sidebar';
@@ -14,6 +14,7 @@ const AssessmentInfo = ({ onBack, scoresRef, actionPlanRef, onOpenReporting }) =
   const setActiveAspectKey = useAssessmentStore((s) => s.setActiveAspectKey);
   const answers = useAssessmentStore((s) => s.currentAssessment.answers);
   const summaryRef = useRef();
+  const [isLocked, setIsLocked] = useState(true);
   const frameworkName = frameworks[frameworkId]?.name;
   const aspects = frameworks[frameworkId]?.aspects || [];
 
@@ -21,6 +22,8 @@ const AssessmentInfo = ({ onBack, scoresRef, actionPlanRef, onOpenReporting }) =
     setActiveAspectKey(key);
     onBack();
   };
+
+  const toggleLock = () => setIsLocked((prev) => !prev);
 
   return (
     <div className="app-shell">
@@ -40,11 +43,19 @@ const AssessmentInfo = ({ onBack, scoresRef, actionPlanRef, onOpenReporting }) =
               diving into the assessment sections.
             </p>
           </div>
-          <button className="secondary" onClick={onBack}>
-            Back to assessment
-          </button>
+          <div className="flex" style={{ gap: '0.5rem' }}>
+            <button className="ghost-button" onClick={toggleLock}>
+              {isLocked ? '🔒 Locked for editing' : '🔓 Editing unlocked'}
+            </button>
+            <button className="secondary" onClick={onBack}>
+              Back to assessment
+            </button>
+          </div>
         </div>
 
+        <div style={{ marginBottom: '0.5rem' }}>
+          <p className="badge">Assessment Info</p>
+        </div>
         <DomainProgressOverview frameworkId={frameworkId} answers={answers} />
 
         <div className="section-divider" aria-hidden />
@@ -56,7 +67,7 @@ const AssessmentInfo = ({ onBack, scoresRef, actionPlanRef, onOpenReporting }) =
           lastSavedAt={lastSavedAt}
         />
 
-        <Toolbar scoresRef={scoresRef} actionPlanRef={actionPlanRef} metaRef={summaryRef} />
+        <Toolbar scoresRef={scoresRef} actionPlanRef={actionPlanRef} metaRef={summaryRef} locked={isLocked} />
       </div>
     </div>
   );

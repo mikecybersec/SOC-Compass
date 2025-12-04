@@ -57,7 +57,7 @@ const DomainProgressOverview = ({ frameworkId, answers }) => {
     <div className="card domain-progress">
       <div className="domain-progress-header">
         <div>
-          <p className="badge">Program overview report</p>
+          <p className="badge">Assessment Progress</p>
           <h2>Assessment progress by domain</h2>
           <p className="muted-label">Track how many answers are complete across Business, Process, Service and more.</p>
         </div>
