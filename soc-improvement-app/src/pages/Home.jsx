@@ -54,24 +54,21 @@ const ModeSelectionModal = ({ open, onClose, onSelectSolo }) => {
             }
           }}
         >
-          <CardHeader>
-            <CardTitle>Solo</CardTitle>
-            <CardDescription>
+          <CardHeader className="mode-card-header">
+            <CardTitle className="mode-card-title">Solo</CardTitle>
+            <CardDescription className="mode-card-description">
               Self-score the assessment with streamlined navigation and inline guidance.
             </CardDescription>
           </CardHeader>
-          <CardFooter>
-            <span className="card-action-hint">Start solo workspace</span>
-          </CardFooter>
         </Card>
         <Card className="mode-card disabled">
-          <CardHeader>
-            <CardTitle>Assisted Mode</CardTitle>
-            <CardDescription>
+          <CardHeader className="mode-card-header">
+            <CardTitle className="mode-card-title">Assisted Mode</CardTitle>
+            <CardDescription className="mode-card-description">
               Compass will review attached artefacts and propose scores automatically.
             </CardDescription>
           </CardHeader>
-          <CardFooter className="mode-footer">
+          <CardFooter className="mode-footer mode-card-footer">
             <Badge variant="warning">Coming soon</Badge>
             <Button variant="secondary" disabled>
               Enable assistance
