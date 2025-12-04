@@ -51,6 +51,12 @@ const Navbar = ({
             <Button variant="ghost" size="sm" onClick={onOpenPreferences}>
               System Preferences
             </Button>
+            <Button variant="ghost" size="sm" disabled>
+              Integrations (coming soon)
+            </Button>
+            <Button variant="ghost" size="sm" disabled>
+              Automation (coming soon)
+            </Button>
           </div>
         </div>
       </nav>
