@@ -1982,6 +1982,51 @@ label {
   gap: 0.75rem;
 }
 
+.wizard-grid.context-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas:
+    'budget currency'
+    'size soc-age'
+    'sector sector';
+  align-items: start;
+}
+
+.budget-field {
+  grid-area: budget;
+}
+
+.currency-field {
+  grid-area: currency;
+}
+
+.size-field {
+  grid-area: size;
+}
+
+.soc-age-field {
+  grid-area: soc-age;
+}
+
+.sector-field {
+  grid-area: sector;
+}
+
+@media (max-width: 720px) {
+  .wizard-grid.context-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'budget'
+      'currency'
+      'size'
+      'soc-age'
+      'sector';
+  }
+
+  .wizard-field.compact {
+    max-width: none;
+  }
+}
+
 .wizard-footer {
   display: flex;
   align-items: center;

@@ -219,8 +219,8 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
       title: '',
       description: '',
       render: () => (
-        <div className="wizard-grid">
-          <div className="wizard-field">
+        <div className="wizard-grid context-grid">
+          <div className="wizard-field budget-field">
             <label className="wizard-label">Budget amount</label>
             <p className="wizard-helper">Used to shape investment guidance.</p>
             <Input
@@ -230,7 +230,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
               placeholder="e.g. 250000"
             />
           </div>
-          <div className="wizard-field compact">
+          <div className="wizard-field compact currency-field">
             <label className="wizard-label">Currency</label>
             <Select
               className="form-control"
@@ -243,7 +243,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
               <option value="¥">JPY (¥)</option>
             </Select>
           </div>
-          <div className="wizard-field">
+          <div className="wizard-field size-field">
             <label className="wizard-label">Size</label>
             <Input
               className="form-control"
@@ -252,7 +252,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
               onChange={(e) => setForm({ ...form, size: e.target.value })}
             />
           </div>
-          <div className="wizard-field">
+          <div className="wizard-field soc-age-field">
             <label className="wizard-label">How long has your SOC been established?</label>
             <Select
               className="form-control"
@@ -269,7 +269,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
               <option value="5+ years">5+ years</option>
             </Select>
           </div>
-          <div className="wizard-field">
+          <div className="wizard-field sector-field">
             <label className="wizard-label">Sector</label>
             <Select
               className="form-control"
