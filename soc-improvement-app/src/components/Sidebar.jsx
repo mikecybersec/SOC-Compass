@@ -14,6 +14,8 @@ const Sidebar = ({
 
   const assessmentCollapsed = useAssessmentStore((s) => s.sidebarAssessmentCollapsed);
   const setAssessmentCollapsed = useAssessmentStore((s) => s.setSidebarAssessmentCollapsed);
+  const domainCollapsed = useAssessmentStore((s) => s.sidebarDomainCollapsed || {});
+  const setDomainCollapsed = useAssessmentStore((s) => s.setSidebarDomainCollapsed);
 
   const grouped = useMemo(
     () =>
@@ -66,29 +68,43 @@ const Sidebar = ({
           <div className="sidebar-group" id="assessment-section">
             {Object.entries(grouped).map(([domain, domainAspects]) => (
               <div key={domain} className="sidebar-section">
-                <p className="sidebar-section-label">{domain}</p>
-                <div className="sidebar-links">
-                  {domainAspects.map((aspect) => {
-                    const key = `${aspect.domain}::${aspect.aspect}`;
-                    const active = showAssessmentState && key === currentKey;
-                    const totalQuestions = aspect.questionCount || 0;
-                    const answered = aspect.questions.filter(
-                      (q) => q.type === 'question' && answers[q.code]
-                    ).length;
-                    const completion = totalQuestions === 0 ? 0 : Math.round((answered / totalQuestions) * 100);
-                    return (
-                      <button
-                        key={key}
-                        type="button"
-                        className={`sidebar-link ${active ? 'active' : ''}`}
-                        onClick={() => onSelect(key)}
-                      >
-                        <span className="sidebar-label">{aspect.aspect}</span>
-                        <span className="sidebar-meta">{completion}%</span>
-                      </button>
-                    );
-                  })}
-                </div>
+                <button
+                  type="button"
+                  className={`sidebar-link sidebar-toggle sidebar-domain-toggle ${domainCollapsed[domain] ? '' : 'open'}`}
+                  onClick={() => setDomainCollapsed(domain, (prev = false) => !prev)}
+                  aria-expanded={!domainCollapsed[domain]}
+                  aria-controls={`domain-${domain}`}
+                >
+                  <span className="sidebar-label">{domain}</span>
+                  <span className="sidebar-meta" aria-hidden>
+                    <span className="chevron">▾</span>
+                  </span>
+                </button>
+                {!domainCollapsed[domain] && (
+                  <div className="sidebar-links" id={`domain-${domain}`}>
+                    {domainAspects.map((aspect) => {
+                      const key = `${aspect.domain}::${aspect.aspect}`;
+                      const active = showAssessmentState && key === currentKey;
+                      const totalQuestions = aspect.questionCount || 0;
+                      const answered = aspect.questions.filter(
+                        (q) => q.type === 'question' && answers[q.code]
+                      ).length;
+                      const completion =
+                        totalQuestions === 0 ? 0 : Math.round((answered / totalQuestions) * 100);
+                      return (
+                        <button
+                          key={key}
+                          type="button"
+                          className={`sidebar-link ${active ? 'active' : ''}`}
+                          onClick={() => onSelect(key)}
+                        >
+                          <span className="sidebar-label">{aspect.aspect}</span>
+                          <span className="sidebar-meta">{completion}%</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             ))}
           </div>
