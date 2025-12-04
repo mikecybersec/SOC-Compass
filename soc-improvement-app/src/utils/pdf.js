@@ -1,7 +1,7 @@
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
-export const exportPdf = async ({ scoresRef, actionPlanRef, metaRef }) => {
+export const exportPdf = async ({ scoresRef, actionPlanRef, metaRef, metadata }) => {
   const doc = new jsPDF('p', 'pt', 'a4');
   let cursorY = 40;
 
@@ -33,6 +33,21 @@ export const exportPdf = async ({ scoresRef, actionPlanRef, metaRef }) => {
     doc.setFontSize(12);
     doc.text(metaRef.current.innerText || '', 32, cursorY);
     cursorY += 32;
+  } else if (metadata) {
+    doc.setFontSize(18);
+    doc.text('SOC Improvement Assessment', 32, cursorY);
+    cursorY += 24;
+    doc.setFontSize(12);
+    const summaryLines = [
+      metadata.assessmentTitle || metadata.name || 'Untitled assessment',
+      `Organization: ${metadata.name || 'Not set'}`,
+      `Status: ${metadata.status || 'Not set'}`,
+      `Sector: ${metadata.sector || 'Not set'}`,
+      `Size: ${metadata.size || 'Not set'}`,
+      `Budget: ${metadata.budgetAmount ? `${metadata.budgetCurrency || '$'}${metadata.budgetAmount}` : 'Not set'}`,
+    ];
+    doc.text(summaryLines.join('\n'), 32, cursorY);
+    cursorY += summaryLines.length * 14 + 8;
   }
 
   await addSection('Scores & Charts', scoresRef?.current);
