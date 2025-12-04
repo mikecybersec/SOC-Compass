@@ -31,7 +31,7 @@ const ScoreBoard = forwardRef((_, ref) => {
     <div className="card" ref={ref} id="score-board">
       <div className="flex-between">
         <div>
-          <h3>Scoring</h3>
+          <p className="badge">Scoring</p>
           <p style={{ color: 'var(--muted)' }}>Live maturity calculation for {frameworks[frameworkId].name}</p>
         </div>
         <div className="badge">Maturity: {scores.maturity || 0}</div>
