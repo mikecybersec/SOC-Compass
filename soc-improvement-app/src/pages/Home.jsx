@@ -34,26 +34,33 @@ const trustedRoles = [
 const ModeSelectionModal = ({ open, onClose, onSelectSolo }) => {
   if (!open) return null;
 
+  const handleSoloKeyDown = (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      onSelectSolo();
+    }
+  };
+
   return (
     <Dialog
       open={open}
       onClose={onClose}
       title="Choose how you want to run the assessment"
-      description="Switch between self-guided and guided modes without losing your work."
     >
       <div className="mode-grid">
-        <Card className="mode-card elevated">
+        <Card
+          className="mode-card elevated"
+          onClick={onSelectSolo}
+          onKeyDown={handleSoloKeyDown}
+          role="button"
+          tabIndex={0}
+        >
           <CardHeader>
             <CardTitle>Solo</CardTitle>
             <CardDescription>
               Self-score the assessment with streamlined navigation and inline guidance.
             </CardDescription>
           </CardHeader>
-          <CardFooter>
-            <Button variant="primary" onClick={onSelectSolo}>
-              Start solo workspace
-            </Button>
-          </CardFooter>
         </Card>
         <Card className="mode-card disabled">
           <CardHeader>
