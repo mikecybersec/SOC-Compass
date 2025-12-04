@@ -2,8 +2,10 @@ import React, { useRef } from 'react';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { importAssessment } from '../utils/storage';
 import { objectiveOptions } from '../constants/objectives';
+import Dialog from './ui/Dialog';
+import Button from './ui/Button';
 
-const Toolbar = () => {
+const Toolbar = ({ open, onClose }) => {
   const fileRef = useRef();
   const state = useAssessmentStore();
   const setMetadata = useAssessmentStore((s) => s.setMetadata);
@@ -30,22 +32,25 @@ const Toolbar = () => {
   };
 
   return (
-    <div className="card metadata-modal-card">
-      <div className="metadata-modal">
-        <div className="metadata-header">
-          <div>
-            <h3>Metadata & Controls</h3>
-            <p className="metadata-subtext">
-              Offline by default. Update assessment metadata and objectives as your engagement evolves.
-            </p>
-          </div>
-          <div className="metadata-header-actions">
-            <button className="secondary" onClick={() => fileRef.current?.click()}>Import</button>
-          </div>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      title="Metadata & Controls"
+      description="Offline by default. Update assessment metadata and objectives as your engagement evolves."
+      footer={
+        <div className="metadata-header-actions">
+          <Button variant="secondary" onClick={() => fileRef.current?.click()}>
+            Import
+          </Button>
+          <Button variant="primary" onClick={onClose}>
+            Close
+          </Button>
         </div>
+      }
+    >
+      <input type="file" accept="application/json" ref={fileRef} style={{ display: 'none' }} onChange={handleImport} />
 
-        <input type="file" accept="application/json" ref={fileRef} style={{ display: 'none' }} onChange={handleImport} />
-
+      <div className="metadata-modal metadata-modal-card">
         <div className="metadata-divider" role="presentation">
           <span>Info</span>
         </div>
@@ -166,7 +171,7 @@ const Toolbar = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Dialog>
   );
 };
 
