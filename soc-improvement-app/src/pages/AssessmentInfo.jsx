@@ -23,8 +23,6 @@ const AssessmentInfo = ({ onBack, scoresRef, actionPlanRef, onOpenReporting }) =
     onBack();
   };
 
-  const toggleLock = () => setIsLocked((prev) => !prev);
-
   return (
     <div className="app-shell">
       <Sidebar
@@ -43,14 +41,9 @@ const AssessmentInfo = ({ onBack, scoresRef, actionPlanRef, onOpenReporting }) =
               diving into the assessment sections.
             </p>
           </div>
-          <div className="flex" style={{ gap: '0.5rem' }}>
-            <button className="ghost-button" onClick={toggleLock}>
-              {isLocked ? '🔒 Locked for editing' : '🔓 Editing unlocked'}
-            </button>
-            <button className="secondary" onClick={onBack}>
-              Back to assessment
-            </button>
-          </div>
+          <button className="secondary" onClick={onBack}>
+            Back to assessment
+          </button>
         </div>
         <AssessmentInfoSummary
           ref={summaryRef}
@@ -63,7 +56,13 @@ const AssessmentInfo = ({ onBack, scoresRef, actionPlanRef, onOpenReporting }) =
 
         <DomainProgressOverview frameworkId={frameworkId} answers={answers} />
 
-        <Toolbar scoresRef={scoresRef} actionPlanRef={actionPlanRef} metaRef={summaryRef} locked={isLocked} />
+        <Toolbar
+          scoresRef={scoresRef}
+          actionPlanRef={actionPlanRef}
+          metaRef={summaryRef}
+          locked={isLocked}
+          onToggleLock={() => setIsLocked((prev) => !prev)}
+        />
       </div>
     </div>
   );

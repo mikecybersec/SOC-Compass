@@ -1,15 +1,14 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { exportAssessment, importAssessment } from '../utils/storage';
 import { exportPdf } from '../utils/pdf';
 import { objectiveOptions } from '../constants/objectives';
 
-const Toolbar = ({ scoresRef, actionPlanRef, metaRef, locked }) => {
+const Toolbar = ({ scoresRef, actionPlanRef, metaRef, locked, onToggleLock }) => {
   const fileRef = useRef();
   const state = useAssessmentStore();
   const setMetadata = useAssessmentStore((s) => s.setMetadata);
   const importState = useAssessmentStore((s) => s.importState);
-  const [customObjective, setCustomObjective] = useState('');
 
   const objectives = state.currentAssessment.metadata.objectives || [];
 
@@ -32,13 +31,6 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef, locked }) => {
     setMetadata({ objectives: updated });
   };
 
-  const addCustomObjective = () => {
-    if (locked) return;
-    if (!customObjective.trim()) return;
-    setMetadata({ objectives: [...objectives, customObjective.trim()] });
-    setCustomObjective('');
-  };
-
   return (
     <div className="card" style={{ display: 'grid', gap: '0.5rem' }}>
       <div className="flex-between">
@@ -51,6 +43,15 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef, locked }) => {
           </p>
         </div>
         <div className="flex" style={{ gap: '0.5rem' }}>
+          <button
+            className="ghost-button"
+            onClick={onToggleLock}
+            aria-label={locked ? 'Unlock editing' : 'Lock editing'}
+            title={locked ? 'Unlock editing' : 'Lock editing'}
+            style={{ color: 'var(--muted)' }}
+          >
+            {locked ? '🔒' : '🔓'}
+          </button>
           <button className="secondary" onClick={() => fileRef.current?.click()}>Import</button>
           <button className="secondary" onClick={() => exportAssessment(state)}>Export JSON</button>
           <button className="primary" onClick={() => exportPdf({ scoresRef, actionPlanRef, metaRef })}>Export PDF</button>
@@ -154,22 +155,6 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef, locked }) => {
             </button>
           ))}
         </div>
-        <div className="flex" style={{ gap: '0.5rem' }}>
-          <input
-            value={customObjective}
-            onChange={(e) => setCustomObjective(e.target.value)}
-            placeholder="Add a custom objective"
-            disabled={locked}
-          />
-          <button className="secondary" type="button" onClick={addCustomObjective} disabled={locked}>
-            Add
-          </button>
-        </div>
-        {objectives.filter((objective) => !objectiveOptions.includes(objective)).length > 0 && (
-          <div className="muted-label" style={{ marginTop: '0.5rem' }}>
-            Custom objectives: {objectives.filter((objective) => !objectiveOptions.includes(objective)).join(', ')}
-          </div>
-        )}
       </div>
     </div>
   );
