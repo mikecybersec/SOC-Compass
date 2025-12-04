@@ -6,6 +6,7 @@ import Reporting from './Reporting';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import AssessmentCopilot from '../components/AssessmentCopilot';
 import Dialog from '../components/ui/Dialog';
 import Button from '../components/ui/Button';
 import { Input, Select } from '../components/ui/Input';
@@ -220,6 +221,7 @@ const App = () => {
         </main>
         <Footer />
       </div>
+      {view === 'assessment' && <AssessmentCopilot />}
       <ApiKeyModal
         open={apiModalOpen}
         onClose={() => setApiModalOpen(false)}
