@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 
-const Sidebar = ({ aspects, currentKey, onSelect, onOpenAssessmentInfo }) => {
 const Sidebar = ({
   aspects,
   currentKey,
@@ -78,6 +77,8 @@ const Sidebar = ({
               );
             })}
           </div>
+        </div>
+      ))}
       {showAssessmentInfo && (
         <div className="sidebar-nav">
           <button
