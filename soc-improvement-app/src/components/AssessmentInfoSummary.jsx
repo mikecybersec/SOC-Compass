@@ -15,7 +15,6 @@ const AssessmentInfoSummary = forwardRef(({ metadata, frameworkName, lastSavedAt
           <div className="flex-between" style={{ alignItems: 'flex-start', gap: '1rem', marginBottom: '0.35rem' }}>
             <div>
               <p className="badge">Assessment Info</p>
-              <p className="card-heading">{metadata?.name || 'Untitled assessment'}</p>
             </div>
             {onEdit && (
               <Button variant="secondary" onClick={onEdit}>
