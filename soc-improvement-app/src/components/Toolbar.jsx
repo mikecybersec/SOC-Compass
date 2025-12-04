@@ -87,7 +87,7 @@ const Toolbar = ({ open, onClose }) => {
               </select>
             </div>
             <div className="metadata-field">
-              <label>How long has your SOC been established?</label>
+              <label>SOC Age</label>
               <select
                 value={state.currentAssessment.metadata.socAge}
                 onChange={(e) => setMetadata({ socAge: e.target.value })}
