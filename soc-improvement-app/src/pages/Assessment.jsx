@@ -6,36 +6,44 @@ import ActionPlan from '../components/ActionPlan';
 import { frameworks } from '../utils/frameworks';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 
-const Assessment = ({ onOpenAssessmentInfo, onOpenReporting }) => {
+const Assessment = ({ onBack, onOpenAssessmentInfo, scoresRef, actionPlanRef }) => {
+import { frameworks } from '../utils/frameworks';
+import { useAssessmentStore } from '../hooks/useAssessmentStore';
+
+const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting }) => {
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
   const lastSavedAt = useAssessmentStore((s) => s.lastSavedAt);
   const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
   const setActiveAspectKey = useAssessmentStore((s) => s.setActiveAspectKey);
-  const hydratedRef = useRef(false);
+  const frameworkId = currentAssessment.frameworkId;
+  const [aspectKey, setAspectKey] = useState(null);
   const [showSaveToast, setShowSaveToast] = useState(false);
+  const hydratedRef = useRef(false);
 
-  const aspects = useMemo(() => frameworks[currentAssessment.frameworkId]?.aspects || [], [currentAssessment.frameworkId]);
-
-  const aspectKeys = useMemo(() => aspects.map((a) => `${a.domain}::${a.aspect}`), [aspects]);
+  const currentFramework = frameworks[frameworkId];
+  const aspectKeys = useMemo(
+    () => currentFramework.aspects.map((a) => `${a.domain}::${a.aspect}`),
+    [currentFramework]
+  );
 
   const aspectLookup = useMemo(() => {
     const map = {};
-    aspects.forEach((a) => {
+    currentFramework.aspects.forEach((a) => {
       map[`${a.domain}::${a.aspect}`] = a;
     });
     return map;
-  }, [aspects]);
+  }, [currentFramework]);
 
   useEffect(() => {
-    if (!aspects.length) return;
+    if (!currentFramework.aspects.length) return;
 
-    const firstAspectKey = `${aspects[0].domain}::${aspects[0].aspect}`;
-    const hasValidActiveKey = activeAspectKey && aspectLookup[activeAspectKey];
+    const firstAspectKey = `${currentFramework.aspects[0].domain}::${currentFramework.aspects[0].aspect}`;
+    const currentKey = activeAspectKey && aspectLookup[activeAspectKey] ? activeAspectKey : null;
 
-    if (!hasValidActiveKey) {
+    if (!currentKey) {
       setActiveAspectKey(firstAspectKey);
     }
-  }, [activeAspectKey, aspectLookup, aspects, setActiveAspectKey]);
+  }, [activeAspectKey, aspectLookup, currentFramework, setActiveAspectKey]);
 
   useEffect(() => {
     if (!hydratedRef.current) {
@@ -56,7 +64,17 @@ const Assessment = ({ onOpenAssessmentInfo, onOpenReporting }) => {
   return (
     <div className="app-shell">
       <Sidebar
-        aspects={aspects}
+        aspects={currentFramework.aspects}
+        currentKey={aspectKey}
+        onSelect={setAspectKey}
+        onOpenAssessmentInfo={onOpenAssessmentInfo}
+      />
+      <main className="main">
+        <div className="section-divider" aria-hidden />
+        <FrameworkSelector />
+        <QuestionPanel aspect={activeAspect} nextAspect={nextAspect} onNextAspect={() => nextAspectKey && setAspectKey(nextAspectKey)} />
+        <ScoreBoard ref={scoresRef} />
+        <ActionPlan ref={actionPlanRef} />
         currentKey={activeAspectKey}
         onSelect={setActiveAspectKey}
         onOpenAssessmentInfo={onOpenAssessmentInfo}
@@ -69,8 +87,6 @@ const Assessment = ({ onOpenAssessmentInfo, onOpenReporting }) => {
           nextAspect={nextAspect}
           onNextAspect={() => nextAspectKey && setActiveAspectKey(nextAspectKey)}
         />
-        <ScoreBoard />
-        <ActionPlan />
       </main>
 
       <div className={`toast ${showSaveToast ? 'toast-visible' : ''}`}>Changes saved to assessment</div>
