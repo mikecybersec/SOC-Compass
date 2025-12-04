@@ -761,7 +761,7 @@ button, input, select, textarea {
   display: grid;
   grid-template-columns: 140px 1fr;
   gap: 0.35rem 0.6rem;
-  align-items: start;
+  align-items: flex-start;
 }
 
 .metadata-section-label {
@@ -1988,7 +1988,7 @@ label {
     'budget currency'
     'size soc-age'
     'sector sector';
-  align-items: start;
+  align-items: flex-start;
 }
 
 .budget-field {

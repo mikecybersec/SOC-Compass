@@ -244,7 +244,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
             </Select>
           </div>
           <div className="wizard-field size-field">
-            <label className="wizard-label">Size</label>
+            <label className="wizard-label">How many SOC FTE</label>
             <Input
               className="form-control"
               value={form.size}
