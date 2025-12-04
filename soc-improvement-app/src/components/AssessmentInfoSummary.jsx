@@ -18,6 +18,7 @@ const AssessmentInfoSummary = forwardRef(({ metadata, frameworkName, lastSavedAt
             current SOC engagement.
           </p>
           <div className="info-chips">
+            <span>Status: {metadata?.status || 'Not set'}</span>
             <span>{formatBudget(metadata)}</span>
             <span>Size: {metadata?.size || 'Not set'}</span>
             <span>Sector: {metadata?.sector || 'Not set'}</span>

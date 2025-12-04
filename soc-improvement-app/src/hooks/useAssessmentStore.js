@@ -9,6 +9,7 @@ const defaultModel = 'grok-4-latest';
 const timestampNow = () => new Date().toISOString();
 
 const defaultMetadata = () => ({
+  assessmentTitle: 'New assessment',
   name: 'My SOC',
   budgetAmount: '',
   budgetCurrency: '$',
@@ -16,14 +17,17 @@ const defaultMetadata = () => ({
   sector: 'MSSP',
   objectives: ['Reduce MTTR', 'Improve detection coverage'],
   language: 'en',
+  status: 'Not Started',
 });
 
 const normalizeMetadata = (metadata = {}) => ({
   ...defaultMetadata(),
   ...metadata,
+  assessmentTitle: metadata.assessmentTitle || metadata.name || 'New assessment',
   budgetAmount: metadata.budgetAmount || metadata.budget || '',
   budgetCurrency: metadata.budgetCurrency || '$',
   sector: metadata.sector || metadata.industry || 'MSSP',
+  status: metadata.status || 'Not Started',
 });
 
 const buildAssessment = ({ frameworkId = defaultFrameworkId, metadata } = {}) => ({
@@ -61,6 +65,9 @@ const hydrateState = (saved) => {
     upcomingMetadata: defaultMetadata(),
     assessmentHistory: [],
     lastSavedAt: timestampNow(),
+    activeAspectKey: null,
+    sidebarAssessmentCollapsed: true,
+    sidebarDomainCollapsed: {},
   };
 
   if (!saved) return defaults;
@@ -84,6 +91,14 @@ const hydrateState = (saved) => {
     model: defaultModel,
     assessmentHistory: (saved.assessmentHistory || []).map((entry) => hydrateAssessment(entry, entry.metadata)),
     lastSavedAt: saved.lastSavedAt || timestampNow(),
+    sidebarAssessmentCollapsed:
+      saved && Object.prototype.hasOwnProperty.call(saved, 'sidebarAssessmentCollapsed')
+        ? saved.sidebarAssessmentCollapsed
+        : defaults.sidebarAssessmentCollapsed,
+    sidebarDomainCollapsed:
+      saved && Object.prototype.hasOwnProperty.call(saved, 'sidebarDomainCollapsed')
+        ? saved.sidebarDomainCollapsed || defaults.sidebarDomainCollapsed
+        : defaults.sidebarDomainCollapsed,
   };
 
   return hydrated;
@@ -106,6 +121,7 @@ export const useAssessmentStore = create(
           notes: {},
           actionPlan: { steps: [], raw: '' },
         },
+        activeAspectKey: null,
       })),
     setAnswer: (code, value) =>
       set((state) => ({
@@ -139,24 +155,50 @@ export const useAssessmentStore = create(
         },
         upcomingMetadata: { ...state.upcomingMetadata, language },
       })),
+    setSidebarAssessmentCollapsed: (sidebarAssessmentCollapsed) =>
+      set((state) => ({
+        sidebarAssessmentCollapsed:
+          typeof sidebarAssessmentCollapsed === 'function'
+            ? sidebarAssessmentCollapsed(state.sidebarAssessmentCollapsed)
+            : sidebarAssessmentCollapsed,
+      })),
+    setSidebarDomainCollapsed: (domain, collapsed) =>
+      set((state) => {
+        const current = state.sidebarDomainCollapsed || {};
+        const currentValue =
+          current[domain] === undefined ? true : Boolean(current[domain]);
+        const nextValue =
+          typeof collapsed === 'function' ? collapsed(currentValue) : Boolean(collapsed);
+        return {
+          sidebarDomainCollapsed: {
+            ...current,
+            [domain]: nextValue,
+          },
+        };
+      }),
     setApiKey: (apiKey) => set({ apiKey }),
     setApiBase: (apiBase) => set({ apiBase }),
     setModel: (model) => set({ model }),
     setActionPlan: (actionPlan) =>
       set((state) => ({ currentAssessment: { ...state.currentAssessment, actionPlan } })),
+    setActiveAspectKey: (activeAspectKey) => set({ activeAspectKey }),
     autoSaveAssessment: () =>
       set((state) => {
-        const currentAssessment = {
-          ...state.currentAssessment,
-          id: state.currentAssessment.id || `assessment-${Date.now()}`,
-        };
+        const currentAssessment =
+          state.currentAssessment.id !== undefined && state.currentAssessment.id !== null
+            ? state.currentAssessment
+            : { ...state.currentAssessment, id: `assessment-${Date.now()}` };
 
         const updatedHistory = (state.assessmentHistory || []).map((entry) =>
           entry.id === currentAssessment.id
             ? {
                 ...entry,
                 ...currentAssessment,
-                label: entry.label || currentAssessment.metadata?.name || 'Saved assessment',
+                label:
+                  entry.label ||
+                  currentAssessment.metadata?.assessmentTitle ||
+                  currentAssessment.metadata?.name ||
+                  'Saved assessment',
                 savedAt: new Date().toISOString(),
               }
             : entry
@@ -171,11 +213,12 @@ export const useAssessmentStore = create(
     importState: (state) => set(() => hydrateState(state)),
     startAssessment: ({ frameworkId, metadata }) =>
       set((state) => {
-        const startingMetadata = { ...defaultMetadata(), ...state.upcomingMetadata, ...metadata };
+        const startingMetadata = { ...defaultMetadata(), ...state.upcomingMetadata, ...metadata, status: 'Not Started' };
         return {
           ...state,
           currentAssessment: buildAssessment({ frameworkId: frameworkId || defaultFrameworkId, metadata: startingMetadata }),
           upcomingMetadata: startingMetadata,
+          activeAspectKey: null,
         };
       }),
     saveAssessmentToHistory: (label) =>
@@ -183,7 +226,11 @@ export const useAssessmentStore = create(
         const snapshot = {
           ...state.currentAssessment,
           id: state.currentAssessment.id || `${Date.now()}`,
-          label: label || state.currentAssessment.metadata.name || 'Saved assessment',
+          label:
+            label ||
+            state.currentAssessment.metadata.assessmentTitle ||
+            state.currentAssessment.metadata.name ||
+            'Saved assessment',
           savedAt: new Date().toISOString(),
         };
 

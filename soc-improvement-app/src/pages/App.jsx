@@ -2,42 +2,47 @@ import React, { useEffect, useRef, useState } from 'react';
 import Home from './Home';
 import Assessment from './Assessment';
 import AssessmentInfo from './AssessmentInfo';
+import Reporting from './Reporting';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import Dialog from '../components/ui/Dialog';
+import Button from '../components/ui/Button';
+import { Input, Select } from '../components/ui/Input';
 
 const ApiKeyModal = ({ open, onClose, apiKey, setApiKey, apiBase, setApiBase, model, setModel }) => {
   if (!open) return null;
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal">
-        <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
-          <h2>API configuration</h2>
-          <button className="secondary" onClick={onClose}>
-            Close
-          </button>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      title="API configuration"
+      description="Centralize your API credentials for the assessment workspace."
+    >
+      <div className="grid-3">
+        <div className="ui-field">
+          <label className="ui-label">API Key</label>
+          <Input
+            type="password"
+            placeholder="Paste your provider key"
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+          />
+          <p className="ui-field-help">Stored locally in your browser.</p>
         </div>
-        <div className="flex" style={{ gap: '0.75rem', flexWrap: 'wrap' }}>
-          <div style={{ minWidth: '240px', flex: 1 }}>
-            <label>API Key</label>
-            <input
-              type="password"
-              placeholder="Paste your provider key"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-            />
-          </div>
-          <div style={{ minWidth: '200px', flex: 1 }}>
-            <label>Model</label>
-            <input value={model} onChange={(e) => setModel(e.target.value)} />
-          </div>
-          <div style={{ minWidth: '220px', flex: 1 }}>
-            <label>API Base URL</label>
-            <input value={apiBase} onChange={(e) => setApiBase(e.target.value)} />
-          </div>
+        <div className="ui-field">
+          <label className="ui-label">Model</label>
+          <Input value={model} onChange={(e) => setModel(e.target.value)} />
+          <p className="ui-field-help">e.g. gpt-4o-mini, llama-3.1-70b</p>
+        </div>
+        <div className="ui-field">
+          <label className="ui-label">API Base URL</label>
+          <Input value={apiBase} onChange={(e) => setApiBase(e.target.value)} />
+          <p className="ui-field-help">Override if using a proxy or self-hosted endpoint.</p>
         </div>
       </div>
-    </div>
+    </Dialog>
   );
 };
 
@@ -45,43 +50,62 @@ const PreferencesModal = ({ open, onClose, language, setLanguage, theme, setThem
   if (!open) return null;
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal">
-        <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
-          <h2>System preferences</h2>
-          <button className="secondary" onClick={onClose}>
-            Close
-          </button>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      title="System preferences"
+      description="Tune the UI to match your preferences."
+    >
+      <div className="grid-2">
+        <div className="ui-field">
+          <label className="ui-label">Language</label>
+          <Select value={language} onChange={(e) => setLanguage(e.target.value)}>
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+          </Select>
         </div>
-        <div className="flex" style={{ gap: '1rem', flexWrap: 'wrap' }}>
-          <div style={{ minWidth: '200px' }}>
-            <label>Language</label>
-            <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-              <option value="en">English</option>
-              <option value="es">Español</option>
-              <option value="fr">Français</option>
-            </select>
-          </div>
-          <div style={{ minWidth: '200px' }}>
-            <label>Theme</label>
-            <select value={theme} onChange={(e) => setTheme(e.target.value)}>
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
-            </select>
-          </div>
+        <div className="ui-field">
+          <label className="ui-label">Theme</label>
+          <Select value={theme} onChange={(e) => setTheme(e.target.value)}>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </Select>
         </div>
       </div>
-    </div>
+      <div className="ui-dialog-footer">
+        <Button variant="primary" onClick={onClose}>
+          Save preferences
+        </Button>
+      </div>
+    </Dialog>
   );
+};
+
+const AutoSave = () => {
+  const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
+  const autoSaveAssessment = useAssessmentStore((s) => s.autoSaveAssessment);
+
+  useEffect(() => {
+    const handle = setTimeout(() => autoSaveAssessment(), 800);
+    return () => clearTimeout(handle);
+  }, [currentAssessment, autoSaveAssessment]);
+
+  return null;
 };
 
 const App = () => {
   const [view, setView] = useState('home');
   const [startModalOpen, setStartModalOpen] = useState(false);
+  const [modeModalOpen, setModeModalOpen] = useState(false);
   const [apiModalOpen, setApiModalOpen] = useState(false);
   const [preferencesModalOpen, setPreferencesModalOpen] = useState(false);
   const scoresRef = useRef();
   const actionPlanRef = useRef();
+  const [startMode, setStartMode] = useState(null);
+  const scoresRef = useRef();
+  const actionPlanRef = useRef();
+  const metaRef = useRef();
   const theme = useAssessmentStore((s) => s.theme);
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
   const startAssessment = useAssessmentStore((s) => s.startAssessment);
@@ -108,6 +132,14 @@ const App = () => {
     Object.keys(currentAssessment?.notes || {}).length > 0 ||
     Boolean(currentAssessment?.actionPlan?.raw);
 
+  const handleViewAssessmentInfo = () => {
+    setView('assessmentInfo');
+  };
+
+  const handleViewReporting = () => {
+    setView('reporting');
+  };
+
   const handleStart = (payload) => {
     if (hasActiveAssessment) {
       saveAssessmentToHistory('Previous assessment snapshot');
@@ -115,11 +147,12 @@ const App = () => {
     startAssessment(payload);
     setView('assessment');
     setStartModalOpen(false);
+    setStartMode(null);
   };
 
   const handleLoad = (id) => {
     loadAssessmentFromHistory(id);
-    setView('assessment');
+    setView('assessmentInfo');
   };
 
   return (
@@ -159,6 +192,70 @@ const App = () => {
       {view === 'assessmentInfo' && (
         <AssessmentInfo onBack={() => setView('assessment')} scoresRef={scoresRef} actionPlanRef={actionPlanRef} />
       )}
+      <AutoSave />
+      <div className="app-container">
+        <Navbar
+          onGoHome={() => setView('home')}
+          onNewAssessment={() => {
+            setView('home');
+            setModeModalOpen(true);
+          }}
+          onExistingAssessments={() => setView('home')}
+          onOpenApiModal={() => setApiModalOpen(true)}
+          onOpenPreferences={() => setPreferencesModalOpen(true)}
+        />
+        <main className="app-main">
+          {view === 'home' && (
+            <Home
+              onStartAssessment={handleStart}
+              onContinueAssessment={() => setView('assessment')}
+              onLoadAssessment={handleLoad}
+              assessmentHistory={assessmentHistory}
+              currentAssessment={currentAssessment}
+              startModalOpen={startModalOpen}
+              modeModalOpen={modeModalOpen}
+              onOpenStartModal={() => setModeModalOpen(true)}
+              onCloseStartModal={() => {
+                setStartModalOpen(false);
+                setStartMode(null);
+              }}
+              onCloseModeModal={() => setModeModalOpen(false)}
+              onSelectSoloMode={() => {
+                setStartMode('solo');
+                setStartModalOpen(true);
+                setModeModalOpen(false);
+              }}
+              startMode={startMode}
+            />
+          )}
+          {view === 'assessment' && (
+            <Assessment
+              onBack={() => setView('home')}
+              onOpenAssessmentInfo={handleViewAssessmentInfo}
+              onOpenReporting={handleViewReporting}
+            />
+          )}
+          {view === 'assessmentInfo' && (
+            <AssessmentInfo
+              onBack={() => setView('assessment')}
+              onOpenReporting={handleViewReporting}
+              metaRef={metaRef}
+              scoresRef={scoresRef}
+            />
+          )}
+          {view === 'reporting' && (
+            <Reporting
+              onBack={() => setView('assessment')}
+              actionPlanRef={actionPlanRef}
+              scoresRef={scoresRef}
+              metaRef={metaRef}
+              onOpenAssessmentInfo={handleViewAssessmentInfo}
+              onOpenReporting={handleViewReporting}
+            />
+          )}
+        </main>
+        <Footer />
+      </div>
       <ApiKeyModal
         open={apiModalOpen}
         onClose={() => setApiModalOpen(false)}

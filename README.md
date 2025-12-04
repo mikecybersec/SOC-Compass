@@ -16,6 +16,8 @@ When security professionals take on the role of SOC Leader/Manager, they don't a
 
 As a result, there are challenges when it comes to outlining the roadmap, action plan and resources required, this spans key areas such as operations, service, technology and more.
 
+There are various tools out there for assessing SOC capability, however, there is a disconnect between guidance and action/roadmap.
+
 ## The solution
 I am developing an open-source application that allows you, the SOC leader, to perform a self assessment utilising the already great and available tools such as:
 - SOC-CMM
