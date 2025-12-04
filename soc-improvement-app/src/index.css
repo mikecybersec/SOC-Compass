@@ -886,27 +886,6 @@ label {
   gap: 0.35rem;
 }
 
-.hero-caret {
-  display: inline-flex;
-  width: 0.55rem;
-  height: 1.5rem;
-  border-radius: 2px;
-  background: linear-gradient(180deg, rgba(15, 23, 42, 0.18), rgba(15, 23, 42, 0.35));
-  animation: caret-blink 1.25s steps(2, start) infinite;
-  margin-left: 0.1rem;
-}
-
-@keyframes caret-blink {
-  0%,
-  50% {
-    opacity: 1;
-  }
-  50.01%,
-  100% {
-    opacity: 0;
-  }
-}
-
 .hero-subtitle {
   color: var(--muted);
   max-width: 780px;
@@ -918,6 +897,22 @@ label {
   gap: 0.65rem;
   flex-wrap: wrap;
   margin: 0.9rem 0 0.5rem;
+}
+
+.hero-link-button {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-weight: 600;
+  padding: 0.35rem 0.25rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.hero-link-button:hover,
+.hero-link-button:focus-visible {
+  text-decoration: underline;
+  outline: none;
 }
 
 .glass-hero {
