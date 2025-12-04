@@ -4,7 +4,7 @@ import ActionPlan from '../components/ActionPlan';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { frameworks } from '../utils/frameworks';
 
-const Reporting = ({ onBack, onOpenAssessmentInfo, onOpenReporting }) => {
+const Reporting = ({ onBack, actionPlanRef, onOpenAssessmentInfo, onOpenReporting }) => {
   const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
   const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
   const setActiveAspectKey = useAssessmentStore((s) => s.setActiveAspectKey);
@@ -42,7 +42,7 @@ const Reporting = ({ onBack, onOpenAssessmentInfo, onOpenReporting }) => {
 
         <div className="section-divider" aria-hidden />
 
-        <ActionPlan />
+        <ActionPlan ref={actionPlanRef} />
       </main>
     </div>
   );

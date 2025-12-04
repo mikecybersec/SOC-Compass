@@ -194,7 +194,6 @@ const App = () => {
             <Assessment
               onBack={() => setView('home')}
               scoresRef={scoresRef}
-              actionPlanRef={actionPlanRef}
               onOpenAssessmentInfo={handleViewAssessmentInfo}
               onOpenReporting={handleViewReporting}
             />
@@ -210,6 +209,7 @@ const App = () => {
           {view === 'reporting' && (
             <Reporting
               onBack={() => setView('assessment')}
+              actionPlanRef={actionPlanRef}
               onOpenAssessmentInfo={handleViewAssessmentInfo}
               onOpenReporting={handleViewReporting}
             />
