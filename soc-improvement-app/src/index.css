@@ -5,14 +5,14 @@
   --card: #ffffff;
   --text: #111827;
   --muted: #4b5563;
-  --accent: #7c3aed;
-  --accent-strong: #6d28d9;
+  --accent: #ff8904;
+  --accent-strong: #ff9f40;
   --border: #e5e7eb;
   --shadow: 0 25px 60px -30px rgba(15, 23, 42, 0.18);
   --shadow-light: 0 14px 32px -18px rgba(15, 23, 42, 0.16);
   --sidebar-bg: #f7f7f8;
   --sidebar-highlight: #ededed;
-  --sidebar-indicator: #7c3aed;
+  --sidebar-indicator: #ff8904;
   --sidebar-text: #111827;
   --sidebar-muted: #6b7280;
 }
@@ -24,8 +24,8 @@
   --card: #161a1f;
   --text: #e5e7eb;
   --muted: #a1a5b3;
-  --accent: #a78bfa;
-  --accent-strong: #c4b5fd;
+  --accent: #ff9f40;
+  --accent-strong: #ffb66f;
   --border: #1f2430;
   --shadow: 0 25px 60px -30px rgba(0, 0, 0, 0.6);
   --shadow-light: 0 14px 32px -18px rgba(0, 0, 0, 0.6);
@@ -74,7 +74,7 @@ body {
 .ui-btn-primary {
   background: linear-gradient(135deg, var(--accent), var(--accent-strong));
   color: #fff;
-  box-shadow: 0 18px 35px -18px rgba(124, 58, 237, 0.6);
+  box-shadow: 0 18px 35px -18px rgba(255, 137, 4, 0.6);
 }
 
 .ui-btn-secondary {
@@ -160,7 +160,7 @@ body {
 .ui-input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(116, 88, 255, 0.22);
+  box-shadow: 0 0 0 3px rgba(255, 137, 4, 0.22);
 }
 
 .ui-textarea {
@@ -319,7 +319,7 @@ h6 {
   background: var(--accent);
   color: #fff;
   border-color: transparent;
-  box-shadow: 0 12px 30px -14px rgba(116, 88, 255, 0.65);
+  box-shadow: 0 12px 30px -14px rgba(255, 137, 4, 0.65);
 }
 
 .nav-link:disabled {
@@ -812,7 +812,7 @@ select:focus,
 textarea:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(116, 88, 255, 0.12);
+  box-shadow: 0 0 0 4px rgba(255, 137, 4, 0.12);
 }
 
 textarea {
@@ -826,13 +826,13 @@ button.primary {
   padding: 0.65rem 1.1rem;
   border-radius: 12px;
   cursor: pointer;
-  box-shadow: 0 18px 40px -18px rgba(124, 58, 237, 0.6);
+  box-shadow: 0 18px 40px -18px rgba(255, 137, 4, 0.6);
   transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
 button.primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 18px 48px -18px rgba(124, 58, 237, 0.65);
+  box-shadow: 0 18px 48px -18px rgba(255, 137, 4, 0.65);
 }
 
 button.secondary {
@@ -891,9 +891,9 @@ label {
 
 .announcement-pill:hover,
 .announcement-pill:focus-visible {
-  background: rgba(79, 70, 229, 0.08);
+  background: rgba(255, 137, 4, 0.08);
   color: var(--text);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+  box-shadow: 0 0 0 3px rgba(255, 137, 4, 0.12);
   border-color: var(--border);
   transform: translateY(-0.5px);
   outline: none;
@@ -1398,7 +1398,7 @@ label {
 }
 
 .form-control:focus {
-  outline: 2px solid rgba(116, 88, 255, 0.35);
+  outline: 2px solid rgba(255, 137, 4, 0.35);
   border-color: var(--accent);
 }
 
@@ -1498,7 +1498,7 @@ label {
 }
 
 .pill-active {
-  background: #ede9fe;
+  background: #fff1e0;
   color: var(--accent-strong);
   border-color: var(--accent);
 }
@@ -1572,9 +1572,9 @@ label {
 }
 
 .status-in-progress {
-  color: #5a46c6;
-  border-color: rgba(90, 70, 198, 0.35);
-  background: rgba(90, 70, 198, 0.08);
+  color: #ff8904;
+  border-color: rgba(255, 137, 4, 0.35);
+  background: rgba(255, 137, 4, 0.08);
 }
 
 .status-completed {
