@@ -39,7 +39,6 @@ const ModeSelectionModal = ({ open, onClose, onSelectSolo }) => {
       open={open}
       onClose={onClose}
       title="Choose how you want to run the assessment"
-      description="Switch between self-guided and guided modes without losing your work."
     >
       <div className="mode-grid">
         <Card
@@ -124,12 +123,11 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
   const steps = [
     {
       id: 'assessmentTitle',
-      title: 'Name your assessment',
-      description: 'Give this workspace a memorable title so everyone knows what it covers.',
+      title: '',
+      description: '',
       render: () => (
         <div className="wizard-field">
           <label className="wizard-label">Assessment name</label>
-          <p className="wizard-helper">Press enter to keep moving forward.</p>
           <div className="input-with-hint">
             <Input
               autoFocus
@@ -391,7 +389,6 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
       </div>
       <div className="wizard-step">
         <div className="wizard-step-header">
-          <p className="wizard-eyebrow">Interactive wizard</p>
           <h3 className="wizard-title">{currentStep.title}</h3>
           <p className="wizard-description">{currentStep.description}</p>
         </div>
