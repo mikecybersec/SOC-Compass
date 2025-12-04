@@ -1515,6 +1515,27 @@ label {
   height: 100%;
 }
 
+.selectable-card {
+  cursor: pointer;
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.selectable-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 24px 60px -30px rgba(15, 23, 42, 0.2);
+  transform: translateY(-2px);
+}
+
+.selectable-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.card-action-hint {
+  font-weight: 600;
+  color: var(--accent);
+}
+
 .mode-card.elevated {
   border-color: var(--border);
   box-shadow: 0 20px 50px -25px rgba(15, 23, 42, 0.12);
