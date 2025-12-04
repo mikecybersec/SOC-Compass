@@ -52,20 +52,16 @@ const AssessmentInfo = ({ onBack, scoresRef, actionPlanRef, onOpenReporting }) =
             </button>
           </div>
         </div>
-
-        <div style={{ marginBottom: '0.5rem' }}>
-          <p className="badge">Assessment Info</p>
-        </div>
-        <DomainProgressOverview frameworkId={frameworkId} answers={answers} />
-
-        <div className="section-divider" aria-hidden />
-
         <AssessmentInfoSummary
           ref={summaryRef}
           metadata={metadata}
           frameworkName={frameworkName}
           lastSavedAt={lastSavedAt}
         />
+
+        <div className="section-divider" aria-hidden />
+
+        <DomainProgressOverview frameworkId={frameworkId} answers={answers} />
 
         <Toolbar scoresRef={scoresRef} actionPlanRef={actionPlanRef} metaRef={summaryRef} locked={isLocked} />
       </div>
