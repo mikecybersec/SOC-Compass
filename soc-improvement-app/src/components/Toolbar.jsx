@@ -1,13 +1,17 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { exportAssessment, importAssessment } from '../utils/storage';
 import { exportPdf } from '../utils/pdf';
+import { objectiveOptions } from '../constants/objectives';
 
-const Toolbar = ({ scoresRef, actionPlanRef, metaRef }) => {
+const Toolbar = ({ scoresRef, actionPlanRef, metaRef, locked }) => {
   const fileRef = useRef();
   const state = useAssessmentStore();
   const setMetadata = useAssessmentStore((s) => s.setMetadata);
   const importState = useAssessmentStore((s) => s.importState);
+  const [customObjective, setCustomObjective] = useState('');
+
+  const objectives = state.currentAssessment.metadata.objectives || [];
 
   const handleImport = async (event) => {
     const file = event.target.files?.[0];
@@ -20,12 +24,31 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef }) => {
     }
   };
 
+  const toggleObjective = (objective) => {
+    if (locked) return;
+    const updated = objectives.includes(objective)
+      ? objectives.filter((item) => item !== objective)
+      : [...objectives, objective];
+    setMetadata({ objectives: updated });
+  };
+
+  const addCustomObjective = () => {
+    if (locked) return;
+    if (!customObjective.trim()) return;
+    setMetadata({ objectives: [...objectives, customObjective.trim()] });
+    setCustomObjective('');
+  };
+
   return (
     <div className="card" style={{ display: 'grid', gap: '0.5rem' }}>
       <div className="flex-between">
         <div>
           <h3>Metadata & Controls</h3>
-          <p style={{ color: 'var(--muted)' }}>Offline by default. Exports include action plan and answers.</p>
+          <p style={{ color: 'var(--muted)' }}>
+            {locked
+              ? 'Locked for editing. Unlock to update assessment metadata and objectives.'
+              : 'Offline by default. Exports include action plan and answers.'}
+          </p>
         </div>
         <div className="flex" style={{ gap: '0.5rem' }}>
           <button className="secondary" onClick={() => fileRef.current?.click()}>Import</button>
@@ -42,11 +65,16 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef }) => {
           <input
             value={state.currentAssessment.metadata.assessmentTitle}
             onChange={(e) => setMetadata({ assessmentTitle: e.target.value })}
+            disabled={locked}
           />
         </div>
         <div style={{ minWidth: '220px' }}>
           <label>Organization name</label>
-          <input value={state.currentAssessment.metadata.name} onChange={(e) => setMetadata({ name: e.target.value })} />
+          <input
+            value={state.currentAssessment.metadata.name}
+            onChange={(e) => setMetadata({ name: e.target.value })}
+            disabled={locked}
+          />
         </div>
         <div style={{ minWidth: '180px' }}>
           <label>Budget amount</label>
@@ -54,6 +82,7 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef }) => {
             value={state.currentAssessment.metadata.budgetAmount}
             onChange={(e) => setMetadata({ budgetAmount: e.target.value })}
             placeholder="e.g. 250000"
+            disabled={locked}
           />
         </div>
         <div style={{ minWidth: '140px' }}>
@@ -61,6 +90,7 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef }) => {
           <select
             value={state.currentAssessment.metadata.budgetCurrency}
             onChange={(e) => setMetadata({ budgetCurrency: e.target.value })}
+            disabled={locked}
           >
             <option value="$">USD ($)</option>
             <option value="€">EUR (€)</option>
@@ -73,13 +103,18 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef }) => {
       <div className="flex" style={{ gap: '1rem', flexWrap: 'wrap' }}>
         <div style={{ minWidth: '200px' }}>
           <label>Size</label>
-          <input value={state.currentAssessment.metadata.size} onChange={(e) => setMetadata({ size: e.target.value })} />
+          <input
+            value={state.currentAssessment.metadata.size}
+            onChange={(e) => setMetadata({ size: e.target.value })}
+            disabled={locked}
+          />
         </div>
         <div style={{ minWidth: '200px' }}>
           <label>Sector</label>
           <select
             value={state.currentAssessment.metadata.sector}
             onChange={(e) => setMetadata({ sector: e.target.value })}
+            disabled={locked}
           >
             <option value="MSSP">MSSP</option>
             <option value="Technology">Technology</option>
@@ -95,6 +130,7 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef }) => {
           <select
             value={state.currentAssessment.metadata.status}
             onChange={(e) => setMetadata({ status: e.target.value })}
+            disabled={locked}
           >
             <option value="Not Started">Not Started</option>
             <option value="In Progress">In Progress</option>
@@ -105,11 +141,35 @@ const Toolbar = ({ scoresRef, actionPlanRef, metaRef }) => {
 
       <div>
         <label>Objectives</label>
-        <input
-          value={(state.currentAssessment.metadata.objectives || []).join(', ')}
-          onChange={(e) => setMetadata({ objectives: e.target.value.split(',').map((o) => o.trim()).filter(Boolean) })}
-          placeholder="Separate with commas to track multiple objectives"
-        />
+        <div className="pill-list" style={{ marginBottom: '0.5rem' }}>
+          {objectiveOptions.map((option) => (
+            <button
+              key={option}
+              type="button"
+              className={`pill-button ${objectives.includes(option) ? 'primary' : 'ghost-button'}`}
+              onClick={() => toggleObjective(option)}
+              disabled={locked}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+        <div className="flex" style={{ gap: '0.5rem' }}>
+          <input
+            value={customObjective}
+            onChange={(e) => setCustomObjective(e.target.value)}
+            placeholder="Add a custom objective"
+            disabled={locked}
+          />
+          <button className="secondary" type="button" onClick={addCustomObjective} disabled={locked}>
+            Add
+          </button>
+        </div>
+        {objectives.filter((objective) => !objectiveOptions.includes(objective)).length > 0 && (
+          <div className="muted-label" style={{ marginTop: '0.5rem' }}>
+            Custom objectives: {objectives.filter((objective) => !objectiveOptions.includes(objective)).join(', ')}
+          </div>
+        )}
       </div>
     </div>
   );

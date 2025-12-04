@@ -14,15 +14,7 @@ import { Input, Select } from '../components/ui/Input';
 import Label from '../components/ui/Label';
 import Badge from '../components/ui/Badge';
 import Dialog from '../components/ui/Dialog';
-
-const objectiveOptions = [
-  'Reduce MTTR',
-  'Improve detection coverage',
-  'Meet compliance obligations',
-  'Enable MSSP service quality',
-  'Automate triage',
-  'Strengthen threat hunting',
-];
+import { objectiveOptions } from '../constants/objectives';
 
 const disabledFrameworks = ['sim3', 'inform'];
 const getInitialFrameworkId = (frameworkId) =>
