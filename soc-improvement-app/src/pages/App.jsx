@@ -103,8 +103,6 @@ const App = () => {
   const scoresRef = useRef();
   const actionPlanRef = useRef();
   const [startMode, setStartMode] = useState(null);
-  const scoresRef = useRef();
-  const actionPlanRef = useRef();
   const metaRef = useRef();
   const theme = useAssessmentStore((s) => s.theme);
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
