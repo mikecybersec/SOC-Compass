@@ -389,7 +389,8 @@ h6 {
   display: none;
   position: absolute;
   top: 100%;
-  right: 0;
+  left: 0.8rem;
+  right: auto;
   min-width: 220px;
   padding: 0.35rem;
   background: linear-gradient(175deg, rgba(255, 255, 255, 0.98), rgba(244, 246, 248, 0.95));
