@@ -196,7 +196,6 @@ const App = () => {
               onBack={() => setView('home')}
               onOpenAssessmentInfo={handleViewAssessmentInfo}
               onOpenReporting={handleViewReporting}
-              actionPlanRef={actionPlanRef}
             />
           )}
           {view === 'assessmentInfo' && (

@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import QuestionPanel from '../components/QuestionPanel';
-import ActionPlan from '../components/ActionPlan';
 import { frameworks } from '../utils/frameworks';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 
-const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, actionPlanRef }) => {
+const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting }) => {
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
   const lastSavedAt = useAssessmentStore((s) => s.lastSavedAt);
   const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
@@ -72,8 +71,6 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, actionPlanR
           nextAspect={nextAspect}
           onNextAspect={() => nextAspectKey && setActiveAspectKey(nextAspectKey)}
         />
-        <div className="section-divider" aria-hidden />
-        <ActionPlan ref={actionPlanRef} />
       </main>
 
       <div className={`toast ${showSaveToast ? 'toast-visible' : ''}`}>Changes saved to assessment</div>
