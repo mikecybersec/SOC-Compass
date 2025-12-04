@@ -46,8 +46,9 @@ const Toolbar = () => {
 
         <input type="file" accept="application/json" ref={fileRef} style={{ display: 'none' }} onChange={handleImport} />
 
-        <div className="modal-divider" aria-hidden />
-
+        <div className="metadata-divider" role="presentation">
+          <span>Info</span>
+        </div>
         <div className="metadata-section">
           <div className="metadata-section-label">Info</div>
           <div className="metadata-section-grid">
@@ -101,8 +102,9 @@ const Toolbar = () => {
           </div>
         </div>
 
-        <div className="modal-divider" aria-hidden />
-
+        <div className="metadata-divider" role="presentation">
+          <span>Resources</span>
+        </div>
         <div className="metadata-section">
           <div className="metadata-section-label">Resources</div>
           <div className="metadata-section-grid">
@@ -129,8 +131,9 @@ const Toolbar = () => {
           </div>
         </div>
 
-        <div className="modal-divider" aria-hidden />
-
+        <div className="metadata-divider" role="presentation">
+          <span>Objectives</span>
+        </div>
         <div className="metadata-section">
           <div className="metadata-section-label">Objectives</div>
           <div className="metadata-pill-list">

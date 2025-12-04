@@ -686,26 +686,21 @@ button, input, select, textarea {
   gap: 1rem;
 }
 
-.modal-divider {
-  border-bottom: 1px solid var(--border);
-  margin: 0.15rem -0.1rem;
-}
-
 .metadata-modal-card {
-  padding: 0.9rem 0.95rem;
+  padding: 0.75rem 0.8rem;
 }
 
 .metadata-modal {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.65rem;
 }
 
 .metadata-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 0.75rem;
+  gap: 0.6rem;
 }
 
 .metadata-header-actions {
@@ -715,15 +710,33 @@ button, input, select, textarea {
 }
 
 .metadata-subtext {
-  margin: 0.1rem 0 0;
+  margin: 0.05rem 0 0;
   color: var(--muted);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+}
+
+.metadata-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+  letter-spacing: 0.01em;
+  margin: 0.15rem -0.1rem 0.25rem;
+}
+
+.metadata-divider::before,
+.metadata-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--border);
+  opacity: 0.9;
 }
 
 .metadata-section {
   display: grid;
   grid-template-columns: 140px 1fr;
-  gap: 0.45rem 0.75rem;
+  gap: 0.35rem 0.6rem;
   align-items: start;
 }
 
@@ -731,28 +744,29 @@ button, input, select, textarea {
   font-weight: 700;
   color: var(--muted);
   letter-spacing: 0.01em;
-  margin-top: 0.2rem;
+  margin-top: 0.1rem;
+  font-size: 0.9rem;
 }
 
 .metadata-section-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  gap: 0.55rem;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.45rem;
 }
 
 .metadata-field label {
   display: block;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.15rem;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .metadata-modal-card input,
 .metadata-modal-card select,
 .metadata-modal-card textarea {
-  padding: 0.5rem 0.65rem;
-  border-radius: 10px;
-  background: #f9fafb;
+  padding: 0.42rem 0.6rem;
+  border-radius: 8px;
+  background: #fafbfd;
 }
 
 .metadata-modal-card .icon-button {
@@ -767,8 +781,8 @@ button, input, select, textarea {
 }
 
 .metadata-pill-list .pill-button {
-  padding: 0.45rem 0.9rem;
-  font-size: 0.95rem;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.9rem;
 }
 
 .section-divider {
