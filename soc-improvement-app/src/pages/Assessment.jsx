@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import FrameworkSelector from '../components/FrameworkSelector';
 import Sidebar from '../components/Sidebar';
 import QuestionPanel from '../components/QuestionPanel';
 import ScoreBoard from '../components/ScoreBoard';
@@ -68,7 +67,6 @@ const Assessment = ({ onBack, scoresRef, actionPlanRef, onOpenAssessmentInfo, on
       />
       <main className="main">
         <div className="section-divider" aria-hidden />
-        <FrameworkSelector />
         <QuestionPanel
           aspect={activeAspect}
           nextAspect={nextAspect}
