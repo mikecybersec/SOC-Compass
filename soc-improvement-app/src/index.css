@@ -840,6 +840,8 @@ button, input, select, textarea {
 }
 
 .badge {
+  display: inline-flex;
+  align-items: center;
   background: #eef1f5;
   color: var(--text);
   padding: 0.25rem 0.6rem;
