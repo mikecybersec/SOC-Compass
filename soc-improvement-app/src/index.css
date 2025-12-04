@@ -880,6 +880,33 @@ label {
   flex: 1;
 }
 
+.hero-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.hero-caret {
+  display: inline-flex;
+  width: 0.55rem;
+  height: 1.5rem;
+  border-radius: 2px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.18), rgba(15, 23, 42, 0.35));
+  animation: caret-blink 1.25s steps(2, start) infinite;
+  margin-left: 0.1rem;
+}
+
+@keyframes caret-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    opacity: 0;
+  }
+}
+
 .hero-subtitle {
   color: var(--muted);
   max-width: 780px;
@@ -899,6 +926,39 @@ label {
   padding: 1.2rem;
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.glass-hero::before,
+.glass-hero::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  filter: blur(10px);
+  opacity: 0.5;
+}
+
+.glass-hero::before {
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle at 30% 30%, rgba(72, 118, 255, 0.2), transparent 55%);
+  top: -140px;
+  right: -60px;
+}
+
+.glass-hero::after {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle at 60% 60%, rgba(99, 102, 241, 0.18), transparent 60%);
+  bottom: -90px;
+  left: -40px;
+  box-shadow: 260px -40px 120px -160px rgba(59, 130, 246, 0.18);
 }
 
 .assessment-banner {
