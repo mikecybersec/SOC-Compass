@@ -4,6 +4,7 @@ import { importAssessment } from '../utils/storage';
 import { objectiveOptions } from '../constants/objectives';
 import Dialog from './ui/Dialog';
 import Button from './ui/Button';
+import { formatBudgetAmount } from '../utils/format';
 
 const Toolbar = ({ open, onClose }) => {
   const fileRef = useRef();
@@ -133,7 +134,9 @@ const Toolbar = ({ open, onClose }) => {
               <label>Budget amount</label>
               <input
                 value={state.currentAssessment.metadata.budgetAmount}
-                onChange={(e) => setMetadata({ budgetAmount: e.target.value })}
+                onChange={(e) =>
+                  setMetadata({ budgetAmount: formatBudgetAmount(e.target.value) })
+                }
                 placeholder="e.g. 250000"
               />
             </div>

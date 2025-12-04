@@ -15,6 +15,7 @@ import Label from '../components/ui/Label';
 import Badge from '../components/ui/Badge';
 import Dialog from '../components/ui/Dialog';
 import { objectiveOptions } from '../constants/objectives';
+import { formatBudgetAmount } from '../utils/format';
 
 const disabledFrameworks = ['sim3', 'inform'];
 const getInitialFrameworkId = (frameworkId) =>
@@ -226,7 +227,9 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
             <Input
               className="form-control"
               value={form.budgetAmount}
-              onChange={(e) => setForm({ ...form, budgetAmount: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, budgetAmount: formatBudgetAmount(e.target.value) })
+              }
               placeholder="e.g. 250000"
             />
           </div>
