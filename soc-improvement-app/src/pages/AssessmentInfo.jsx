@@ -54,19 +54,13 @@ const AssessmentInfo = ({ onBack, onOpenReporting, metaRef, scoresRef, actionPla
             <Button variant="outline" className="danger-button" onClick={() => setConfirmDeleteOpen(true)}>
               Delete assessment
             </Button>
-            <button className="secondary" onClick={onBack}>
-              Back to assessment
-            </button>
+            <Button variant="secondary" onClick={() => setMetadataDialogOpen(true)}>
+              Edit Assessment
+            </Button>
           </div>
         </div>
 
-        <AssessmentInfoSummary
-          ref={summaryRef}
-          metadata={metadata}
-          frameworkName={frameworkName}
-          lastSavedAt={lastSavedAt}
-          onEdit={() => setMetadataDialogOpen(true)}
-        />
+        <AssessmentInfoSummary ref={summaryRef} metadata={metadata} frameworkName={frameworkName} lastSavedAt={lastSavedAt} />
 
         <div className="section-divider" aria-hidden />
 
