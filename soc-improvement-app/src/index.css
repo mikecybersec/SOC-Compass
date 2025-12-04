@@ -1430,6 +1430,38 @@ label {
   gap: 1rem;
 }
 
+.form-tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  padding: 0.35rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #f3f4f6;
+}
+
+.form-tab {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  border-radius: 10px;
+  padding: 0.55rem 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.form-tab:hover {
+  color: var(--text);
+}
+
+.form-tab.active {
+  background: #fff;
+  border-color: var(--border);
+  color: var(--text);
+  box-shadow: var(--shadow-light);
+}
+
 .mode-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
