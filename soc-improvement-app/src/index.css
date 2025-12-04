@@ -597,6 +597,12 @@ button, input, select, textarea {
   border-color: #e5e5e5;
 }
 
+.sidebar-domain-toggle {
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+  padding: 0.65rem 0.85rem 0.65rem 1.05rem;
+}
+
 .sidebar-toggle .chevron {
   display: inline-block;
   transition: transform 0.16s ease;

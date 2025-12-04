@@ -67,6 +67,7 @@ const hydrateState = (saved) => {
     lastSavedAt: timestampNow(),
     activeAspectKey: null,
     sidebarAssessmentCollapsed: false,
+    sidebarDomainCollapsed: {},
   };
 
   if (!saved) return defaults;
@@ -94,6 +95,10 @@ const hydrateState = (saved) => {
       saved && Object.prototype.hasOwnProperty.call(saved, 'sidebarAssessmentCollapsed')
         ? saved.sidebarAssessmentCollapsed
         : defaults.sidebarAssessmentCollapsed,
+    sidebarDomainCollapsed:
+      saved && Object.prototype.hasOwnProperty.call(saved, 'sidebarDomainCollapsed')
+        ? saved.sidebarDomainCollapsed || defaults.sidebarDomainCollapsed
+        : defaults.sidebarDomainCollapsed,
   };
 
   return hydrated;
@@ -157,6 +162,19 @@ export const useAssessmentStore = create(
             ? sidebarAssessmentCollapsed(state.sidebarAssessmentCollapsed)
             : sidebarAssessmentCollapsed,
       })),
+    setSidebarDomainCollapsed: (domain, collapsed) =>
+      set((state) => {
+        const current = state.sidebarDomainCollapsed || {};
+        const currentValue = Boolean(current[domain]);
+        const nextValue =
+          typeof collapsed === 'function' ? collapsed(currentValue) : Boolean(collapsed);
+        return {
+          sidebarDomainCollapsed: {
+            ...current,
+            [domain]: nextValue,
+          },
+        };
+      }),
     setApiKey: (apiKey) => set({ apiKey }),
     setApiBase: (apiBase) => set({ apiBase }),
     setModel: (model) => set({ model }),
