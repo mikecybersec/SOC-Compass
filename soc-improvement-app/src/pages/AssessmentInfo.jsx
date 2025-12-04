@@ -52,10 +52,6 @@ const AssessmentInfo = ({ onBack, onOpenReporting, metaRef, scoresRef, actionPla
         <div className="flex-between" style={{ alignItems: 'flex-end' }}>
           <div>
             <h1>Assessment Info</h1>
-            <p style={{ color: 'var(--muted)', maxWidth: '720px' }}>
-              A dedicated space for the engagement metadata. Keep client names, budgets, and objectives tidy here before diving
-              into the assessment sections.
-            </p>
           </div>
           <div className="flex" style={{ gap: '0.5rem' }}>
             <Button variant="outline" className="danger-button" onClick={() => setConfirmDeleteOpen(true)}>
