@@ -350,7 +350,10 @@ const Home = ({
     <div className="home">
       <header className="home-hero glass-hero">
         <div className="hero-copy">
-          <h1>Deliver every SOC assessment from one place</h1>
+          <h1 className="hero-title">
+            Deliver every SOC assessment from one place
+            <span className="hero-caret" aria-hidden="true">|</span>
+          </h1>
           <p className="hero-subtitle">
             SOC Compass enables SOC Leaders & Consultants to deliver capability maturity assessments from dedicated
             workspaces, providing tailored action plans, roadmaps and reports.
