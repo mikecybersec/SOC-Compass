@@ -75,16 +75,18 @@ const ModeSelectionModal = ({ open, onClose, onSelectSolo }) => {
 };
 
 const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, currentFrameworkId, startMode }) => {
-  const [selectedObjectives, setSelectedObjectives] = useState(initialMetadata.objectives || []);
-  const [form, setForm] = useState({
-    assessmentTitle: initialMetadata.assessmentTitle || '',
-    name: initialMetadata.name || '',
-    budgetAmount: initialMetadata.budgetAmount || '',
+  const buildInitialForm = () => ({
+    assessmentTitle: '',
+    name: '',
+    budgetAmount: '',
     budgetCurrency: initialMetadata.budgetCurrency || '$',
-    size: initialMetadata.size || 'Mid-market',
-    sector: initialMetadata.sector || 'MSSP',
+    size: '',
+    sector: '',
     frameworkId: getInitialFrameworkId(currentFrameworkId),
   });
+
+  const [selectedObjectives, setSelectedObjectives] = useState(initialMetadata.objectives || []);
+  const [form, setForm] = useState(buildInitialForm);
   const [customObjective, setCustomObjective] = useState('');
   const [step, setStep] = useState(0);
   const [showLoading, setShowLoading] = useState(false);
@@ -92,15 +94,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
 
   useEffect(() => {
     if (!open) return;
-    setForm({
-      assessmentTitle: initialMetadata.assessmentTitle || '',
-      name: initialMetadata.name || '',
-      budgetAmount: initialMetadata.budgetAmount || '',
-      budgetCurrency: initialMetadata.budgetCurrency || '$',
-      size: initialMetadata.size || 'Mid-market',
-      sector: initialMetadata.sector || 'MSSP',
-      frameworkId: getInitialFrameworkId(currentFrameworkId),
-    });
+    setForm(buildInitialForm());
     setSelectedObjectives(initialMetadata.objectives || []);
     setCustomObjective('');
     setStep(0);
@@ -162,6 +156,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
             <Input
               className="form-control"
               value={form.name}
+              placeholder="e.g. ACME Global"
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
@@ -244,6 +239,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
             <Input
               className="form-control"
               value={form.size}
+              placeholder="e.g. 30-person SOC"
               onChange={(e) => setForm({ ...form, size: e.target.value })}
             />
           </div>
@@ -254,6 +250,9 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
               value={form.sector}
               onChange={(e) => setForm({ ...form, sector: e.target.value })}
             >
+              <option value="" disabled hidden>
+                Select a sector
+              </option>
               <option value="MSSP">MSSP</option>
               <option value="Technology">Technology</option>
               <option value="Finance">Finance</option>
@@ -329,7 +328,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
         frameworkId,
         metadata: { ...form, objectives: selectedObjectives },
       });
-    }, 800);
+    }, 10000);
   };
 
   if (!open) return null;
