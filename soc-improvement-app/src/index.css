@@ -897,6 +897,7 @@ label {
   gap: 0.65rem;
   flex-wrap: wrap;
   margin: 0.9rem 0 0.5rem;
+  align-items: center;
 }
 
 .hero-link-button {
@@ -904,15 +905,20 @@ label {
   border: none;
   color: var(--primary);
   font-weight: 600;
-  padding: 0.35rem 0.25rem;
+  padding: 0.35rem 0.6rem;
   cursor: pointer;
   text-decoration: none;
+  border-radius: 999px;
+  transition: background-color 150ms ease, text-decoration-color 150ms ease;
+  display: inline-flex;
+  align-items: center;
 }
 
 .hero-link-button:hover,
 .hero-link-button:focus-visible {
   text-decoration: underline;
   outline: none;
+  background: var(--bg-subtle);
 }
 
 .glass-hero {
