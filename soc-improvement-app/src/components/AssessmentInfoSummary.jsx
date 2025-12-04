@@ -21,6 +21,7 @@ const AssessmentInfoSummary = forwardRef(({ metadata, frameworkName, lastSavedAt
             <span>Status: {metadata?.status || 'Not set'}</span>
             <span>{formatBudget(metadata)}</span>
             <span>Size: {metadata?.size || 'Not set'}</span>
+            <span>SOC age: {metadata?.socAge || 'Not set'}</span>
             <span>Sector: {metadata?.sector || 'Not set'}</span>
             <span>Framework: {frameworkName || 'Unknown'}</span>
           </div>

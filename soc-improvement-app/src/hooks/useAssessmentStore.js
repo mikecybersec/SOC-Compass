@@ -15,6 +15,7 @@ const defaultMetadata = () => ({
   budgetCurrency: '$',
   size: 'Mid-market',
   sector: 'MSSP',
+  socAge: '',
   objectives: ['Reduce MTTR', 'Improve detection coverage'],
   language: 'en',
   status: 'Not Started',
@@ -33,7 +34,17 @@ const hasAssessmentContent = (assessment) => {
   const hasActionPlan = Boolean(actionPlan.raw?.trim()) || (actionPlan.steps || []).length > 0;
 
   const defaults = defaultMetadata();
-  const trackedKeys = ['assessmentTitle', 'name', 'budgetAmount', 'budgetCurrency', 'size', 'sector', 'language', 'status'];
+  const trackedKeys = [
+    'assessmentTitle',
+    'name',
+    'budgetAmount',
+    'budgetCurrency',
+    'size',
+    'sector',
+    'socAge',
+    'language',
+    'status',
+  ];
 
   const metadataChanged =
     (metadata.objectives || []).join('|') !== (defaults.objectives || []).join('|') ||
@@ -49,6 +60,7 @@ const normalizeMetadata = (metadata = {}) => ({
   budgetAmount: metadata.budgetAmount || metadata.budget || '',
   budgetCurrency: metadata.budgetCurrency || '$',
   sector: metadata.sector || metadata.industry || 'MSSP',
+  socAge: metadata.socAge || '',
   status: metadata.status || 'Not Started',
 });
 

@@ -87,6 +87,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
     budgetCurrency: initialMetadata.budgetCurrency || '$',
     size: '',
     sector: '',
+    socAge: initialMetadata.socAge || '',
     frameworkId: getInitialFrameworkId(currentFrameworkId),
   });
 
@@ -155,12 +156,11 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
     },
     {
       id: 'name',
-      title: 'Who is this for?',
-      description: 'Add the organization to personalize reports and exports.',
+      title: '',
+      description: '',
       render: () => (
         <div className="wizard-field">
           <label className="wizard-label">Organization name</label>
-          <p className="wizard-helper">This shows up on exports.</p>
           <div className="input-with-hint">
             <Input
               className="form-control"
@@ -184,8 +184,8 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
     },
     {
       id: 'framework',
-      title: 'Choose your framework',
-      description: 'Pick the assessment structure that matches your engagement.',
+      title: '',
+      description: '',
       render: () => (
         <div className="wizard-field">
           <label className="wizard-label">Assessment type</label>
@@ -216,8 +216,8 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
     },
     {
       id: 'context',
-      title: 'Add organization context',
-      description: 'Budget, size, and sector help tailor recommendations.',
+      title: '',
+      description: '',
       render: () => (
         <div className="wizard-grid">
           <div className="wizard-field">
@@ -253,6 +253,23 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
             />
           </div>
           <div className="wizard-field">
+            <label className="wizard-label">How long has your SOC been established?</label>
+            <Select
+              className="form-control"
+              value={form.socAge}
+              onChange={(e) => setForm({ ...form, socAge: e.target.value })}
+            >
+              <option value="" disabled hidden>
+                Select SOC age
+              </option>
+              <option value="0-6 months">0-6 months</option>
+              <option value="6-12 months">6-12 months</option>
+              <option value="1-2 years">1-2 years</option>
+              <option value="2-5 years">2-5 years</option>
+              <option value="5+ years">5+ years</option>
+            </Select>
+          </div>
+          <div className="wizard-field">
             <label className="wizard-label">Sector</label>
             <Select
               className="form-control"
@@ -277,6 +294,7 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
         if (!form.budgetAmount.trim()) return 'Budget amount must have at least one character.';
         if (!(form.budgetCurrency || '').toString().trim()) return 'Currency must have at least one character.';
         if (!form.size.trim()) return 'Size must have at least one character.';
+        if (!form.socAge.trim()) return 'SOC age must have at least one character.';
         if (!form.sector.trim()) return 'Sector must have at least one character.';
         return true;
       },

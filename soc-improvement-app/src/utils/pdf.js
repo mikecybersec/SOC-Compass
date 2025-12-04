@@ -44,6 +44,7 @@ export const exportPdf = async ({ scoresRef, actionPlanRef, metaRef, metadata })
       `Status: ${metadata.status || 'Not set'}`,
       `Sector: ${metadata.sector || 'Not set'}`,
       `Size: ${metadata.size || 'Not set'}`,
+      `SOC age: ${metadata.socAge || 'Not set'}`,
       `Budget: ${metadata.budgetAmount ? `${metadata.budgetCurrency || '$'}${metadata.budgetAmount}` : 'Not set'}`,
     ];
     doc.text(summaryLines.join('\n'), 32, cursorY);
