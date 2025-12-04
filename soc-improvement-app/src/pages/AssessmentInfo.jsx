@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import AssessmentInfoSummary from '../components/AssessmentInfoSummary';
 import DomainProgressOverview from '../components/DomainProgressOverview';
+import ScoreBoard from '../components/ScoreBoard';
 import Sidebar from '../components/Sidebar';
 import Toolbar from '../components/Toolbar';
 import Dialog from '../components/ui/Dialog';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { frameworks } from '../utils/frameworks';
 
-const AssessmentInfo = ({ onBack, onOpenReporting, metaRef }) => {
+const AssessmentInfo = ({ onBack, onOpenReporting, metaRef, scoresRef }) => {
   const metadata = useAssessmentStore((s) => s.currentAssessment.metadata);
   const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
   const lastSavedAt = useAssessmentStore((s) => s.lastSavedAt);
@@ -60,6 +61,10 @@ const AssessmentInfo = ({ onBack, onOpenReporting, metaRef }) => {
         <div className="section-divider" aria-hidden />
 
         <DomainProgressOverview frameworkId={frameworkId} answers={answers} />
+
+        <div className="section-divider" aria-hidden />
+
+        <ScoreBoard ref={scoresRef} />
       </div>
 
         <Dialog
