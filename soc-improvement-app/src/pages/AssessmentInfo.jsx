@@ -19,6 +19,7 @@ const AssessmentInfo = ({ onBack, onOpenReporting, metaRef, scoresRef, actionPla
   const deleteCurrentAssessment = useAssessmentStore((s) => s.deleteCurrentAssessment);
 
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [metadataDialogOpen, setMetadataDialogOpen] = useState(false);
   const summaryRef = metaRef || useRef();
   const frameworkName = frameworks[frameworkId]?.name;
   const aspects = frameworks[frameworkId]?.aspects || [];
@@ -71,6 +72,7 @@ const AssessmentInfo = ({ onBack, onOpenReporting, metaRef, scoresRef, actionPla
           metadata={metadata}
           frameworkName={frameworkName}
           lastSavedAt={lastSavedAt}
+          onEdit={() => setMetadataDialogOpen(true)}
         />
 
         <div className="section-divider" aria-hidden />
@@ -80,7 +82,13 @@ const AssessmentInfo = ({ onBack, onOpenReporting, metaRef, scoresRef, actionPla
         <div className="section-divider" aria-hidden />
 
         <ScoreBoard ref={scoresRef} />
-        <Toolbar scoresRef={scoresRef} actionPlanRef={actionPlanRef} metaRef={summaryRef} />
+        <Toolbar
+          scoresRef={scoresRef}
+          actionPlanRef={actionPlanRef}
+          metaRef={summaryRef}
+          open={metadataDialogOpen}
+          onClose={() => setMetadataDialogOpen(false)}
+        />
       </div>
 
       <Dialog
