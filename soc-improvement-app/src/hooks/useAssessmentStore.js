@@ -189,20 +189,35 @@ export const useAssessmentStore = create(
             ? state.currentAssessment
             : { ...state.currentAssessment, id: `assessment-${Date.now()}` };
 
-        const updatedHistory = (state.assessmentHistory || []).map((entry) =>
-          entry.id === currentAssessment.id
-            ? {
-                ...entry,
+        const history = state.assessmentHistory || [];
+        const existsInHistory = history.some((entry) => entry.id === currentAssessment.id);
+
+        const updatedHistory = existsInHistory
+          ? history.map((entry) =>
+              entry.id === currentAssessment.id
+                ? {
+                    ...entry,
+                    ...currentAssessment,
+                    label:
+                      entry.label ||
+                      currentAssessment.metadata?.assessmentTitle ||
+                      currentAssessment.metadata?.name ||
+                      'Saved assessment',
+                    savedAt: new Date().toISOString(),
+                  }
+                : entry
+            )
+          : [
+              {
                 ...currentAssessment,
                 label:
-                  entry.label ||
                   currentAssessment.metadata?.assessmentTitle ||
                   currentAssessment.metadata?.name ||
                   'Saved assessment',
                 savedAt: new Date().toISOString(),
-              }
-            : entry
-        );
+              },
+              ...history,
+            ];
 
         return {
           currentAssessment,
