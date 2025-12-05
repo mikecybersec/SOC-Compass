@@ -24,7 +24,7 @@ import Badge from '../components/ui/Badge';
 import Dialog from '../components/ui/Dialog';
 import { objectiveOptions } from '../constants/objectives';
 import { formatBudgetAmount } from '../utils/format';
-import { FolderPlus, FileText, Sparkles } from 'lucide-react';
+import { FolderPlus, FileText, Sparkles, Bot } from 'lucide-react';
 
 const disabledFrameworks = ['sim3', 'inform'];
 const getInitialFrameworkId = (frameworkId) =>
@@ -624,6 +624,27 @@ const Home = ({
                 <p className="step-description">
                   Record assessment findings, leverage Compass Copilot for expert guidance, and generate actionable roadmaps and action plans.
                 </p>
+                <div className="copilot-preview">
+                  <div className="copilot-preview-header">
+                    <Bot className="copilot-preview-icon" />
+                    <span className="copilot-preview-title">Compass Copilot</span>
+                  </div>
+                  <div className="copilot-preview-messages">
+                    <div className="copilot-message copilot-message-user">
+                      <div className="copilot-message-content">
+                        How can I improve my automation capabilities in less than 6 months, with $20,000 budget?
+                      </div>
+                    </div>
+                    <div className="copilot-message copilot-message-assistant">
+                      <div className="copilot-message-avatar">
+                        <Bot className="copilot-avatar-icon" />
+                      </div>
+                      <div className="copilot-message-content">
+                        Based on your current assessment, I recommend focusing on three key areas: 1) Implementing automated threat detection workflows, 2) Streamlining incident response playbooks, and 3) Integrating SIEM automation. With your $20k budget, prioritize tools that offer quick ROI...
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
