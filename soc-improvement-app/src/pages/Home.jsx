@@ -24,7 +24,8 @@ import Badge from '../components/ui/Badge';
 import Dialog from '../components/ui/Dialog';
 import { objectiveOptions } from '../constants/objectives';
 import { formatBudgetAmount } from '../utils/format';
-import { FolderPlus, FileText, Sparkles, Bot, Minus, ChevronUp } from 'lucide-react';
+import { validateApiKey } from '../utils/ai';
+import { FolderPlus, FileText, Sparkles, Bot, Minus, ChevronUp, Key, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 
 const disabledFrameworks = ['sim3', 'inform'];
 const getInitialFrameworkId = (frameworkId) =>
@@ -108,7 +109,14 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
   const [step, setStep] = useState(0);
   const [showLoading, setShowLoading] = useState(false);
   const [stepError, setStepError] = useState('');
+  const [apiKeyInput, setApiKeyInput] = useState('');
+  const [isTestingKey, setIsTestingKey] = useState(false);
+  const [isKeyValid, setIsKeyValid] = useState(null);
+  const [apiKeyError, setApiKeyError] = useState('');
   const selectedFramework = frameworks[getInitialFrameworkId(form.frameworkId)];
+  const setApiKey = useAssessmentStore((s) => s.setApiKey);
+  const setApiKeyValidated = useAssessmentStore((s) => s.setApiKeyValidated);
+  const apiBase = useAssessmentStore((s) => s.apiBase);
 
   useEffect(() => {
     if (!open) return;
@@ -118,7 +126,39 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
     setStep(0);
     setShowLoading(false);
     setStepError('');
+    setApiKeyInput('');
+    setIsTestingKey(false);
+    setIsKeyValid(null);
+    setApiKeyError('');
   }, [open, initialMetadata, currentFrameworkId]);
+
+  const handleTestKey = async () => {
+    if (!apiKeyInput || !apiKeyInput.trim()) {
+      setApiKeyError('Please enter an API key first');
+      return;
+    }
+
+    setIsTestingKey(true);
+    setApiKeyError('');
+    setIsKeyValid(null);
+
+    try {
+      const validation = await validateApiKey(apiKeyInput.trim(), apiBase);
+      if (validation.valid) {
+        setIsKeyValid(true);
+        setApiKey(apiKeyInput.trim());
+        setApiKeyValidated(true);
+      } else {
+        setIsKeyValid(false);
+        setApiKeyError(validation.error || 'API key is invalid');
+      }
+    } catch (error) {
+      setIsKeyValid(false);
+      setApiKeyError(error.message || 'Failed to validate API key');
+    } finally {
+      setIsTestingKey(false);
+    }
+  };
 
   const toggleObjective = (objective) => {
     setSelectedObjectives((prev) =>
@@ -409,6 +449,86 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
       ),
       validate: () => true,
     },
+    {
+      id: 'apiKey',
+      title: 'Configure AI API Key (Optional)',
+      description: 'Adding your API key greatly enhances the reporting and evidence experience, providing real-time insights via Compass Copilot and the Reporting system. Without it, you will be producing your own report.',
+      render: () => (
+        <div className="wizard-field">
+          <div className="wizard-api-key-section">
+            <div className="wizard-api-key-benefits">
+              <div className="wizard-api-key-benefit">
+                <Sparkles className="wizard-benefit-icon" />
+                <div>
+                  <p className="wizard-benefit-title">AI-Powered Action Plans</p>
+                  <p className="wizard-benefit-description">Generate tailored recommendations based on your assessment data</p>
+                </div>
+              </div>
+              <div className="wizard-api-key-benefit">
+                <Bot className="wizard-benefit-icon" />
+                <div>
+                  <p className="wizard-benefit-title">Compass Copilot</p>
+                  <p className="wizard-benefit-description">Get real-time insights and guidance throughout your assessment</p>
+                </div>
+              </div>
+            </div>
+            <div className="wizard-api-key-input-section">
+              <label className="wizard-label">Grok API Key</label>
+              <div className="wizard-api-key-input-wrapper">
+                <Input
+                  type="password"
+                  className="form-control"
+                  value={apiKeyInput}
+                  onChange={(e) => {
+                    setApiKeyInput(e.target.value);
+                    setIsKeyValid(null);
+                    setApiKeyError('');
+                  }}
+                  placeholder="Enter your Grok API key (e.g. xai-...)"
+                  disabled={isTestingKey}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleTestKey}
+                  disabled={isTestingKey || !apiKeyInput.trim()}
+                  className="wizard-test-key-button"
+                >
+                  {isTestingKey ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Testing...
+                    </>
+                  ) : (
+                    <>
+                      <Key className="h-4 w-4" />
+                      Test Key
+                    </>
+                  )}
+                </Button>
+              </div>
+              {isKeyValid === true && (
+                <div className="wizard-api-key-status success">
+                  <CheckCircle2 className="h-4 w-4" />
+                  <span>API key validated successfully</span>
+                </div>
+              )}
+              {isKeyValid === false && apiKeyError && (
+                <div className="wizard-api-key-status error">
+                  <AlertCircle className="h-4 w-4" />
+                  <span>{apiKeyError}</span>
+                </div>
+              )}
+              <p className="wizard-helper">
+                Your API key is stored locally in your browser and never sent to our servers.
+              </p>
+            </div>
+          </div>
+        </div>
+      ),
+      validate: () => true, // Optional step, always valid
+      isOptional: true,
+    },
   ];
 
   const handleNext = () => {
@@ -493,6 +613,11 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
           {step === 0 ? 'Cancel' : 'Back'}
         </Button>
         <div className="wizard-actions">
+          {steps[step].isOptional && (
+            <Button variant="ghost" onClick={handleNext} className="wizard-skip-button">
+              Skip
+            </Button>
+          )}
           <Button variant="primary" onClick={handleNext}>
             {step === steps.length - 1 ? 'Launch workspace' : 'Next'}
           </Button>
