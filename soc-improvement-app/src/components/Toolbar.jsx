@@ -4,7 +4,13 @@ import { importAssessment } from '../utils/storage';
 import { objectiveOptions } from '../constants/objectives';
 import Dialog from './ui/Dialog';
 import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
-import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { formatBudgetAmount } from '../utils/format';
 
 const Toolbar = ({ open, onClose }) => {
@@ -75,34 +81,41 @@ const Toolbar = ({ open, onClose }) => {
             </div>
             <div className="metadata-field">
               <label>Sector</label>
-              <NativeSelect
+              <Select
                 value={state.currentAssessment.metadata.sector}
-                onChange={(e) => setMetadata({ sector: e.target.value })}
+                onValueChange={(value) => setMetadata({ sector: value })}
               >
-                <NativeSelectOption value="MSSP">MSSP</NativeSelectOption>
-                <NativeSelectOption value="Technology">Technology</NativeSelectOption>
-                <NativeSelectOption value="Finance">Finance</NativeSelectOption>
-                <NativeSelectOption value="Healthcare">Healthcare</NativeSelectOption>
-                <NativeSelectOption value="Government">Government</NativeSelectOption>
-                <NativeSelectOption value="Manufacturing">Manufacturing</NativeSelectOption>
-                <NativeSelectOption value="Other">Other</NativeSelectOption>
-              </NativeSelect>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="MSSP">MSSP</SelectItem>
+                  <SelectItem value="Technology">Technology</SelectItem>
+                  <SelectItem value="Finance">Finance</SelectItem>
+                  <SelectItem value="Healthcare">Healthcare</SelectItem>
+                  <SelectItem value="Government">Government</SelectItem>
+                  <SelectItem value="Manufacturing">Manufacturing</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="metadata-field">
               <label>SOC Age</label>
-              <NativeSelect
+              <Select
                 value={state.currentAssessment.metadata.socAge}
-                onChange={(e) => setMetadata({ socAge: e.target.value })}
+                onValueChange={(value) => setMetadata({ socAge: value })}
               >
-                <NativeSelectOption value="" disabled hidden>
-                  Select SOC age
-                </NativeSelectOption>
-                <NativeSelectOption value="0-6 months">0-6 months</NativeSelectOption>
-                <NativeSelectOption value="6-12 months">6-12 months</NativeSelectOption>
-                <NativeSelectOption value="1-2 years">1-2 years</NativeSelectOption>
-                <NativeSelectOption value="2-5 years">2-5 years</NativeSelectOption>
-                <NativeSelectOption value="5+ years">5+ years</NativeSelectOption>
-              </NativeSelect>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select SOC age" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="0-6 months">0-6 months</SelectItem>
+                  <SelectItem value="6-12 months">6-12 months</SelectItem>
+                  <SelectItem value="1-2 years">1-2 years</SelectItem>
+                  <SelectItem value="2-5 years">2-5 years</SelectItem>
+                  <SelectItem value="5+ years">5+ years</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="metadata-field">
               <label>Size</label>
@@ -113,14 +126,19 @@ const Toolbar = ({ open, onClose }) => {
             </div>
             <div className="metadata-field">
               <label>Status</label>
-              <NativeSelect
+              <Select
                 value={state.currentAssessment.metadata.status}
-                onChange={(e) => setMetadata({ status: e.target.value })}
+                onValueChange={(value) => setMetadata({ status: value })}
               >
-                <NativeSelectOption value="Not Started">Not Started</NativeSelectOption>
-                <NativeSelectOption value="In Progress">In Progress</NativeSelectOption>
-                <NativeSelectOption value="Completed">Completed</NativeSelectOption>
-              </NativeSelect>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Not Started">Not Started</SelectItem>
+                  <SelectItem value="In Progress">In Progress</SelectItem>
+                  <SelectItem value="Completed">Completed</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
@@ -143,15 +161,20 @@ const Toolbar = ({ open, onClose }) => {
             </div>
             <div className="metadata-field">
               <label>Currency</label>
-              <NativeSelect
+              <Select
                 value={state.currentAssessment.metadata.budgetCurrency}
-                onChange={(e) => setMetadata({ budgetCurrency: e.target.value })}
+                onValueChange={(value) => setMetadata({ budgetCurrency: value })}
               >
-                <NativeSelectOption value="$">USD ($)</NativeSelectOption>
-                <NativeSelectOption value="€">EUR (€)</NativeSelectOption>
-                <NativeSelectOption value="£">GBP (£)</NativeSelectOption>
-                <NativeSelectOption value="¥">JPY (¥)</NativeSelectOption>
-              </NativeSelect>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="$">USD ($)</SelectItem>
+                  <SelectItem value="€">EUR (€)</SelectItem>
+                  <SelectItem value="£">GBP (£)</SelectItem>
+                  <SelectItem value="¥">JPY (¥)</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>

@@ -12,7 +12,13 @@ import {
   CardAction,
 } from '../components/ui/card-shadcn';
 import { Input } from '../components/ui/Input';
-import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import Label from '../components/ui/Label';
 import Badge from '../components/ui/Badge';
 import Dialog from '../components/ui/Dialog';
@@ -192,21 +198,25 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
       render: () => (
         <div className="wizard-field">
           <label className="wizard-label">Assessment type</label>
-          <NativeSelect
-            className="form-control"
+          <Select
             value={form.frameworkId}
-            onChange={(e) => setForm({ ...form, frameworkId: e.target.value })}
+            onValueChange={(value) => setForm({ ...form, frameworkId: value })}
           >
-            {Object.values(frameworks).map((framework) => {
-              const isDisabled = disabledFrameworks.includes(framework.id);
-              const label = isDisabled ? `${framework.name} (Coming Soon)` : framework.name;
-              return (
-                <NativeSelectOption key={framework.id} value={framework.id} disabled={isDisabled}>
-                  {label}
-                </NativeSelectOption>
-              );
-            })}
-          </NativeSelect>
+            <SelectTrigger className="form-control">
+              <SelectValue placeholder="Select framework" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.values(frameworks).map((framework) => {
+                const isDisabled = disabledFrameworks.includes(framework.id);
+                const label = isDisabled ? `${framework.name} (Coming Soon)` : framework.name;
+                return (
+                  <SelectItem key={framework.id} value={framework.id} disabled={isDisabled}>
+                    {label}
+                  </SelectItem>
+                );
+              })}
+            </SelectContent>
+          </Select>
           {selectedFramework && (
             <p className="wizard-helper">
               ~{selectedFramework.estimatedMinutes} minutes
@@ -238,16 +248,20 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
           <div className="wizard-field currency-field">
             <label className="wizard-label">Currency</label>
             <p className="wizard-helper">Applies to the budget amount.</p>
-            <NativeSelect
-              className="form-control"
+            <Select
               value={form.budgetCurrency}
-              onChange={(e) => setForm({ ...form, budgetCurrency: e.target.value })}
+              onValueChange={(value) => setForm({ ...form, budgetCurrency: value })}
             >
-              <NativeSelectOption value="$">USD ($)</NativeSelectOption>
-              <NativeSelectOption value="€">EUR (€)</NativeSelectOption>
-              <NativeSelectOption value="£">GBP (£)</NativeSelectOption>
-              <NativeSelectOption value="¥">JPY (¥)</NativeSelectOption>
-            </NativeSelect>
+              <SelectTrigger className="form-control">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="$">USD ($)</SelectItem>
+                <SelectItem value="€">EUR (€)</SelectItem>
+                <SelectItem value="£">GBP (£)</SelectItem>
+                <SelectItem value="¥">JPY (¥)</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div className="wizard-field size-field">
             <label className="wizard-label">How many SOC FTE</label>
@@ -260,39 +274,41 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
           </div>
           <div className="wizard-field soc-age-field">
             <label className="wizard-label">How long has your SOC been established?</label>
-            <NativeSelect
-              className="form-control"
+            <Select
               value={form.socAge}
-              onChange={(e) => setForm({ ...form, socAge: e.target.value })}
+              onValueChange={(value) => setForm({ ...form, socAge: value })}
             >
-              <NativeSelectOption value="" disabled hidden>
-                Select SOC age
-              </NativeSelectOption>
-              <NativeSelectOption value="0-6 months">0-6 months</NativeSelectOption>
-              <NativeSelectOption value="6-12 months">6-12 months</NativeSelectOption>
-              <NativeSelectOption value="1-2 years">1-2 years</NativeSelectOption>
-              <NativeSelectOption value="2-5 years">2-5 years</NativeSelectOption>
-              <NativeSelectOption value="5+ years">5+ years</NativeSelectOption>
-            </NativeSelect>
+              <SelectTrigger className="form-control">
+                <SelectValue placeholder="Select SOC age" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="0-6 months">0-6 months</SelectItem>
+                <SelectItem value="6-12 months">6-12 months</SelectItem>
+                <SelectItem value="1-2 years">1-2 years</SelectItem>
+                <SelectItem value="2-5 years">2-5 years</SelectItem>
+                <SelectItem value="5+ years">5+ years</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div className="wizard-field sector-field">
             <label className="wizard-label">Sector</label>
-            <NativeSelect
-              className="form-control"
+            <Select
               value={form.sector}
-              onChange={(e) => setForm({ ...form, sector: e.target.value })}
+              onValueChange={(value) => setForm({ ...form, sector: value })}
             >
-              <NativeSelectOption value="" disabled hidden>
-                Select a sector
-              </NativeSelectOption>
-              <NativeSelectOption value="MSSP">MSSP</NativeSelectOption>
-              <NativeSelectOption value="Technology">Technology</NativeSelectOption>
-              <NativeSelectOption value="Finance">Finance</NativeSelectOption>
-              <NativeSelectOption value="Healthcare">Healthcare</NativeSelectOption>
-              <NativeSelectOption value="Government">Government</NativeSelectOption>
-              <NativeSelectOption value="Manufacturing">Manufacturing</NativeSelectOption>
-              <NativeSelectOption value="Other">Other</NativeSelectOption>
-            </NativeSelect>
+              <SelectTrigger className="form-control">
+                <SelectValue placeholder="Select a sector" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="MSSP">MSSP</SelectItem>
+                <SelectItem value="Technology">Technology</SelectItem>
+                <SelectItem value="Finance">Finance</SelectItem>
+                <SelectItem value="Healthcare">Healthcare</SelectItem>
+                <SelectItem value="Government">Government</SelectItem>
+                <SelectItem value="Manufacturing">Manufacturing</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       ),

@@ -10,7 +10,13 @@ import AssessmentCopilot from '../components/AssessmentCopilot';
 import Dialog from '../components/ui/Dialog';
 import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
 import { Input } from '../components/ui/Input';
-import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const ApiKeyModal = ({ open, onClose, apiKey, setApiKey, apiBase, setApiBase, model, setModel }) => {
   if (!open) return null;
@@ -61,18 +67,28 @@ const PreferencesModal = ({ open, onClose, language, setLanguage, theme, setThem
       <div className="grid-2">
         <div className="ui-field">
           <label className="ui-label">Language</label>
-          <NativeSelect value={language} onChange={(e) => setLanguage(e.target.value)}>
-            <NativeSelectOption value="en">English</NativeSelectOption>
-            <NativeSelectOption value="es">Español</NativeSelectOption>
-            <NativeSelectOption value="fr">Français</NativeSelectOption>
-          </NativeSelect>
+          <Select value={language} onValueChange={setLanguage}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="en">English</SelectItem>
+              <SelectItem value="es">Español</SelectItem>
+              <SelectItem value="fr">Français</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <div className="ui-field">
           <label className="ui-label">Theme</label>
-          <NativeSelect value={theme} onChange={(e) => setTheme(e.target.value)}>
-            <NativeSelectOption value="light">Light</NativeSelectOption>
-            <NativeSelectOption value="dark">Dark</NativeSelectOption>
-          </NativeSelect>
+          <Select value={theme} onValueChange={setTheme}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="light">Light</SelectItem>
+              <SelectItem value="dark">Dark</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
       <div className="ui-dialog-footer">

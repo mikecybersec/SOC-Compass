@@ -1,7 +1,13 @@
 import React from 'react';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
-import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const QuestionPanel = ({ aspect, nextAspect, onNextAspect }) => {
   const answers = useAssessmentStore((s) => s.currentAssessment.answers);
@@ -46,18 +52,21 @@ const QuestionPanel = ({ aspect, nextAspect, onNextAspect }) => {
                 )}
               </div>
               {q.isAnswerable ? (
-                <NativeSelect
+                <Select
                   value={answers[q.code] || ''}
-                  onChange={(e) => setAnswer(q.code, e.target.value)}
-                  style={{ maxWidth: '260px' }}
+                  onValueChange={(value) => setAnswer(q.code, value)}
                 >
-                  <NativeSelectOption value="">Select maturity</NativeSelectOption>
-                  {q.answerOptions.map((opt) => (
-                    <NativeSelectOption key={opt} value={opt}>
-                      {opt}
-                    </NativeSelectOption>
-                  ))}
-                </NativeSelect>
+                  <SelectTrigger style={{ maxWidth: '260px' }}>
+                    <SelectValue placeholder="Select maturity" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {q.answerOptions.map((opt) => (
+                      <SelectItem key={opt} value={opt}>
+                        {opt}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               ) : null}
             </div>
             <div style={{ marginTop: '0.5rem' }}>
