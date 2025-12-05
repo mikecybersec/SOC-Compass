@@ -1745,9 +1745,7 @@ label {
 }
 
 .streamline-container .assessment-frameworks-section {
-  margin: 0;
-  margin-top: -3rem;
-  margin-bottom: -3rem;
+  margin: 2rem 0 1.5rem;
 }
 
 .streamline-header {
