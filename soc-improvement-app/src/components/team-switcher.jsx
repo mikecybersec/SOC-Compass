@@ -45,7 +45,18 @@ export function TeamSwitcher({
     )
   }
 
-  const currentAssessment = assessments.find((a) => a.id === currentAssessmentId) || assessments[0]
+  // Deduplicate assessments by ID
+  const uniqueAssessments = React.useMemo(() => {
+    const seen = new Set();
+    return assessments.filter((assessment) => {
+      if (!assessment.id) return false;
+      if (seen.has(assessment.id)) return false;
+      seen.add(assessment.id);
+      return true;
+    });
+  }, [assessments]);
+
+  const currentAssessment = uniqueAssessments.find((a) => a.id === currentAssessmentId) || uniqueAssessments[0]
   const assessmentTitle = currentAssessment?.metadata?.assessmentTitle || currentAssessment?.metadata?.name || 'Untitled Assessment'
 
   return (
@@ -73,11 +84,11 @@ export function TeamSwitcher({
             <SelectValue />
           </SelectTrigger>
           <SelectContent className="w-[var(--radix-select-trigger-width)]">
-            {assessments.length === 0 ? (
+            {uniqueAssessments.length === 0 ? (
               <div className="px-2 py-1.5 text-sm text-muted-foreground">No assessments</div>
             ) : (
-              assessments
-                .sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt))
+              uniqueAssessments
+                .sort((a, b) => new Date(b.savedAt || 0) - new Date(a.savedAt || 0))
                 .map((assessment) => (
                   <SelectItem key={assessment.id} value={assessment.id}>
                     {assessment.metadata?.assessmentTitle || assessment.metadata?.name || 'Untitled Assessment'}

@@ -324,7 +324,13 @@ export const useAssessmentStore = create(
 
         const workspace = workspaces[workspaceIndex];
         const assessments = workspace.assessments || [];
-        const existsInWorkspace = assessments.some((entry) => entry.id === currentAssessment.id);
+        // Ensure we have a valid ID for comparison
+        const assessmentId = currentAssessment.id;
+        if (!assessmentId) {
+          return { currentAssessment, lastSavedAt: state.lastSavedAt };
+        }
+        
+        const existsInWorkspace = assessments.some((entry) => entry.id === assessmentId);
         const isWorthSaving = hasAssessmentContent(currentAssessment);
 
         if (!isWorthSaving && !existsInWorkspace) {
@@ -333,14 +339,20 @@ export const useAssessmentStore = create(
 
         const updatedAssessment = {
           ...currentAssessment,
+          id: assessmentId,
           savedAt: new Date().toISOString(),
         };
 
+        // Remove any duplicates first, then update or add
+        const deduplicatedAssessments = assessments.filter((entry, index, self) => 
+          entry.id && self.findIndex((e) => e.id === entry.id) === index
+        );
+
         const updatedAssessments = existsInWorkspace
-          ? assessments.map((entry) =>
-              entry.id === currentAssessment.id ? updatedAssessment : entry
+          ? deduplicatedAssessments.map((entry) =>
+              entry.id === assessmentId ? updatedAssessment : entry
             )
-          : [updatedAssessment, ...assessments];
+          : [updatedAssessment, ...deduplicatedAssessments];
 
         const updatedWorkspaces = [...workspaces];
         updatedWorkspaces[workspaceIndex] = {
