@@ -30,14 +30,6 @@ const QuestionPanel = ({ aspect, nextAspect, onNextAspect }) => {
 
   return (
     <div className="card">
-      <div className="flex-between" style={{ marginBottom: '1rem' }}>
-        <div>
-          <p className="badge">{aspect.domain}</p>
-          <h2>{aspect.aspect}</h2>
-        </div>
-        <p style={{ color: 'var(--muted)' }}>Answer questions or leave notes to capture evidence.</p>
-      </div>
-
       <div style={{ display: 'grid', gap: '0.75rem' }}>
         {aspect.questions.map((q) => (
           <div key={q.code} className="question-card">
