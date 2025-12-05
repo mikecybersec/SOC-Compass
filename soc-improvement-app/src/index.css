@@ -555,6 +555,13 @@ button, input, select, textarea {
   box-shadow: 0 14px 38px rgba(17, 24, 39, 0.08);
 }
 
+.sidebar-level {
+  padding: 0.25rem 0.35rem 0.1rem;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 247, 255, 0.96));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
 .sidebar-divider {
   border-bottom: 1px dashed var(--border);
   margin: 0.75rem 0 1rem;
@@ -589,6 +596,22 @@ button, input, select, textarea {
   margin-bottom: 0.8rem;
 }
 
+.sidebar-domain-section {
+  position: relative;
+  padding-left: 0.35rem;
+}
+
+.sidebar-domain-section::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 10px;
+  bottom: 6px;
+  width: 2px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(139, 92, 246, 0.18), rgba(255, 137, 4, 0.24));
+}
+
 .sidebar-section-label {
   font-weight: 600;
   margin: 0 0 0.55rem;
@@ -605,7 +628,10 @@ button, input, select, textarea {
 .sidebar-group {
   display: grid;
   gap: 0.35rem;
-  padding-top: 0.35rem;
+  padding: 0.45rem 0.15rem 0.35rem;
+  border-radius: 12px;
+  background: rgba(17, 24, 39, 0.015);
+  border: 1px solid rgba(229, 231, 235, 0.7);
 }
 
 .sidebar-nav {
@@ -629,6 +655,10 @@ button, input, select, textarea {
   cursor: pointer;
   transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease, transform 0.12s ease,
     box-shadow 0.12s ease;
+}
+
+.sidebar-link + .sidebar-links {
+  margin-top: 0.2rem;
 }
 
 .sidebar-link::before {
@@ -667,9 +697,24 @@ button, input, select, textarea {
 }
 
 .sidebar-domain-toggle {
-  margin-bottom: 0.25rem;
-  font-weight: 600;
-  padding: 0.65rem 0.85rem 0.65rem 1.05rem;
+  margin-bottom: 0.2rem;
+  font-weight: 650;
+  padding: 0.65rem 0.85rem 0.65rem 1.15rem;
+  background: rgba(139, 92, 246, 0.06);
+  border-color: rgba(139, 92, 246, 0.2);
+  color: #1f2a44;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.sidebar-domain-toggle::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 8px;
+  bottom: 8px;
+  width: 6px;
+  border-radius: 8px;
+  background: rgba(139, 92, 246, 0.1);
 }
 
 .sidebar-toggle .chevron {
@@ -694,6 +739,11 @@ button, input, select, textarea {
   text-overflow: ellipsis;
 }
 
+.sidebar-sub-link .sidebar-label {
+  font-size: 0.74rem;
+  letter-spacing: 0.015em;
+}
+
 .sidebar-meta {
   margin-left: auto;
   font-size: 0.75rem;
@@ -703,6 +753,34 @@ button, input, select, textarea {
 
 .sidebar-link.active .sidebar-meta {
   color: var(--sidebar-indicator);
+}
+
+.sidebar-aspect-list {
+  gap: 0.45rem;
+  padding-left: 0.35rem;
+  margin-left: 0.2rem;
+  border-left: 2px dashed rgba(139, 92, 246, 0.25);
+}
+
+.sidebar-sub-link {
+  padding: 0.7rem 0.8rem 0.7rem 1.2rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(229, 231, 235, 0.85);
+  color: #1f2937;
+}
+
+.sidebar-sub-link::before {
+  left: 14px;
+  top: 12px;
+  bottom: 12px;
+  width: 5px;
+  border-radius: 10px;
+  background: rgba(255, 137, 4, 0.4);
+}
+
+.sidebar-sub-link:hover {
+  border-color: rgba(139, 92, 246, 0.35);
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.05), rgba(255, 255, 255, 0.95));
 }
 
 .sidebar-divider {

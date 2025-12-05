@@ -53,7 +53,7 @@ const Sidebar = ({
       )}
 
       <div className="sidebar-divider" aria-hidden />
-      <div className="sidebar-section">
+      <div className="sidebar-section sidebar-level">
         <button
           type="button"
           className={`sidebar-link sidebar-toggle ${assessmentCollapsed ? '' : 'open'}`}
@@ -69,7 +69,7 @@ const Sidebar = ({
         {!assessmentCollapsed && (
           <div className="sidebar-group" id="assessment-section">
             {Object.entries(grouped).map(([domain, domainAspects]) => (
-              <div key={domain} className="sidebar-section">
+              <div key={domain} className="sidebar-section sidebar-domain-section">
                 {(() => {
                   const isCollapsed = domainCollapsed[domain] ?? true;
                   return (
@@ -87,7 +87,7 @@ const Sidebar = ({
                         </span>
                       </button>
                       {!isCollapsed && (
-                        <div className="sidebar-links" id={`domain-${domain}`}>
+                        <div className="sidebar-links sidebar-aspect-list" id={`domain-${domain}`}>
                           {domainAspects.map((aspect) => {
                             const key = `${aspect.domain}::${aspect.aspect}`;
                             const active = showAssessmentState && key === currentKey;
@@ -101,7 +101,7 @@ const Sidebar = ({
                               <button
                                 key={key}
                                 type="button"
-                                className={`sidebar-link ${active ? 'active' : ''}`}
+                                className={`sidebar-link sidebar-sub-link ${active ? 'active' : ''}`}
                                 onClick={() => onSelect(key)}
                               >
                                 <span className="sidebar-label">{aspect.aspect}</span>
