@@ -211,7 +211,7 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
                 </p>
               </div>
             </div>
-            <ActionPlan ref={actionPlanRef} />
+            <ActionPlan ref={actionPlanRef} onOpenApiModal={onOpenApiModal} />
           </div>
         </div>
       </SidebarInset>

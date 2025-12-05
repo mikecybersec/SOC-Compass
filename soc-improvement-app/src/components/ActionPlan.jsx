@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Sparkles, Key, AlertCircle, AlertTriangle } from 'lucide-react';
 
-const ActionPlan = forwardRef((_, ref) => {
+const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
   const [loading, setLoading] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
@@ -112,42 +112,57 @@ const ActionPlan = forwardRef((_, ref) => {
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* API Key Input */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium block">Grok API Key</label>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1 w-full sm:max-w-sm">
-              <div className="relative">
-                <Key className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="password"
-                  placeholder="Enter your Grok API key"
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  className="pl-9"
-                />
+        {/* API Key Section */}
+        {!apiKey ? (
+          <div className="p-4 bg-muted/30 rounded-lg border">
+            <p className="text-sm text-muted-foreground">
+              No API key detected, go to{' '}
+              <button
+                onClick={onOpenApiModal}
+                className="text-primary hover:underline font-medium"
+                style={{ color: 'hsl(var(--primary))' }}
+              >
+                AI API Key Management
+              </button>
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            <label className="text-sm font-medium block">Grok API Key</label>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1 w-full sm:max-w-sm">
+                <div className="relative">
+                  <Key className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    type="password"
+                    placeholder="Enter your Grok API key"
+                    value={apiKey}
+                    onChange={(e) => setApiKey(e.target.value)}
+                    className="pl-9"
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground mt-1.5">
+                  Requests use Grok 4 Latest via https://api.x.ai/v1/
+                </p>
               </div>
-              <p className="text-xs text-muted-foreground mt-1.5">
-                Requests use Grok 4 Latest via https://api.x.ai/v1/
-              </p>
-            </div>
-            <div className="flex items-center">
-              <Button onClick={handleGenerateClick} disabled={loading || !apiKey} className="gap-2 w-full sm:w-auto">
-                {loading ? (
-                  <>
-                    <Sparkles className="h-4 w-4 animate-pulse" />
-                    Generating…
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="h-4 w-4" />
-                    Generate Action Plan
-                  </>
-                )}
-              </Button>
+              <div className="flex items-center">
+                <Button onClick={handleGenerateClick} disabled={loading} className="gap-2 w-full sm:w-auto">
+                  {loading ? (
+                    <>
+                      <Sparkles className="h-4 w-4 animate-pulse" />
+                      Generating…
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4" />
+                      Generate Action Plan
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Context Information */}
         <div className="grid gap-4 sm:grid-cols-2 p-4 bg-muted/30 rounded-lg border">
