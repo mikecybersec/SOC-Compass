@@ -576,8 +576,8 @@ h6 {
   align-items: center;
   gap: 1rem;
   padding: 0.85rem 1.1rem;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(244, 246, 248, 0.94));
-  border: 1px solid var(--border);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
   border-radius: 16px;
   margin: 0.75rem auto 1rem;
   max-width: 1200px;
@@ -585,6 +585,7 @@ h6 {
   position: sticky;
   top: 10px;
   z-index: 12;
+  transition: background-color 200ms ease, border-color 200ms ease;
 }
 
 .command-brand {
@@ -605,6 +606,7 @@ h6 {
 .brand-title {
   font-weight: 800;
   letter-spacing: -0.01em;
+  color: hsl(var(--foreground));
 }
 
 .brand-subtitle {
@@ -635,10 +637,11 @@ h6 {
   right: auto;
   min-width: 220px;
   padding: 0.35rem;
-  background: linear-gradient(175deg, rgba(255, 255, 255, 0.98), rgba(244, 246, 248, 0.95));
-  border: 1px solid var(--border);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
   border-radius: 12px;
   box-shadow: var(--shadow);
+  transition: background-color 200ms ease, border-color 200ms ease;
 }
 
 .command-menu:hover .command-sheet,
@@ -648,10 +651,10 @@ h6 {
 }
 
 .nav-link.active {
-  background: var(--accent);
-  color: #fff;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
   border-color: transparent;
-  box-shadow: 0 12px 30px -14px rgba(116, 88, 255, 0.65);
+  box-shadow: 0 12px 30px -14px rgba(255, 137, 4, 0.4);
 }
 
 .nav-link:disabled {
@@ -668,13 +671,14 @@ h6 {
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(244, 246, 248, 0.95));
-  border: 1px solid var(--border);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
   border-radius: 12px;
   box-shadow: var(--shadow);
   min-width: 200px;
   padding: 0.55rem;
   z-index: 15;
+  transition: background-color 200ms ease, border-color 200ms ease;
 }
 
 .nav-dropdown:hover .dropdown-menu,
@@ -690,14 +694,16 @@ h6 {
   border-radius: 10px;
   padding: 0.5rem 0.7rem;
   cursor: pointer;
-  color: var(--text);
+  color: hsl(var(--foreground));
+  transition: background-color 150ms ease, color 150ms ease;
 }
 
 .dropdown-menu button:hover,
 .nav-link:hover {
-  background: var(--sidebar-highlight);
-  border-color: var(--border);
+  background: hsl(var(--accent));
+  border-color: hsl(var(--border));
   transform: translateY(-1px);
+  color: hsl(var(--accent-foreground));
 }
 
 a {
