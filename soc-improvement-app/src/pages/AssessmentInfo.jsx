@@ -15,7 +15,7 @@ import Toolbar from '../components/Toolbar';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { frameworks } from '../utils/frameworks';
 import Dialog from '../components/ui/Dialog';
-import Button from '../components/ui/Button';
+import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
 
 const AssessmentInfo = ({ onBack, onOpenReporting, metaRef, scoresRef, actionPlanRef, onDeleteAssessment, onNavigateHome }) => {
   const metadata = useAssessmentStore((s) => s.currentAssessment.metadata);

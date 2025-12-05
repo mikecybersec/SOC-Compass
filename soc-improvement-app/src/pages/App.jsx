@@ -8,7 +8,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import AssessmentCopilot from '../components/AssessmentCopilot';
 import Dialog from '../components/ui/Dialog';
-import Button from '../components/ui/Button';
+import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
 import { Input, Select } from '../components/ui/Input';
 
 const ApiKeyModal = ({ open, onClose, apiKey, setApiKey, apiBase, setApiBase, model, setModel }) => {

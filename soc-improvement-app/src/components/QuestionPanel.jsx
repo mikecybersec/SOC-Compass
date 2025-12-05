@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
+import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
 
 const QuestionPanel = ({ aspect, nextAspect, onNextAspect }) => {
   const answers = useAssessmentStore((s) => s.currentAssessment.answers);
@@ -81,9 +82,9 @@ const QuestionPanel = ({ aspect, nextAspect, onNextAspect }) => {
           </p>
         </div>
         {nextAspect ? (
-          <button className="secondary" onClick={onNextAspect}>
+          <Button variant="secondary" onClick={onNextAspect}>
             Next Aspect: {nextAspect.aspect} →
-          </button>
+          </Button>
         ) : (
           <p className="muted-label" style={{ margin: 0 }}>
             Last aspect in this framework

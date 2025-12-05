@@ -3,7 +3,7 @@ import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { importAssessment } from '../utils/storage';
 import { objectiveOptions } from '../constants/objectives';
 import Dialog from './ui/Dialog';
-import Button from './ui/Button';
+import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
 import { formatBudgetAmount } from '../utils/format';
 
 const Toolbar = ({ open, onClose }) => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { frameworks } from '../utils/frameworks';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
-import Button from '../components/ui/Button';
+import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
 import {
   Card,
   CardHeader,

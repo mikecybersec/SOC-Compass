@@ -3,6 +3,12 @@
 @tailwind utilities;
 
 @layer base {
+  /* Button cursor pointer as per shadcn docs */
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
   :root {
     /* Existing custom variables */
     --bg: #f4f5f7;

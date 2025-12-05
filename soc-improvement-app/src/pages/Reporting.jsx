@@ -8,6 +8,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
 } from '@/components/ui/breadcrumb';
+import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
 import ActionPlan from '../components/ActionPlan';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { frameworks } from '../utils/frameworks';
@@ -80,12 +81,12 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
               </p>
             </div>
             <div className="flex" style={{ gap: '0.5rem' }}>
-              <button className="secondary" onClick={handleExportJson}>
+              <Button variant="secondary" onClick={handleExportJson}>
                 Export JSON
-              </button>
-              <button className="primary" onClick={handleExportPdf}>
+              </Button>
+              <Button onClick={handleExportPdf}>
                 Export PDF
-              </button>
+              </Button>
             </div>
           </div>
 

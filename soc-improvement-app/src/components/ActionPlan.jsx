@@ -3,6 +3,7 @@ import { renderMarkdown } from '../utils/markdown';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { generateActionPlan } from '../utils/ai';
 import { frameworks } from '../utils/frameworks';
+import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
 
 const ActionPlan = forwardRef((_, ref) => {
   const [loading, setLoading] = useState(false);
@@ -60,9 +61,9 @@ const ActionPlan = forwardRef((_, ref) => {
           <p>Objectives: {(metadata.objectives || []).join(', ')}</p>
           <p>Budget: {formattedBudget}</p>
         </div>
-        <button className="primary" onClick={handleGenerate} disabled={loading}>
+        <Button onClick={handleGenerate} disabled={loading}>
           {loading ? 'Generating…' : 'Generate action plan'}
-        </button>
+        </Button>
       </div>
       {actionPlan.error && (
         <p style={{ color: 'var(--danger, #c23d3d)', marginTop: '-0.4rem' }}>

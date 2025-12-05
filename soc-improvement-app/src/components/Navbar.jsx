@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from './ui/Button';
+import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
 
 const Navbar = ({
   onGoHome,
