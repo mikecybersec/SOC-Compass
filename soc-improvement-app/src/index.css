@@ -1661,7 +1661,8 @@ label {
 }
 
 /* Cursor-following orange glow effect */
-.glass-hero .cursor-glow {
+.glass-hero .cursor-glow,
+.streamline-step .cursor-glow {
   position: absolute;
   width: 400px;
   height: 400px;
@@ -1676,11 +1677,13 @@ label {
   will-change: top, left;
 }
 
-.glass-hero:hover .cursor-glow {
+.glass-hero:hover .cursor-glow,
+.streamline-step:hover .cursor-glow {
   opacity: 1;
 }
 
-.dark .glass-hero .cursor-glow {
+.dark .glass-hero .cursor-glow,
+.dark .streamline-step .cursor-glow {
   background: radial-gradient(circle, rgba(255, 159, 64, 0.18) 0%, transparent 70%);
 }
 
@@ -1803,11 +1806,15 @@ label {
   border-radius: 20px;
   transition: all 300ms ease;
   position: relative;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .streamline-step-with-copilot {
   overflow: visible;
+}
+
+.streamline-step-with-copilot .cursor-glow {
+  clip-path: inset(0 round 20px);
 }
 
 .streamline-step::before {
@@ -1820,6 +1827,7 @@ label {
   background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary) / 0.5));
   opacity: 0;
   transition: opacity 300ms ease;
+  border-radius: 20px 20px 0 0;
 }
 
 .streamline-step:hover {

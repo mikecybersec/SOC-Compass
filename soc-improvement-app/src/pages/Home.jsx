@@ -520,7 +520,17 @@ const Home = ({
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
   const [copilotExpanded, setCopilotExpanded] = useState(false);
+  const [stepMousePositions, setStepMousePositions] = useState({
+    1: { x: 50, y: 50 },
+    2: { x: 50, y: 50 },
+    3: { x: 50, y: 50 },
+  });
   const heroRef = React.useRef(null);
+  const stepRefs = {
+    1: React.useRef(null),
+    2: React.useRef(null),
+    3: React.useRef(null),
+  };
 
   const handleMouseMove = (e) => {
     if (!heroRef.current) return;
@@ -591,7 +601,17 @@ const Home = ({
             Streamline Assessments of Security Operations Centres
           </h2>
           <div className="streamline-steps">
-            <div className="streamline-step">
+            <div
+              ref={stepRefs[1]}
+              className="streamline-step"
+              onMouseMove={(e) => handleStepMouseMove(1, e)}
+              onMouseLeave={() => handleStepMouseLeave(1)}
+              style={{
+                '--mouse-x': `${stepMousePositions[1].x}%`,
+                '--mouse-y': `${stepMousePositions[1].y}%`,
+              }}
+            >
+              <div className="cursor-glow" />
               <div className="streamline-step-icon">
                 <FolderPlus className="step-icon" />
                 <div className="step-number">1</div>
@@ -603,7 +623,17 @@ const Home = ({
                 </p>
               </div>
             </div>
-            <div className="streamline-step">
+            <div
+              ref={stepRefs[2]}
+              className="streamline-step"
+              onMouseMove={(e) => handleStepMouseMove(2, e)}
+              onMouseLeave={() => handleStepMouseLeave(2)}
+              style={{
+                '--mouse-x': `${stepMousePositions[2].x}%`,
+                '--mouse-y': `${stepMousePositions[2].y}%`,
+              }}
+            >
+              <div className="cursor-glow" />
               <div className="streamline-step-icon">
                 <FileText className="step-icon" />
                 <div className="step-number">2</div>
@@ -615,7 +645,17 @@ const Home = ({
                 </p>
               </div>
             </div>
-            <div className="streamline-step streamline-step-with-copilot">
+            <div
+              ref={stepRefs[3]}
+              className="streamline-step streamline-step-with-copilot"
+              onMouseMove={(e) => handleStepMouseMove(3, e)}
+              onMouseLeave={() => handleStepMouseLeave(3)}
+              style={{
+                '--mouse-x': `${stepMousePositions[3].x}%`,
+                '--mouse-y': `${stepMousePositions[3].y}%`,
+              }}
+            >
+              <div className="cursor-glow" />
               <div className="streamline-step-icon">
                 <Sparkles className="step-icon" />
                 <div className="step-number">3</div>
