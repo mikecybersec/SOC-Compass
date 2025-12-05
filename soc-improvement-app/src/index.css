@@ -1115,16 +1115,7 @@ button, input, select, textarea {
 .metadata-pill-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
-}
-
-.metadata-pill-list .pill-button {
-  padding: 0.35rem 0.75rem;
-  font-size: 0.9rem;
-}
-
-.metadata-pill-list .pill-button.primary {
-  color: white !important;
+  gap: 0.5rem;
 }
 
 .section-divider {

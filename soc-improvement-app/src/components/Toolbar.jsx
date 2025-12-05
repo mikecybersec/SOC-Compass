@@ -184,18 +184,20 @@ const Toolbar = ({ open, onClose }) => {
         </div>
         <div className="metadata-section">
           <div className="metadata-section-label">Objectives</div>
-          <div className="metadata-pill-list">
+          <div className="flex flex-wrap gap-2">
             {objectiveOptions.map((option) => {
               const isSelected = objectives.includes(option);
               return (
-                <button
+                <Button
                   key={option}
                   type="button"
-                  className={`pill-button ${isSelected ? 'primary' : 'ghost-button'}`}
+                  variant={isSelected ? 'default' : 'outline'}
+                  size="sm"
                   onClick={() => toggleObjective(option)}
+                  className="rounded-full"
                 >
                   {option}
-                </button>
+                </Button>
               );
             })}
           </div>
