@@ -40,16 +40,14 @@ const buildAssessmentContext = (assessment) => {
   );
 };
 
-const AssessmentCopilot = () => {
+const AssessmentCopilot = ({ onOpenApiModal }) => {
   const apiKey = useAssessmentStore((s) => s.apiKey);
   const apiBase = useAssessmentStore((s) => s.apiBase);
   const model = useAssessmentStore((s) => s.model);
   const assessment = useAssessmentStore((s) => s.currentAssessment);
   const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
-  const setApiKey = useAssessmentStore((s) => s.setApiKey);
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState('');
-  const [apiKeyInput, setApiKeyInput] = useState('');
   const [messages, setMessages] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -199,33 +197,19 @@ const AssessmentCopilot = () => {
 
           {!apiKey ? (
             <div className="copilot-api-key-prompt">
-              <p className="copilot-api-key-label">Enter your Grok API key here</p>
-              <input
-                type="password"
-                className="copilot-api-key-input"
-                value={apiKeyInput}
-                onChange={(e) => setApiKeyInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && apiKeyInput.trim()) {
-                    setApiKey(apiKeyInput.trim());
-                    setApiKeyInput('');
-                  }
-                }}
-                placeholder="sk-..."
-                autoFocus
-              />
-              <button
-                className="copilot-api-key-submit"
-                onClick={() => {
-                  if (apiKeyInput.trim()) {
-                    setApiKey(apiKeyInput.trim());
-                    setApiKeyInput('');
-                  }
-                }}
-                disabled={!apiKeyInput.trim()}
-              >
-                Save API Key
-              </button>
+              <p className="copilot-api-key-label">No API key detected</p>
+              <p className="copilot-api-key-message">
+                Please configure your API key in{' '}
+                <button
+                  type="button"
+                  onClick={onOpenApiModal}
+                  className="copilot-api-key-link"
+                  style={{ color: 'hsl(var(--primary))' }}
+                >
+                  AI API Key Management
+                </button>{' '}
+                to use Compass Copilot.
+              </p>
             </div>
           ) : (
             <div className="copilot-body" ref={listRef}>

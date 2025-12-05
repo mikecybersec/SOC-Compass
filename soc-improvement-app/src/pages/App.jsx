@@ -434,7 +434,9 @@ const App = () => {
         </main>
         <Footer />
       </div>
-      {(view === 'assessment' || view === 'assessmentInfo' || view === 'reporting') && <AssessmentCopilot />}
+      {(view === 'assessment' || view === 'assessmentInfo' || view === 'reporting') && (
+        <AssessmentCopilot onOpenApiModal={() => setApiModalOpen(true)} />
+      )}
       <ApiKeyModal
         open={apiModalOpen}
         onClose={() => setApiModalOpen(false)}
