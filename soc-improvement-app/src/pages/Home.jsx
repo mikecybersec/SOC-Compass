@@ -598,7 +598,7 @@ const Home = ({
               <div className="streamline-step-content">
                 <h3 className="step-title">Create Your Workspace</h3>
                 <p className="step-description">
-                  Set up your dedicated workspace in Compass to organize and manage your SOC assessments efficiently.
+                  Using our easy setup wizard, set up your dedicated workspace in Compass to organize and manage your SOC assessments efficiently.
                 </p>
               </div>
             </div>
@@ -614,7 +614,7 @@ const Home = ({
                 </p>
               </div>
             </div>
-            <div className="streamline-step">
+            <div className="streamline-step streamline-step-with-copilot">
               <div className="streamline-step-icon">
                 <Sparkles className="step-icon" />
                 <div className="step-number">3</div>
@@ -624,7 +624,8 @@ const Home = ({
                 <p className="step-description">
                   Record assessment findings, leverage Compass Copilot for expert guidance, and generate actionable roadmaps and action plans.
                 </p>
-                <div className="copilot-preview">
+              </div>
+              <div className="copilot-preview">
                   <div className="copilot-preview-header">
                     <Bot className="copilot-preview-icon" />
                     <span className="copilot-preview-title">Compass Copilot</span>

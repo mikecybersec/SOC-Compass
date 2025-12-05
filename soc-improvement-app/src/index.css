@@ -1781,6 +1781,15 @@ label {
   .streamline-step {
     padding: 1.5rem;
   }
+  
+  .copilot-preview {
+    position: relative;
+    top: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 1rem;
+  }
 }
 
 .streamline-step {
@@ -1793,7 +1802,11 @@ label {
   border-radius: 20px;
   transition: all 300ms ease;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
+}
+
+.streamline-step-with-copilot {
+  overflow: visible;
 }
 
 .streamline-step::before {
@@ -1893,12 +1906,33 @@ label {
 
 /* Copilot Preview */
 .copilot-preview {
-  margin-top: 1.5rem;
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 320px;
+  max-width: calc(100% - 24px);
   background: hsl(var(--card));
   border: 1px solid hsl(var(--border));
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 10;
+  animation: slideIn 0.4s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.dark .copilot-preview {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .dark .copilot-preview {
