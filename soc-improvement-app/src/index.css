@@ -1487,15 +1487,21 @@ label {
 }
 
 .hero-title {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: hsl(var(--foreground));
+  margin: 0 0 1rem 0;
 }
 
 .hero-subtitle {
-  color: var(--muted);
+  color: hsl(var(--muted-foreground));
   max-width: 780px;
-  font-size: 1.02rem;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  font-weight: 400;
+  margin: 0;
 }
 
 .hero-actions {
