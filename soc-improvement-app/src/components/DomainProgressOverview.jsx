@@ -45,9 +45,12 @@ const DomainProgressOverview = ({ frameworkId, answers }) => {
   }, [answers, framework]);
 
   const [startIndex, setStartIndex] = useState(0);
+  const [slideDirection, setSlideDirection] = useState('left');
+  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     setStartIndex(0);
+    setSlideDirection('left');
   }, [frameworkId]);
 
   useEffect(() => {
@@ -62,6 +65,24 @@ const DomainProgressOverview = ({ frameworkId, answers }) => {
   const visible = domainProgress.slice(startIndex, startIndex + chunkSize);
   const canPrev = startIndex > 0;
   const canNext = startIndex + chunkSize < domainProgress.length;
+
+  const handlePrev = () => {
+    if (canPrev && !isAnimating) {
+      setSlideDirection('right');
+      setIsAnimating(true);
+      setStartIndex((prev) => Math.max(0, prev - chunkSize));
+      setTimeout(() => setIsAnimating(false), 300);
+    }
+  };
+
+  const handleNext = () => {
+    if (canNext && !isAnimating) {
+      setSlideDirection('left');
+      setIsAnimating(true);
+      setStartIndex((prev) => Math.min(prev + chunkSize, domainProgress.length - chunkSize));
+      setTimeout(() => setIsAnimating(false), 300);
+    }
+  };
 
   return (
     <Card>
@@ -81,8 +102,8 @@ const DomainProgressOverview = ({ frameworkId, answers }) => {
               <Button
                 variant="outline"
                 size="icon"
-                disabled={!canPrev}
-                onClick={() => setStartIndex((prev) => Math.max(0, prev - chunkSize))}
+                disabled={!canPrev || isAnimating}
+                onClick={handlePrev}
                 aria-label="Previous domains"
               >
                 <ChevronLeft className="h-4 w-4" />
@@ -90,8 +111,8 @@ const DomainProgressOverview = ({ frameworkId, answers }) => {
               <Button
                 variant="outline"
                 size="icon"
-                disabled={!canNext}
-                onClick={() => setStartIndex((prev) => Math.min(prev + chunkSize, domainProgress.length - chunkSize))}
+                disabled={!canNext || isAnimating}
+                onClick={handleNext}
                 aria-label="Next domains"
               >
                 <ChevronRight className="h-4 w-4" />
@@ -101,12 +122,16 @@ const DomainProgressOverview = ({ frameworkId, answers }) => {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-4 md:grid-cols-3">
-          {visible.map((domain) => (
-            <div
-              key={domain.domain}
-              className="rounded-lg border bg-card p-4 transition-all hover:shadow-md"
-            >
+        <div className="relative overflow-hidden">
+          <div
+            key={startIndex}
+            className={`grid gap-4 md:grid-cols-3 domain-progress-slide-${slideDirection}`}
+          >
+            {visible.map((domain) => (
+              <div
+                key={domain.domain}
+                className="rounded-lg border bg-card p-4 transition-all hover:shadow-md"
+              >
               <div className="mb-3 flex items-center justify-between">
                 <h3 className="text-sm font-medium">{domain.domain}</h3>
                 <span className="text-xs text-muted-foreground">
@@ -133,6 +158,7 @@ const DomainProgressOverview = ({ frameworkId, answers }) => {
               </div>
             </div>
           ))}
+          </div>
         </div>
       </CardContent>
     </Card>

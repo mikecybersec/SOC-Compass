@@ -1118,6 +1118,37 @@ button, input, select, textarea {
   gap: 0.5rem;
 }
 
+/* Domain Progress Slide Animations */
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.domain-progress-slide-left {
+  animation: slideInFromRight 0.3s ease-out;
+}
+
+.domain-progress-slide-right {
+  animation: slideInFromLeft 0.3s ease-out;
+}
+
 .section-divider {
   border-bottom: 1px dashed var(--border);
   margin: 0.25rem 0 0.75rem;
