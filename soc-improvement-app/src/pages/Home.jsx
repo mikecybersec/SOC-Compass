@@ -600,6 +600,20 @@ const Home = ({
           <h2 className="streamline-header">
             Streamline Assessments of Security Operations Centres
           </h2>
+          
+          <section className="assessment-frameworks-section" aria-label="Assessment frameworks available">
+            <div className="assessment-frameworks-container">
+              <p className="assessment-frameworks-label">Deliver assessments aligned to</p>
+              <div className="assessment-frameworks-grid">
+                {["SOC-CMM", "SIM3", "MITRE Inform", "MITRE ATT&CK"].map((type) => (
+                  <div key={type} className="assessment-framework-badge">
+                    {type}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
           <div className="streamline-steps">
             <div
               ref={stepRefs[1]}
@@ -709,19 +723,6 @@ const Home = ({
                 </div>
               )}
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="assessment-frameworks-section" aria-label="Assessment frameworks available">
-        <div className="assessment-frameworks-container">
-          <p className="assessment-frameworks-label">Deliver assessments aligned to</p>
-          <div className="assessment-frameworks-grid">
-            {["SOC-CMM", "SIM3", "MITRE Inform", "MITRE ATT&CK"].map((type) => (
-              <div key={type} className="assessment-framework-badge">
-                {type}
-              </div>
-            ))}
           </div>
         </div>
       </section>
