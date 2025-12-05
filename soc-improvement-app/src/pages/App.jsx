@@ -56,7 +56,7 @@ const ApiKeyModal = ({ open, onClose, apiKey, setApiKey, apiBase, setApiBase, mo
 };
 
 const PreferencesModal = ({ open, onClose, language, setLanguage, theme, setTheme }) => {
-  const [systemPreference, setSystemPreference] = useState<'light' | 'dark'>('light');
+  const [systemPreference, setSystemPreference] = useState('light');
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -162,6 +162,8 @@ const App = () => {
   const setTheme = useAssessmentStore((s) => s.setTheme);
 
   useEffect(() => {
+    if (!theme) return; // Safety check
+    
     const root = document.documentElement;
     
     const getEffectiveTheme = () => {
@@ -169,7 +171,7 @@ const App = () => {
         if (typeof window === 'undefined') return 'light';
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       }
-      return theme;
+      return theme || 'light'; // Fallback to light if theme is invalid
     };
 
     const applyTheme = () => {

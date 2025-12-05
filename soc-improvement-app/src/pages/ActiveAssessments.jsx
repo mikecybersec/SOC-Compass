@@ -9,10 +9,10 @@ import {
 } from '../components/ui/card-shadcn';
 
 const ActiveAssessments = ({
-  assessmentHistory,
+  assessmentHistory = [],
   onLoadAssessment,
 }) => {
-  const activeHistory = assessmentHistory.filter((item) => {
+  const activeHistory = (assessmentHistory || []).filter((item) => {
     const status = item.metadata?.status || 'Not Started';
     return status !== 'Completed';
   });
