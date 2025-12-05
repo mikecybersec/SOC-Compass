@@ -1,5 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { frameworks } from '../utils/frameworks';
+import { ButtonGroup } from '@/components/ui/button-group';
+import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
 
 const chunkSize = 3;
 
@@ -61,22 +64,26 @@ const DomainProgressOverview = ({ frameworkId, answers }) => {
           <p className="muted-label">Track how many answers are complete across Business, Process, Service and more.</p>
         </div>
         {domainProgress.length > chunkSize && (
-          <div className="domain-progress-controls" aria-label="Domain progress carousel controls">
-            <button
-              className="secondary"
+          <ButtonGroup aria-label="Domain progress carousel controls">
+            <Button
+              variant="outline"
+              size="icon"
               disabled={!canPrev}
               onClick={() => setStartIndex((prev) => Math.max(0, prev - chunkSize))}
+              aria-label="Previous domains"
             >
-              ◀
-            </button>
-            <button
-              className="secondary"
+              <ChevronLeft />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
               disabled={!canNext}
               onClick={() => setStartIndex((prev) => Math.min(prev + chunkSize, domainProgress.length - chunkSize))}
+              aria-label="Next domains"
             >
-              ▶
-            </button>
-          </div>
+              <ChevronRight />
+            </Button>
+          </ButtonGroup>
         )}
       </div>
 
