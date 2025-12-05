@@ -87,7 +87,7 @@
   /* Shadcn variables - improved dark mode colors */
   --background: 222.2 84% 4.9%;
   --foreground: 210 40% 98%;
-  --card: 222.2 84% 4.9%;
+  --card: 217.2 32.6% 12%;
   --card-foreground: 210 40% 98%;
   --popover: 222.2 84% 4.9%;
   --popover-foreground: 210 40% 98%;
@@ -114,6 +114,26 @@
   --sidebar-ring: 25 95% 53%;
 
   color-scheme: dark;
+}
+
+/* Dark mode specific overrides for better contrast */
+.dark .question-card {
+  background: hsl(217.2 32.6% 12%);
+  border-color: hsl(var(--border));
+}
+
+.dark .question-card-header {
+  background: hsl(217.2 32.6% 12%);
+}
+
+.dark .question-notes-textarea {
+  background: hsl(217.2 32.6% 18%);
+  border-color: hsl(var(--border));
+  color: hsl(var(--foreground));
+}
+
+.dark .question-card-notes {
+  background: hsl(217.2 32.6% 10%);
 }
 
 * {
@@ -728,6 +748,10 @@ button, input, select, textarea {
   padding: 1.5rem;
   transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
   color: hsl(var(--card-foreground));
+}
+
+.dark .card {
+  background: hsl(217.2 32.6% 12%);
 }
 
 /* Modern Question Card Styles */
@@ -1999,8 +2023,20 @@ label {
   padding: 0.6rem 0.75rem;
   border-radius: 10px;
   border: 1px solid var(--border);
-  background: #fff;
+  background: hsl(var(--card));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  color: hsl(var(--foreground));
+}
+
+.dark .form-control {
+  background: hsl(var(--muted) / 0.2);
+  box-shadow: none;
+}
+
+.dark .metadata-field input,
+.dark .metadata-field select {
+  background: hsl(var(--muted) / 0.2);
+  color: hsl(var(--foreground));
 }
 
 .form-control:focus {
@@ -2579,7 +2615,7 @@ label {
 .wizard-loading-screen {
   position: fixed;
   inset: 0;
-  background: #fff;
+  background: hsl(var(--background));
   display: flex;
   flex-direction: column;
   align-items: center;
