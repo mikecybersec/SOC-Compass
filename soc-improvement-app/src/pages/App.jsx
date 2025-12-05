@@ -231,6 +231,7 @@ const App = () => {
 
   const currentWorkspace = workspaces.find((w) => w.id === currentWorkspaceId);
   const workspaceAssessments = currentWorkspace?.assessments || [];
+  const updateWorkspace = useAssessmentStore((s) => s.updateWorkspace);
 
   return (
     <>
@@ -275,6 +276,7 @@ const App = () => {
             <ActiveAssessments
               workspaces={workspaces}
               onLoadWorkspace={handleLoadWorkspace}
+              onUpdateWorkspace={updateWorkspace}
             />
           )}
           {view === 'assessment' && (
