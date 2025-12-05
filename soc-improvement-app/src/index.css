@@ -2868,34 +2868,116 @@ label {
 
 .copilot-toggle {
   position: fixed;
-  bottom: 1.25rem;
-  right: 1.25rem;
-  border: 1px solid var(--border);
-  background: linear-gradient(135deg, rgba(255, 137, 4, 0.1), rgba(255, 159, 64, 0.18));
-  color: var(--text);
-  border-radius: 999px;
-  padding: 0.65rem 1rem;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  border-radius: 12px;
+  padding: 0;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  box-shadow: var(--shadow-light);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   cursor: pointer;
-  font-weight: 700;
-  backdrop-filter: blur(6px);
+  font-weight: 600;
   z-index: 30;
+  overflow: hidden;
+  transition: all 200ms ease;
+  min-width: 56px;
+  height: 56px;
+}
+
+.dark .copilot-toggle {
+  background: hsl(var(--card));
+  border-color: hsl(var(--border));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .copilot-toggle:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 32px -12px rgba(255, 137, 4, 0.35);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  border-color: hsl(var(--primary) / 0.5);
 }
 
-.copilot-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  background: radial-gradient(circle at 30% 30%, #fff, var(--accent));
-  box-shadow: 0 0 0 6px rgba(255, 137, 4, 0.18);
+.dark .copilot-toggle:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  border-color: hsl(var(--primary) / 0.6);
+}
+
+.copilot-toggle-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.25rem;
+  position: relative;
+  z-index: 2;
+  transition: all 200ms ease;
+}
+
+.copilot-toggle-icon {
+  width: 20px;
+  height: 20px;
+  color: hsl(var(--primary));
+  flex-shrink: 0;
+  transition: transform 200ms ease;
+}
+
+.copilot-toggle:hover .copilot-toggle-icon {
+  transform: scale(1.1);
+}
+
+.copilot-toggle-text {
+  font-size: 0.875rem;
+  white-space: nowrap;
+  color: hsl(var(--foreground));
+}
+
+.copilot-toggle-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: hsl(var(--primary) / 0.1);
+  opacity: 0;
+  animation: copilot-pulse 2s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes copilot-pulse {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+.dark .copilot-toggle-pulse {
+  background: hsl(var(--primary) / 0.15);
+}
+
+@media (max-width: 640px) {
+  .copilot-toggle {
+    bottom: 1rem;
+    right: 1rem;
+    min-width: 48px;
+    height: 48px;
+  }
+  
+  .copilot-toggle-content {
+    padding: 0.75rem 1rem;
+    gap: 0.5rem;
+  }
+  
+  .copilot-toggle-icon {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .copilot-toggle-text {
+    font-size: 0.8125rem;
+  }
 }
 
 .copilot-panel {

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { frameworks, defaultFrameworkId } from '../utils/frameworks';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
+import { Bot } from 'lucide-react';
 
 const normalizeBase = (apiBase) => (apiBase?.trim() || 'https://api.x.ai/v1/').replace(/\/+$/, '');
 
@@ -130,9 +131,12 @@ const AssessmentCopilot = () => {
 
   return (
     <>
-      <button className="copilot-toggle" onClick={() => setOpen((v) => !v)}>
-        <span className="copilot-dot" />
-        Grok chat
+      <button className="copilot-toggle" onClick={() => setOpen((v) => !v)} aria-label="Open Compass Copilot">
+        <div className="copilot-toggle-content">
+          <Bot className="copilot-toggle-icon" />
+          <span className="copilot-toggle-text">Compass Copilot</span>
+        </div>
+        <div className="copilot-toggle-pulse" />
       </button>
 
       {open && (
