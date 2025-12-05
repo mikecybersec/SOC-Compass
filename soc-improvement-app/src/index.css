@@ -2901,15 +2901,16 @@ label {
   font-weight: 600;
   z-index: 30;
   overflow: hidden;
-  transition: all 800ms cubic-bezier(0.4, 0, 0.2, 1);
-  min-width: 56px;
-  width: auto;
   height: 56px;
+  min-width: 56px;
+  width: 200px;
+  max-width: 200px;
+  transition: width 1200ms cubic-bezier(0.4, 0, 0.2, 1), max-width 1200ms cubic-bezier(0.4, 0, 0.2, 1), padding 1200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .copilot-toggle-open {
-  width: 56px;
-  min-width: 56px;
+  width: 56px !important;
+  max-width: 56px !important;
 }
 
 .copilot-toggle-open .copilot-toggle-text {
@@ -2918,7 +2919,7 @@ label {
   overflow: hidden;
   padding: 0;
   margin: 0;
-  transition: opacity 700ms ease-out, width 800ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 600ms ease-out 200ms, width 1000ms cubic-bezier(0.4, 0, 0.2, 1), margin 1000ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark .copilot-toggle {
@@ -2946,8 +2947,8 @@ label {
   padding: 0.875rem 1.25rem;
   position: relative;
   z-index: 2;
-  transition: all 800ms cubic-bezier(0.4, 0, 0.2, 1);
   width: 100%;
+  transition: gap 1200ms cubic-bezier(0.4, 0, 0.2, 1), padding 1200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .copilot-toggle-open .copilot-toggle-content {
@@ -2972,7 +2973,7 @@ label {
   font-size: 0.875rem;
   white-space: nowrap;
   color: hsl(var(--foreground));
-  transition: opacity 700ms ease-out, width 800ms cubic-bezier(0.4, 0, 0.2, 1), margin 800ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 600ms ease-out 200ms, width 1000ms cubic-bezier(0.4, 0, 0.2, 1), margin 1000ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .copilot-toggle-pulse {
