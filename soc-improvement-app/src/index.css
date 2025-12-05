@@ -169,6 +169,11 @@
   border-color: hsl(var(--border)) !important;
 }
 
+/* Ensure AlertDialog uses proper border color in dark mode */
+.dark [data-radix-alert-dialog-content] {
+  border-color: hsl(var(--border)) !important;
+}
+
 .dark .form-control {
   background: hsl(0 0% 15%);
   border-color: hsl(var(--border));
