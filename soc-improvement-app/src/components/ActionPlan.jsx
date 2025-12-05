@@ -1,7 +1,7 @@
-import React, { useState, forwardRef, useMemo } from 'react';
+import React, { useState, forwardRef, useMemo, useEffect } from 'react';
 import { renderMarkdown } from '../utils/markdown';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
-import { generateActionPlan } from '../utils/ai';
+import { generateActionPlan, validateApiKey } from '../utils/ai';
 import { frameworks } from '../utils/frameworks';
 import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
 import {
@@ -27,6 +27,8 @@ import { Sparkles, Key, AlertCircle, AlertTriangle } from 'lucide-react';
 const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
   const [loading, setLoading] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [isValidatingKey, setIsValidatingKey] = useState(false);
+  const [isKeyValid, setIsKeyValid] = useState(false);
   const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
   const answers = useAssessmentStore((s) => s.currentAssessment.answers);
   const scores = useAssessmentStore((s) => s.scores)();
@@ -62,6 +64,28 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
   }, [frameworkId, answers]);
 
   const isIncomplete = completionPercentage < 50;
+
+  // Validate API key when it changes
+  useEffect(() => {
+    const checkApiKey = async () => {
+      if (!apiKey || !apiKey.trim()) {
+        setIsKeyValid(false);
+        return;
+      }
+
+      setIsValidatingKey(true);
+      const validation = await validateApiKey(apiKey, apiBase);
+      setIsKeyValid(validation.valid);
+      setIsValidatingKey(false);
+    };
+
+    // Debounce validation to avoid too many requests
+    const timeoutId = setTimeout(() => {
+      checkApiKey();
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [apiKey, apiBase]);
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -126,7 +150,12 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
               </button>
             </p>
           </div>
-        ) : (
+        ) : isValidatingKey ? (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Sparkles className="h-4 w-4 animate-pulse" />
+            Validating API key...
+          </div>
+        ) : isKeyValid ? (
           <div className="flex items-center">
             <Button onClick={handleGenerateClick} disabled={loading} className="gap-2">
               {loading ? (
@@ -141,6 +170,26 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
                 </>
               )}
             </Button>
+          </div>
+        ) : (
+          <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-destructive">Invalid API Key</p>
+                <p className="text-sm text-destructive/80 mt-1">
+                  The API key appears to be invalid. Please check your key or go to{' '}
+                  <button
+                    onClick={onOpenApiModal}
+                    className="text-primary hover:underline font-medium"
+                    style={{ color: 'hsl(var(--primary))' }}
+                  >
+                    AI API Key Management
+                  </button>{' '}
+                  to update it.
+                </p>
+              </div>
+            </div>
           </div>
         )}
 

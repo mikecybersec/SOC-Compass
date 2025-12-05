@@ -1,3 +1,46 @@
+/**
+ * Validates a Grok API key by making a lightweight request to the models endpoint
+ * @param {string} apiKey - The API key to validate
+ * @param {string} apiBase - The API base URL (default: https://api.x.ai/v1/)
+ * @returns {Promise<{valid: boolean, error?: string}>}
+ */
+export const validateApiKey = async (apiKey, apiBase = 'https://api.x.ai/v1/') => {
+  if (!apiKey || !apiKey.trim()) {
+    return { valid: false, error: 'API key is required' };
+  }
+
+  // Basic format check - Grok API keys typically start with 'xai-'
+  if (!apiKey.startsWith('xai-') && !apiKey.startsWith('sk-')) {
+    // Allow other formats but warn
+  }
+
+  const normalizedBase = (apiBase?.trim() || 'https://api.x.ai/v1/').replace(/\/+$/, '') || 'https://api.x.ai/v1';
+
+  try {
+    // Use the models endpoint as a lightweight validation check
+    const response = await fetch(`${normalizedBase}/models`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey.trim()}`,
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        return { valid: false, error: 'Invalid API key' };
+      }
+      return { valid: false, error: `API request failed: ${response.status}` };
+    }
+
+    // If we get a successful response, the key is valid
+    return { valid: true };
+  } catch (error) {
+    // Network errors or other issues
+    return { valid: false, error: error.message || 'Failed to validate API key' };
+  }
+};
+
 const buildPrompt = ({ frameworkName, answers, scores, metadata }) => {
   const budget = metadata.budgetAmount
     ? `${metadata.budgetCurrency || '$'}${metadata.budgetAmount}`
