@@ -19,9 +19,9 @@ export const parseActionPlan = (markdown) => {
 
   // Try to find sections by headers
   // Look for ## BLUF, ## Low-Hanging Fruit, ## Action Plan (case-insensitive)
-  const blufRegex = /^##\s+(?:BLUF|Bottom\s+Line\s+Up\s+Front|Summary|Executive\s+Summary)/im;
+  const blufRegex = /^##\s+(?:BLUF|Bottom\s+Line\s+Up\s+Front|Summary|Executive\s+Summary|Introduction|Intro)/im;
   const lowHangingFruitRegex = /^##\s+Low[- ]Hanging\s+Fruit/im;
-  const actionPlanRegex = /^##\s+(?:Action\s+Plan|Comprehensive\s+Action\s+Plan|Detailed\s+Action\s+Plan)/im;
+  const actionPlanRegex = /^##\s+(?:Action\s+Plan|Comprehensive\s+Action\s+Plan|Detailed\s+Action\s+Plan|Main\s+Action\s+Plan|Recommendations)/im;
 
   let bluf = '';
   let lowHangingFruit = '';

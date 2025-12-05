@@ -3,6 +3,7 @@ import { renderMarkdown } from '../utils/markdown';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { generateActionPlan } from '../utils/ai';
 import { frameworks } from '../utils/frameworks';
+import { parseActionPlan } from '../utils/parseActionPlan';
 import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
 import {
   Card,
@@ -21,6 +22,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Sparkles, AlertTriangle } from 'lucide-react';
 
 const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
@@ -94,6 +96,14 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
   const formattedBudget = metadata.budgetAmount
     ? `${metadata.budgetCurrency || '$'}${metadata.budgetAmount}`
     : 'Not set';
+
+  // Parse the action plan into sections
+  const parsedPlan = useMemo(() => {
+    if (!actionPlan.raw) {
+      return { bluf: '', lowHangingFruit: '', actionPlan: '', hasSections: false };
+    }
+    return parseActionPlan(actionPlan.raw);
+  }, [actionPlan.raw]);
 
   return (
     <Card ref={ref} id="action-plan" className="action-plan-card">
@@ -216,11 +226,42 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
         {/* Action Plan Content */}
         <div className="action-plan-content">
           {actionPlan.raw ? (
-            <div
-              className="markdown-body prose prose-sm max-w-none dark:prose-invert"
-              style={{ lineHeight: 1.7 }}
-              dangerouslySetInnerHTML={{ __html: renderMarkdown(actionPlan.raw) }}
-            />
+            parsedPlan.hasSections ? (
+              <Tabs defaultValue="intro" className="w-full">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="intro">Summary</TabsTrigger>
+                  <TabsTrigger value="quick-wins">Quick Wins</TabsTrigger>
+                  <TabsTrigger value="action-plan">Action Plan</TabsTrigger>
+                </TabsList>
+                <TabsContent value="intro" className="mt-4">
+                  <div
+                    className="markdown-body prose prose-sm max-w-none dark:prose-invert"
+                    style={{ lineHeight: 1.7 }}
+                    dangerouslySetInnerHTML={{ __html: renderMarkdown(parsedPlan.bluf || 'No summary available.') }}
+                  />
+                </TabsContent>
+                <TabsContent value="quick-wins" className="mt-4">
+                  <div
+                    className="markdown-body prose prose-sm max-w-none dark:prose-invert"
+                    style={{ lineHeight: 1.7 }}
+                    dangerouslySetInnerHTML={{ __html: renderMarkdown(parsedPlan.lowHangingFruit || 'No quick wins identified.') }}
+                  />
+                </TabsContent>
+                <TabsContent value="action-plan" className="mt-4">
+                  <div
+                    className="markdown-body prose prose-sm max-w-none dark:prose-invert"
+                    style={{ lineHeight: 1.7 }}
+                    dangerouslySetInnerHTML={{ __html: renderMarkdown(parsedPlan.actionPlan || actionPlan.raw) }}
+                  />
+                </TabsContent>
+              </Tabs>
+            ) : (
+              <div
+                className="markdown-body prose prose-sm max-w-none dark:prose-invert"
+                style={{ lineHeight: 1.7 }}
+                dangerouslySetInnerHTML={{ __html: renderMarkdown(actionPlan.raw) }}
+              />
+            )
           ) : actionPlan.steps?.length ? (
             <ol className="space-y-4 list-decimal list-inside">
               {actionPlan.steps.map((step, idx) => (
