@@ -1828,6 +1828,11 @@ label {
   opacity: 0;
   transition: opacity 300ms ease;
   border-radius: 20px 20px 0 0;
+  clip-path: inset(0 round 20px 20px 0 0);
+}
+
+.streamline-step-with-copilot::before {
+  clip-path: inset(0 round 20px 20px 0 0);
 }
 
 .streamline-step:hover {
