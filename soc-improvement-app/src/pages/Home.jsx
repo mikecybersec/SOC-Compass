@@ -90,6 +90,7 @@ const ModeSelectionModal = ({ open, onClose, onSelectSolo }) => {
 
 const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, currentFrameworkId, startMode }) => {
   const buildInitialForm = () => ({
+    workspaceName: '',
     assessmentTitle: '',
     name: '',
     budgetAmount: '',
@@ -131,6 +132,51 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
   };
 
   const steps = [
+    {
+      id: 'workspaceName',
+      title: '',
+      description: '',
+      render: () => (
+        <div className="wizard-field">
+          <label className="wizard-label">Workspace name</label>
+          <div className="input-with-hint">
+            <Input
+              autoFocus
+              className="form-control"
+              value={form.workspaceName}
+              placeholder="e.g. ACME Security Team"
+              maxLength={20}
+              onChange={(e) => {
+                const value = e.target.value.slice(0, 20);
+                setForm({ ...form, workspaceName: value });
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleNext();
+                }
+              }}
+            />
+            <span className="enter-hint" aria-hidden="true">
+              Enter ↵
+            </span>
+          </div>
+          <p className="wizard-helper">
+            {form.workspaceName.length}/20 characters
+          </p>
+        </div>
+      ),
+      validate: () => {
+        const trimmed = form.workspaceName.trim();
+        if (trimmed.length === 0) {
+          return 'Workspace name must have at least one character.';
+        }
+        if (trimmed.length > 20) {
+          return 'Workspace name must be 20 characters or less.';
+        }
+        return true;
+      },
+    },
     {
       id: 'assessmentTitle',
       title: '',
@@ -388,11 +434,13 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
   const handleSubmit = () => {
     setStepError('');
     const frameworkId = getInitialFrameworkId(form.frameworkId);
+    const { workspaceName, ...metadataFields } = form;
     setShowLoading(true);
     setTimeout(() => {
       onStart({
         frameworkId,
-        metadata: { ...form, objectives: selectedObjectives },
+        workspaceName: workspaceName.trim() || 'My Workspace',
+        metadata: { ...metadataFields, objectives: selectedObjectives },
       });
     }, 10000);
   };

@@ -369,7 +369,7 @@ export const useAssessmentStore = create(
         };
       }),
     importState: (state) => set(() => hydrateState(state)),
-    startAssessment: ({ frameworkId, metadata }) =>
+    startAssessment: ({ frameworkId, metadata, workspaceName }) =>
       set((state) => {
         const startingMetadata = { ...defaultMetadata(), ...state.upcomingMetadata, ...metadata, status: 'Not Started' };
         const newAssessment = buildAssessment({ frameworkId: frameworkId || defaultFrameworkId, metadata: startingMetadata });
@@ -378,10 +378,24 @@ export const useAssessmentStore = create(
         let currentWorkspaceId = state.currentWorkspaceId;
         let workspaces = state.workspaces || [];
         
+        // Use provided workspace name or default, ensuring max 20 characters
+        const finalWorkspaceName = (workspaceName || 'My Workspace').trim().slice(0, 20) || 'My Workspace';
+        
         if (!currentWorkspaceId || workspaces.length === 0) {
-          const defaultWorkspace = buildWorkspace('My Workspace');
+          const defaultWorkspace = buildWorkspace(finalWorkspaceName);
           workspaces = [defaultWorkspace];
           currentWorkspaceId = defaultWorkspace.id;
+        } else {
+          // Update existing workspace name if provided
+          const workspaceIndex = workspaces.findIndex((w) => w.id === currentWorkspaceId);
+          if (workspaceIndex !== -1 && workspaceName) {
+            workspaces = [...workspaces];
+            workspaces[workspaceIndex] = {
+              ...workspaces[workspaceIndex],
+              name: finalWorkspaceName,
+              updatedAt: new Date().toISOString(),
+            };
+          }
         }
 
         return {
