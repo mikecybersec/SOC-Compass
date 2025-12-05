@@ -1,4 +1,4 @@
-import React, { useState, forwardRef } from 'react';
+import React, { useState, forwardRef, useMemo } from 'react';
 import { renderMarkdown } from '../utils/markdown';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { generateActionPlan } from '../utils/ai';
@@ -12,10 +12,21 @@ import {
   CardTitle,
 } from '@/components/ui/card-shadcn';
 import { Input } from '@/components/ui/Input';
-import { Sparkles, Key, AlertCircle } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { Sparkles, Key, AlertCircle, AlertTriangle } from 'lucide-react';
 
 const ActionPlan = forwardRef((_, ref) => {
   const [loading, setLoading] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
   const answers = useAssessmentStore((s) => s.currentAssessment.answers);
   const scores = useAssessmentStore((s) => s.scores)();
@@ -26,6 +37,31 @@ const ActionPlan = forwardRef((_, ref) => {
   const model = useAssessmentStore((s) => s.model);
   const actionPlan = useAssessmentStore((s) => s.currentAssessment.actionPlan);
   const setActionPlan = useAssessmentStore((s) => s.setActionPlan);
+
+  // Calculate completion percentage
+  const completionPercentage = useMemo(() => {
+    const framework = frameworks[frameworkId];
+    if (!framework) return 100;
+
+    let totalQuestions = 0;
+    let answeredQuestions = 0;
+
+    framework.aspects.forEach((aspect) => {
+      aspect.questions.forEach((question) => {
+        if (question.isAnswerable) {
+          totalQuestions++;
+          if (answers[question.code]) {
+            answeredQuestions++;
+          }
+        }
+      });
+    });
+
+    if (totalQuestions === 0) return 100;
+    return Math.round((answeredQuestions / totalQuestions) * 100);
+  }, [frameworkId, answers]);
+
+  const isIncomplete = completionPercentage < 50;
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -41,6 +77,19 @@ const ActionPlan = forwardRef((_, ref) => {
     });
     setActionPlan(result);
     setLoading(false);
+  };
+
+  const handleGenerateClick = () => {
+    if (isIncomplete) {
+      setShowConfirmDialog(true);
+    } else {
+      handleGenerate();
+    }
+  };
+
+  const handleConfirmGenerate = () => {
+    setShowConfirmDialog(false);
+    handleGenerate();
   };
 
   const formattedBudget = metadata.budgetAmount
@@ -81,7 +130,7 @@ const ActionPlan = forwardRef((_, ref) => {
               Requests use Grok 4 Latest via https://api.x.ai/v1/
             </p>
           </div>
-          <Button onClick={handleGenerate} disabled={loading || !apiKey} className="gap-2">
+          <Button onClick={handleGenerateClick} disabled={loading || !apiKey} className="gap-2">
             {loading ? (
               <>
                 <Sparkles className="h-4 w-4 animate-pulse" />
@@ -122,6 +171,35 @@ const ActionPlan = forwardRef((_, ref) => {
             </div>
           </div>
         )}
+
+        {/* Confirmation Dialog */}
+        <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/20">
+                  <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                </div>
+                <AlertDialogTitle>Incomplete Assessment</AlertDialogTitle>
+              </div>
+              <AlertDialogDescription className="text-left pt-2">
+                <p className="mb-3">
+                  Your assessment is currently <strong>{completionPercentage}% complete</strong>. 
+                  Generating an action plan now may result in less accurate and less tailored recommendations.
+                </p>
+                <p>
+                  For the best quality report, we recommend completing at least <strong>50% of the assessment</strong> before generating your action plan.
+                </p>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleConfirmGenerate}>
+                Generate Anyway
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         {/* Action Plan Content */}
         <div className="action-plan-content">
