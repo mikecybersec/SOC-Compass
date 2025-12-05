@@ -1546,7 +1546,7 @@ label {
 
 .announcement-arrow {
   font-size: 0.85rem;
-  color: var(--muted);
+  color: hsl(var(--muted-foreground));
   display: inline-flex;
   align-items: center;
 }
@@ -1560,9 +1560,14 @@ label {
 
 .enterprise-hero {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(244, 246, 248, 0.94));
-  border: 1px solid var(--border);
+  border: 1px solid hsl(var(--border));
   gap: 2rem;
   box-shadow: var(--shadow);
+}
+
+.dark .enterprise-hero {
+  background: hsl(var(--card));
+  border-color: hsl(var(--border));
 }
 
 .hero-copy {
@@ -1620,10 +1625,15 @@ label {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(244, 246, 248, 0.94));
   border-radius: 22px;
   padding: 1.2rem;
-  border: 1px solid var(--border);
+  border: 1px solid hsl(var(--border));
   box-shadow: var(--shadow);
   position: relative;
   overflow: hidden;
+}
+
+.dark .glass-hero {
+  background: hsl(var(--card));
+  border-color: hsl(var(--border));
 }
 
 .glass-hero > * {
@@ -1648,6 +1658,11 @@ label {
   right: -60px;
 }
 
+.dark .glass-hero::before {
+  background: radial-gradient(circle at 30% 30%, rgba(255, 159, 64, 0.15), transparent 55%);
+  opacity: 0.4;
+}
+
 .glass-hero::after {
   width: 200px;
   height: 200px;
@@ -1655,6 +1670,12 @@ label {
   bottom: -90px;
   left: -40px;
   box-shadow: 260px -40px 120px -160px rgba(59, 130, 246, 0.18);
+}
+
+.dark .glass-hero::after {
+  background: radial-gradient(circle at 60% 60%, rgba(255, 159, 64, 0.12), transparent 60%);
+  opacity: 0.3;
+  box-shadow: 260px -40px 120px -160px rgba(255, 159, 64, 0.1);
 }
 
 .assessment-frameworks-section {
@@ -1727,15 +1748,23 @@ label {
   background: linear-gradient(90deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0));
 }
 
+.dark .assessment-fade-left {
+  background: linear-gradient(90deg, hsl(var(--card)), transparent);
+}
+
 .assessment-fade-right {
   right: 0;
   background: linear-gradient(270deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0));
 }
 
+.dark .assessment-fade-right {
+  background: linear-gradient(270deg, hsl(var(--card)), transparent);
+}
+
 .trusted-panel {
   width: min(320px, 42%);
   border-radius: 16px;
-  border: 1px solid var(--border);
+  border: 1px solid hsl(var(--border));
   background: rgba(255, 255, 255, 0.82);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 10px 30px -24px rgba(15, 23, 42, 0.35);
   padding: 1rem;
@@ -1746,13 +1775,19 @@ label {
   gap: 0.65rem;
 }
 
+.dark .trusted-panel {
+  background: hsl(var(--card));
+  border-color: hsl(var(--border));
+  box-shadow: 0 10px 30px -24px rgba(0, 0, 0, 0.5);
+}
+
 .trusted-title {
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-weight: 700;
   font-size: 0.8rem;
-  color: var(--muted);
+  color: hsl(var(--muted-foreground));
 }
 
 .trusted-carousel {
@@ -1777,9 +1812,17 @@ label {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
 }
 
+.dark .trusted-carousel::before {
+  background: linear-gradient(180deg, hsl(var(--card)), transparent);
+}
+
 .trusted-carousel::after {
   bottom: 0;
   background: linear-gradient(0deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
+}
+
+.dark .trusted-carousel::after {
+  background: linear-gradient(0deg, hsl(var(--card)), transparent);
 }
 
 .trusted-list {
@@ -1795,6 +1838,10 @@ label {
   color: #9ca3af;
   font-weight: 600;
   letter-spacing: 0.01em;
+}
+
+.dark .trusted-item {
+  color: hsl(var(--muted-foreground));
 }
 
 @keyframes trusted-scroll {
@@ -1849,8 +1896,13 @@ label {
   padding: 1rem;
   border-radius: 16px;
   background: linear-gradient(160deg, rgba(255, 255, 255, 0.96), rgba(244, 246, 248, 0.94));
-  border: 1px solid var(--border);
+  border: 1px solid hsl(var(--border));
   box-shadow: var(--shadow);
+}
+
+.dark .hero-panel {
+  background: hsl(var(--card));
+  border-color: hsl(var(--border));
 }
 
 .compact-grid {
@@ -1884,7 +1936,12 @@ label {
 
 .gradient-card {
   background: linear-gradient(150deg, rgba(255, 255, 255, 0.96), rgba(244, 246, 248, 0.94));
-  border-color: var(--border);
+  border-color: hsl(var(--border));
+}
+
+.dark .gradient-card {
+  background: hsl(var(--card));
+  border-color: hsl(var(--border));
 }
 
 .next-metadata-card h3 {
