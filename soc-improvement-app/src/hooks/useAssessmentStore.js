@@ -129,6 +129,7 @@ const migrateToWorkspaces = (saved) => {
 const hydrateState = (saved) => {
   const defaults = {
     apiKey: '',
+    apiKeyValidated: false,
     apiBase: defaultApiBase,
     model: defaultModel,
     theme: 'system',
@@ -306,7 +307,8 @@ export const useAssessmentStore = create(
             ? sidebarAdministrationCollapsed(state.sidebarAdministrationCollapsed)
             : sidebarAdministrationCollapsed,
       })),
-    setApiKey: (apiKey) => set({ apiKey }),
+    setApiKey: (apiKey) => set({ apiKey, apiKeyValidated: false }),
+    setApiKeyValidated: (apiKeyValidated) => set({ apiKeyValidated }),
     setApiBase: (apiBase) => set({ apiBase }),
     setModel: (model) => set({ model }),
     setActionPlan: (actionPlan) =>

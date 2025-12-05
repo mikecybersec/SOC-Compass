@@ -25,6 +25,7 @@ import { Key, CheckCircle2, AlertCircle } from 'lucide-react';
 const ApiKeyModal = ({ open, onClose, apiKey, setApiKey, apiBase, setApiBase, model, setModel }) => {
   const [isTesting, setIsTesting] = useState(false);
   const [isValid, setIsValid] = useState(null);
+  const setApiKeyValidated = useAssessmentStore((s) => s.setApiKeyValidated);
 
   // Reset validation state when modal opens/closes or key changes
   useEffect(() => {
@@ -49,13 +50,16 @@ const ApiKeyModal = ({ open, onClose, apiKey, setApiKey, apiBase, setApiBase, mo
       const validation = await validateApiKey(apiKey, apiBase);
       if (validation.valid) {
         setIsValid(true);
+        setApiKeyValidated(true);
         toastSuccess('API key is valid');
       } else {
         setIsValid(false);
+        setApiKeyValidated(false);
         toastError(validation.error || 'API key is invalid');
       }
     } catch (error) {
       setIsValid(false);
+      setApiKeyValidated(false);
       toastError(error.message || 'Failed to validate API key');
     } finally {
       setIsTesting(false);
@@ -82,6 +86,7 @@ const ApiKeyModal = ({ open, onClose, apiKey, setApiKey, apiBase, setApiBase, mo
               onChange={(e) => {
                 setApiKey(e.target.value);
                 setIsValid(null); // Reset validation when key changes
+                setApiKeyValidated(false); // Reset validated state when key changes
               }}
               className="flex-1"
             />

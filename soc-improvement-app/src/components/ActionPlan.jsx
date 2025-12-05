@@ -31,6 +31,7 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
   const scores = useAssessmentStore((s) => s.scores)();
   const metadata = useAssessmentStore((s) => s.currentAssessment.metadata);
   const apiKey = useAssessmentStore((s) => s.apiKey);
+  const apiKeyValidated = useAssessmentStore((s) => s.apiKeyValidated);
   const apiBase = useAssessmentStore((s) => s.apiBase);
   const model = useAssessmentStore((s) => s.model);
   const actionPlan = useAssessmentStore((s) => s.currentAssessment.actionPlan);
@@ -124,7 +125,7 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
               </button>
             </p>
           </div>
-        ) : (
+        ) : apiKeyValidated ? (
           <div className="flex items-center">
             <Button onClick={handleGenerateClick} disabled={loading} className="gap-2">
               {loading ? (
@@ -139,6 +140,20 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
                 </>
               )}
             </Button>
+          </div>
+        ) : (
+          <div className="p-4 bg-muted/30 rounded-lg border">
+            <p className="text-sm text-muted-foreground">
+              Please test your API key in{' '}
+              <button
+                onClick={onOpenApiModal}
+                className="text-primary hover:underline font-medium"
+                style={{ color: 'hsl(var(--primary))' }}
+              >
+                AI API Key Management
+              </button>{' '}
+              before generating an action plan.
+            </p>
           </div>
         )}
 
