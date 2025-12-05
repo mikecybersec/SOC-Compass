@@ -1828,11 +1828,28 @@ label {
   opacity: 0;
   transition: opacity 300ms ease;
   border-radius: 20px 20px 0 0;
-  clip-path: inset(0 round 20px 20px 0 0);
+}
+
+.streamline-step-top-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary) / 0.5));
+  opacity: 0;
+  transition: opacity 300ms ease;
+  border-radius: 20px 20px 0 0;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.streamline-step-with-copilot:hover .streamline-step-top-border {
+  opacity: 1;
 }
 
 .streamline-step-with-copilot::before {
-  clip-path: inset(0 round 20px 20px 0 0);
+  display: none;
 }
 
 .streamline-step:hover {
