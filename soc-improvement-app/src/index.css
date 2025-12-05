@@ -111,6 +111,54 @@ body {
   color: var(--text);
 }
 
+/* Force button visibility - override Tailwind reset */
+button.ui-btn-primary,
+button.ui-btn {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem !important;
+  background: linear-gradient(135deg, #ff8904, #ff9f40) !important;
+  color: white !important;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: 999px !important;
+  cursor: pointer !important;
+  transition: all 150ms ease;
+  box-shadow: 0 4px 12px rgba(255, 137, 4, 0.3) !important;
+  border: none !important;
+}
+
+button.ui-btn:hover,
+button.ui-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 137, 4, 0.4) !important;
+}
+
+button.ui-btn-secondary {
+  background: #f3f4f6 !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+button.ui-btn-outline {
+  background: transparent !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: none !important;
+}
+
+button.ui-btn-ghost {
+  background: transparent !important;
+  color: var(--text) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 @layer components {
   /* shadcn-inspired primitives */
   .ui-btn {
