@@ -24,6 +24,7 @@ import Badge from '../components/ui/Badge';
 import Dialog from '../components/ui/Dialog';
 import { objectiveOptions } from '../constants/objectives';
 import { formatBudgetAmount } from '../utils/format';
+import { FolderPlus, FileText, Sparkles } from 'lucide-react';
 
 const disabledFrameworks = ['sim3', 'inform'];
 const getInitialFrameworkId = (frameworkId) =>
@@ -582,6 +583,52 @@ const Home = ({
           </div>
         </div>
       </header>
+
+      <section className="streamline-section" aria-label="How it works">
+        <div className="streamline-container">
+          <h2 className="streamline-header">
+            Streamline Assessments of Security Operations Centres
+          </h2>
+          <div className="streamline-steps">
+            <div className="streamline-step">
+              <div className="streamline-step-icon">
+                <FolderPlus className="step-icon" />
+                <div className="step-number">1</div>
+              </div>
+              <div className="streamline-step-content">
+                <h3 className="step-title">Create Your Workspace</h3>
+                <p className="step-description">
+                  Set up your dedicated workspace in Compass to organize and manage your SOC assessments efficiently.
+                </p>
+              </div>
+            </div>
+            <div className="streamline-step">
+              <div className="streamline-step-icon">
+                <FileText className="step-icon" />
+                <div className="step-number">2</div>
+              </div>
+              <div className="streamline-step-content">
+                <h3 className="step-title">Choose Framework & Input Metadata</h3>
+                <p className="step-description">
+                  Select from industry-standard frameworks (SOC-CMM, SIM3, MITRE) and configure your assessment parameters.
+                </p>
+              </div>
+            </div>
+            <div className="streamline-step">
+              <div className="streamline-step-icon">
+                <Sparkles className="step-icon" />
+                <div className="step-number">3</div>
+              </div>
+              <div className="streamline-step-content">
+                <h3 className="step-title">Capture Results & Generate Insights</h3>
+                <p className="step-description">
+                  Record assessment findings, leverage Compass Copilot for expert guidance, and generate actionable roadmaps and action plans.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section className="assessment-frameworks-section" aria-label="Assessment frameworks available">
         <div className="assessment-frameworks-container">
