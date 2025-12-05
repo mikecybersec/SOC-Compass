@@ -2904,8 +2904,8 @@ label {
   right: 1.25rem;
   width: 360px;
   max-width: calc(100vw - 2.5rem);
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
   border-radius: 14px;
   box-shadow: 0 18px 42px -14px rgba(0, 0, 0, 0.18);
   display: flex;
@@ -2914,32 +2914,53 @@ label {
   z-index: 40;
 }
 
+.dark .copilot-panel {
+  background: hsl(var(--card));
+  border-color: hsl(var(--border));
+  box-shadow: 0 18px 42px -14px rgba(0, 0, 0, 0.4);
+}
+
 .copilot-header {
   padding: 0.9rem 1rem;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid hsl(var(--border));
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
+  background: hsl(var(--card));
+}
+
+.dark .copilot-header {
+  border-bottom-color: hsl(var(--border));
+  background: hsl(var(--card));
 }
 
 .copilot-title {
   margin: 0;
   font-weight: 800;
+  color: hsl(var(--foreground));
 }
 
 .copilot-subtitle {
   margin: 0.15rem 0 0;
-  color: var(--muted);
+  color: hsl(var(--muted-foreground));
   font-size: 0.9rem;
 }
 
 .copilot-close {
   border: none;
   background: transparent;
-  color: var(--muted);
+  color: hsl(var(--muted-foreground));
   cursor: pointer;
   font-size: 1rem;
+}
+
+.dark .copilot-close {
+  color: hsl(var(--muted-foreground));
+}
+
+.copilot-close:hover {
+  color: hsl(var(--foreground));
 }
 
 .copilot-body {
@@ -2949,13 +2970,25 @@ label {
   gap: 0.75rem;
   max-height: 360px;
   overflow-y: auto;
+  background: hsl(var(--card));
+}
+
+.dark .copilot-body {
+  background: hsl(var(--card));
 }
 
 .copilot-message {
   border-radius: 12px;
   padding: 0.75rem;
-  border: 1px solid var(--border);
+  border: 1px solid hsl(var(--border));
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(244, 246, 248, 0.9));
+  color: hsl(var(--foreground));
+}
+
+.dark .copilot-message {
+  background: hsl(var(--muted) / 0.3);
+  border-color: hsl(var(--border));
+  color: hsl(var(--foreground));
 }
 
 .copilot-user {
@@ -2963,10 +2996,15 @@ label {
   border-color: rgba(255, 137, 4, 0.25);
 }
 
+.dark .copilot-user {
+  background: linear-gradient(180deg, hsl(var(--primary) / 0.15), hsl(var(--primary) / 0.1));
+  border-color: hsl(var(--primary) / 0.3);
+}
+
 .copilot-role {
   display: inline-block;
   font-weight: 700;
-  color: var(--muted);
+  color: hsl(var(--muted-foreground));
   margin-bottom: 0.15rem;
 }
 
@@ -2974,11 +3012,12 @@ label {
   margin: 0;
   white-space: pre-wrap;
   line-height: 1.45;
+  color: hsl(var(--foreground));
 }
 
 .copilot-status {
   margin: 0;
-  color: var(--muted);
+  color: hsl(var(--muted-foreground));
   font-size: 0.9rem;
 }
 
@@ -2992,17 +3031,28 @@ label {
 .copilot-input input {
   flex: 1;
   border-radius: 10px;
-  border: 1px solid var(--border);
+  border: 1px solid hsl(var(--border));
   padding: 0.6rem 0.75rem;
   font-size: 0.95rem;
   background: rgba(255, 255, 255, 0.96);
-  color: var(--text);
+  color: hsl(var(--foreground));
+}
+
+.dark .copilot-input input {
+  background: hsl(var(--muted) / 0.3);
+  border-color: hsl(var(--border));
+  color: hsl(var(--foreground));
 }
 
 .copilot-input input:focus {
   outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(255, 137, 4, 0.25);
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.25);
+}
+
+.dark .copilot-input input:focus {
+  background: hsl(var(--muted) / 0.4);
+  border-color: hsl(var(--primary));
 }
 
 .copilot-input button {
@@ -3026,6 +3076,14 @@ label {
   color: #b91c1c;
   background: #fef2f2;
   border: 1px solid #fecdd3;
+  border-radius: 8px;
+  padding: 0.75rem;
+}
+
+.dark .copilot-error {
+  color: #fca5a5;
+  background: hsl(0 62.8% 15% / 0.3);
+  border-color: hsl(0 62.8% 30% / 0.5);
   border-radius: 10px;
   padding: 0.65rem 0.75rem;
   font-weight: 600;
