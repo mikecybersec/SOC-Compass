@@ -3,6 +3,7 @@ import Home from './Home';
 import Assessment from './Assessment';
 import AssessmentInfo from './AssessmentInfo';
 import Reporting from './Reporting';
+import ActiveAssessments from './ActiveAssessments';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -175,14 +176,14 @@ const App = () => {
     <>
       <AutoSave />
       <div className="app-container">
-        {view === 'home' && (
+        {(view === 'home' || view === 'active-assessments') && (
           <Navbar
             onGoHome={() => setView('home')}
             onNewAssessment={() => {
               setView('home');
               setModeModalOpen(true);
             }}
-            onExistingAssessments={() => setView('home')}
+            onExistingAssessments={() => setView('active-assessments')}
             onOpenApiModal={() => setApiModalOpen(true)}
             onOpenPreferences={() => setPreferencesModalOpen(true)}
           />
@@ -192,8 +193,6 @@ const App = () => {
             <Home
               onStartAssessment={handleStart}
               onContinueAssessment={() => setView('assessment')}
-              onLoadAssessment={handleLoad}
-              assessmentHistory={assessmentHistory}
               currentAssessment={currentAssessment}
               startModalOpen={startModalOpen}
               modeModalOpen={modeModalOpen}
@@ -209,6 +208,20 @@ const App = () => {
                 setModeModalOpen(false);
               }}
               startMode={startMode}
+              onViewActiveAssessments={() => setView('active-assessments')}
+            />
+          )}
+          {view === 'active-assessments' && (
+            <ActiveAssessments
+              onGoHome={() => setView('home')}
+              onNewAssessment={() => {
+                setView('home');
+                setModeModalOpen(true);
+              }}
+              onOpenApiModal={() => setApiModalOpen(true)}
+              onOpenPreferences={() => setPreferencesModalOpen(true)}
+              assessmentHistory={assessmentHistory}
+              onLoadAssessment={handleLoad}
             />
           )}
           {view === 'assessment' && (

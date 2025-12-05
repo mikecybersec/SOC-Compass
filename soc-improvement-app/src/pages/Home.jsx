@@ -456,8 +456,6 @@ const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, current
 const Home = ({
   onStartAssessment,
   onContinueAssessment,
-  onLoadAssessment,
-  assessmentHistory,
   currentAssessment,
   startModalOpen,
   onOpenStartModal,
@@ -466,19 +464,12 @@ const Home = ({
   onCloseModeModal,
   onSelectSoloMode,
   startMode,
+  onViewActiveAssessments,
 }) => {
   const upcomingMetadata = useAssessmentStore((s) => s.upcomingMetadata);
   const currentFrameworkId = currentAssessment.frameworkId;
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
 
-  const sortedHistory = useMemo(
-    () => [...(assessmentHistory || [])].sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt)),
-    [assessmentHistory]
-  );
-  const activeHistory = useMemo(
-    () => sortedHistory.filter((entry) => entry.metadata?.status !== 'Completed'),
-    [sortedHistory]
-  );
 
   return (
     <div className="home">
@@ -501,9 +492,9 @@ const Home = ({
           </p>
           <div className="hero-actions">
             <Button onClick={onOpenStartModal}>Get Started</Button>
-            <a className="hero-link-button" href="#active-assessments">
+            <Button variant="outline" onClick={onViewActiveAssessments}>
               Active Assessments
-            </a>
+            </Button>
           </div>
         </div>
         <div className="trusted-panel" aria-label="Trusted audience carousel">
@@ -533,70 +524,6 @@ const Home = ({
         </div>
       </section>
 
-      <div className="home-grid">
-        <Card id="active-assessments">
-          <CardHeader className="flex-between align-start">
-            <div>
-              <CardTitle>Active assessments</CardTitle>
-              <CardDescription>
-                View your active assessments here. Note that completed assessments are hidden from this view.
-              </CardDescription>
-            </div>
-          </CardHeader>
-          {activeHistory.length === 0 ? (
-            <CardContent>
-              <p style={{ color: 'var(--muted)' }}>No active assessments yet.</p>
-            </CardContent>
-          ) : (
-            <div className="assessment-table" role="table" aria-label="Active assessments table">
-              <div className="assessment-row assessment-header" role="row">
-                <div role="columnheader">Assessment Title</div>
-                <div role="columnheader">Organisation</div>
-                <div role="columnheader">Framework</div>
-                <div role="columnheader">Last saved</div>
-                <div role="columnheader">Status</div>
-              </div>
-              {activeHistory.map((item) => {
-                const statusText = item.metadata?.status || 'Not Started';
-                const statusClass = statusText.toLowerCase().replace(/\s+/g, '-');
-
-                return (
-                  <div
-                    key={item.id}
-                    className="assessment-row assessment-row-link"
-                    role="row"
-                    tabIndex={0}
-                    onClick={() => onLoadAssessment(item.id)}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter' || event.key === ' ') {
-                        event.preventDefault();
-                        onLoadAssessment(item.id);
-                      }
-                    }}
-                    aria-label={`Open assessment ${item.metadata?.assessmentTitle || item.label || 'Untitled assessment'}`}
-                  >
-                    <div className="cell-ellipsis" role="cell">
-                      <div className="cell-title">{item.metadata?.assessmentTitle || item.label || 'Untitled assessment'}</div>
-                    </div>
-                    <div className="cell-ellipsis" role="cell">
-                      <div className="cell-title">{item.metadata?.name || 'Not provided'}</div>
-                    </div>
-                    <div className="cell-ellipsis" role="cell">
-                      <div className="cell-title">{frameworks[item.frameworkId]?.name || 'Unknown framework'}</div>
-                    </div>
-                    <div className="cell-ellipsis" role="cell">
-                      <div className="cell-title">{new Date(item.savedAt).toLocaleString()}</div>
-                    </div>
-                    <div role="cell">
-                      <span className={`status-pill status-${statusClass}`}>{statusText}</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </Card>
-      </div>
 
       <ModeSelectionModal open={modeModalOpen} onClose={onCloseModeModal} onSelectSolo={onSelectSoloMode} />
       <StartAssessmentModal
