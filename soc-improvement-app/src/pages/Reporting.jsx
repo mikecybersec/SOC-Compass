@@ -15,7 +15,7 @@ import { frameworks } from '../utils/frameworks';
 import { exportAssessment } from '../utils/storage';
 import { exportPdf } from '../utils/pdf';
 
-const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessmentInfo, onOpenReporting, onNavigateHome }) => {
+const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessmentInfo, onOpenReporting, onNavigateHome, onSwitchWorkspace, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
   const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
   const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
   const setActiveAspectKey = useAssessmentStore((s) => s.setActiveAspectKey);
@@ -50,12 +50,17 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
         onNavigateHome={onNavigateHome || onBack}
         onOpenAssessmentInfo={onOpenAssessmentInfo}
         onOpenReporting={onOpenReporting}
+        onSwitchWorkspace={onSwitchWorkspace}
         reportingActive
         assessmentCollapsed={assessmentCollapsed}
         setAssessmentCollapsed={setAssessmentCollapsed}
         domainCollapsed={domainCollapsed}
         setDomainCollapsed={setDomainCollapsed}
         answers={answers}
+        workspace={workspace}
+        assessments={assessments}
+        currentAssessmentId={currentAssessmentId}
+        onSwitchAssessment={onSwitchAssessment}
       />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">

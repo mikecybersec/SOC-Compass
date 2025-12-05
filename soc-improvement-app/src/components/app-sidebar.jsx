@@ -17,7 +17,7 @@ import {
   SidebarHeader,
   SidebarSeparator,
 } from "@/components/ui/sidebar"
-import { Info, FileText } from "lucide-react"
+import { Info, FileText, ArrowLeftRight } from "lucide-react"
 
 export function AppSidebar({
   aspects,
@@ -26,6 +26,7 @@ export function AppSidebar({
   onNavigateHome,
   onOpenAssessmentInfo,
   onOpenReporting,
+  onSwitchWorkspace,
   assessmentInfoActive = false,
   reportingActive = false,
   assessmentCollapsed,
@@ -33,6 +34,10 @@ export function AppSidebar({
   domainCollapsed,
   setDomainCollapsed,
   answers,
+  workspace,
+  assessments = [],
+  currentAssessmentId,
+  onSwitchAssessment,
   ...props
 }) {
   const showAssessmentInfo = Boolean(onOpenAssessmentInfo) || assessmentInfoActive
@@ -41,13 +46,40 @@ export function AppSidebar({
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher />
+        <TeamSwitcher
+          workspace={workspace}
+          assessments={assessments}
+          currentAssessmentId={currentAssessmentId}
+          onSwitchAssessment={onSwitchAssessment}
+        />
       </SidebarHeader>
       <SidebarContent>
         {/* Home */}
         <NavHome onNavigateHome={onNavigateHome} />
         
         <SidebarSeparator className="mx-0 h-px" />
+        
+        {/* Switch Workspace */}
+        {onSwitchWorkspace && (
+          <>
+            <SidebarGroup>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      onClick={onSwitchWorkspace}
+                      tooltip="Switch Workspace"
+                    >
+                      <ArrowLeftRight />
+                      <span>Switch Workspace</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+            <SidebarSeparator className="mx-0 h-px" />
+          </>
+        )}
         
         {/* Assessment Info */}
         {showAssessmentInfo && (

@@ -23,13 +23,54 @@ export const saveState = (state) => {
   }
 };
 
-export const exportAssessment = (state) => {
-  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+export const exportAssessment = (state, assessmentId = null) => {
+  let exportData;
+  let exportName;
+
+  if (assessmentId) {
+    // Export a specific assessment
+    const workspace = (state.workspaces || []).find((w) => w.id === state.currentWorkspaceId);
+    const assessment = workspace?.assessments?.find((a) => a.id === assessmentId);
+    if (!assessment) {
+      console.error('Assessment not found');
+      return;
+    }
+    exportData = assessment;
+    exportName = assessment.metadata?.assessmentTitle || assessment.metadata?.name || 'assessment';
+  } else {
+    // Export current assessment
+    exportData = state.currentAssessment;
+    exportName = state.currentAssessment?.metadata?.assessmentTitle || state.currentAssessment?.metadata?.name || 'assessment';
+  }
+
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  const exportName = state.currentAssessment?.metadata?.name || state.metadata?.name || 'soc-assessment';
   link.download = `${exportName}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+};
+
+export const exportWorkspace = (state, workspaceId = null) => {
+  const targetWorkspaceId = workspaceId || state.currentWorkspaceId;
+  const workspace = (state.workspaces || []).find((w) => w.id === targetWorkspaceId);
+  
+  if (!workspace) {
+    console.error('Workspace not found');
+    return;
+  }
+
+  const exportData = {
+    ...workspace,
+    exportedAt: new Date().toISOString(),
+  };
+
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${workspace.name || 'workspace'}.json`;
   link.click();
   URL.revokeObjectURL(url);
 };

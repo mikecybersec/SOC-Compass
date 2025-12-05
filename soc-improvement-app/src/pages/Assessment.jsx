@@ -14,7 +14,7 @@ import QuestionPanel from '../components/QuestionPanel';
 import { frameworks } from '../utils/frameworks';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 
-const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateHome }) => {
+const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateHome, onSwitchWorkspace, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
   const lastSavedAt = useAssessmentStore((s) => s.lastSavedAt);
   const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
@@ -82,11 +82,16 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateH
         onNavigateHome={onNavigateHome || onBack}
         onOpenAssessmentInfo={onOpenAssessmentInfo}
         onOpenReporting={onOpenReporting}
+        onSwitchWorkspace={onSwitchWorkspace}
         assessmentCollapsed={assessmentCollapsed}
         setAssessmentCollapsed={setAssessmentCollapsed}
         domainCollapsed={domainCollapsed}
         setDomainCollapsed={setDomainCollapsed}
         answers={answers}
+        workspace={workspace}
+        assessments={assessments}
+        currentAssessmentId={currentAssessmentId}
+        onSwitchAssessment={onSwitchAssessment}
       />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">

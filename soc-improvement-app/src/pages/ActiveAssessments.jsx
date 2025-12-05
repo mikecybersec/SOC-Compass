@@ -8,97 +8,88 @@ import {
   CardContent,
 } from '../components/ui/card-shadcn';
 
-const ActiveAssessments = ({
-  assessmentHistory = [],
-  onLoadAssessment,
+const Workspaces = ({
+  workspaces = [],
+  onLoadWorkspace,
 }) => {
-  const activeHistory = (assessmentHistory || []).filter((item) => {
-    const status = item.metadata?.status || 'Not Started';
-    return status !== 'Completed';
-  });
-
   return (
     <div className="app-main">
-        <div className="container" style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem 1.5rem' }}>
-          <div style={{ marginBottom: '2rem' }}>
-            <h1 className="text-2xl font-semibold tracking-tight">Active Assessments</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              View and manage your active assessments. Completed assessments are hidden from this view.
-            </p>
-          </div>
-
-          {activeHistory.length === 0 ? (
-            <Card>
-              <CardContent className="py-12">
-                <div style={{ textAlign: 'center' }}>
-                  <p style={{ color: 'hsl(var(--muted-foreground))', marginBottom: '1rem' }}>
-                    No active assessments yet.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            <Card>
-              <CardHeader>
-                <CardTitle>Assessments</CardTitle>
-                <CardDescription>
-                  Click on any assessment to open and continue working on it.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="assessment-table" role="table" aria-label="Active assessments table">
-                  <div className="assessment-row assessment-header" role="row">
-                    <div role="columnheader">Assessment Title</div>
-                    <div role="columnheader">Organisation</div>
-                    <div role="columnheader">Framework</div>
-                    <div role="columnheader">Last saved</div>
-                    <div role="columnheader">Status</div>
-                  </div>
-                  {activeHistory.map((item) => {
-                    const statusText = item.metadata?.status || 'Not Started';
-                    const statusClass = statusText.toLowerCase().replace(/\s+/g, '-');
-
-                    return (
-                      <div
-                        key={item.id}
-                        className="assessment-row assessment-row-link"
-                        role="row"
-                        tabIndex={0}
-                        onClick={() => onLoadAssessment(item.id)}
-                        onKeyDown={(event) => {
-                          if (event.key === 'Enter' || event.key === ' ') {
-                            event.preventDefault();
-                            onLoadAssessment(item.id);
-                          }
-                        }}
-                        aria-label={`Open assessment ${item.metadata?.assessmentTitle || item.label || 'Untitled assessment'}`}
-                      >
-                        <div className="cell-ellipsis" role="cell">
-                          <div className="cell-title">{item.metadata?.assessmentTitle || item.label || 'Untitled assessment'}</div>
-                        </div>
-                        <div className="cell-ellipsis" role="cell">
-                          <div className="cell-title">{item.metadata?.name || 'Not provided'}</div>
-                        </div>
-                        <div className="cell-ellipsis" role="cell">
-                          <div className="cell-title">{frameworks[item.frameworkId]?.name || 'Unknown framework'}</div>
-                        </div>
-                        <div className="cell-ellipsis" role="cell">
-                          <div className="cell-title">{new Date(item.savedAt).toLocaleString()}</div>
-                        </div>
-                        <div role="cell">
-                          <span className={`status-pill status-${statusClass}`}>{statusText}</span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          )}
+      <div className="container" style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+        <div style={{ marginBottom: '2rem' }}>
+          <h1 className="text-2xl font-semibold tracking-tight">Workspaces</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Select a workspace to view and manage assessments. Each workspace can contain multiple assessments.
+          </p>
         </div>
+
+        {workspaces.length === 0 ? (
+          <Card>
+            <CardContent className="py-12">
+              <div style={{ textAlign: 'center' }}>
+                <p style={{ color: 'hsl(var(--muted-foreground))', marginBottom: '1rem' }}>
+                  No workspaces yet. Create a new workspace to get started.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+            {workspaces.map((workspace) => {
+              const assessments = workspace.assessments || [];
+              const assessmentCount = assessments.length;
+              const lastUpdated = workspace.updatedAt 
+                ? new Date(workspace.updatedAt).toLocaleString()
+                : 'Never';
+
+              return (
+                <Card
+                  key={workspace.id}
+                  className="assessment-row-link"
+                  style={{ cursor: 'pointer', transition: 'all 0.2s ease' }}
+                  onClick={() => onLoadWorkspace(workspace.id)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      onLoadWorkspace(workspace.id);
+                    }
+                  }}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`Open workspace ${workspace.name}`}
+                >
+                  <CardHeader>
+                    <CardTitle>{workspace.name}</CardTitle>
+                    <CardDescription>
+                      {assessmentCount === 0 
+                        ? 'No assessments yet'
+                        : `${assessmentCount} assessment${assessmentCount !== 1 ? 's' : ''}`
+                      }
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div style={{ fontSize: '0.875rem', color: 'hsl(var(--muted-foreground))' }}>
+                      <div style={{ marginBottom: '0.5rem' }}>
+                        <strong>Last updated:</strong> {lastUpdated}
+                      </div>
+                      {assessmentCount > 0 && (
+                        <div>
+                          <strong>Latest assessment:</strong>{' '}
+                          {assessments
+                            .sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt))[0]
+                            ?.metadata?.assessmentTitle || 'Untitled'}
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        )}
       </div>
+    </div>
   );
 };
 
-export default ActiveAssessments;
+export default Workspaces;
 

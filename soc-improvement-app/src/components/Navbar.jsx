@@ -38,7 +38,7 @@ const Navbar = ({
               New Assessment
             </Button>
             <Button variant="ghost" size="sm" onClick={onExistingAssessments}>
-              Active Assessments
+              Workspaces
             </Button>
           </div>
         </div>

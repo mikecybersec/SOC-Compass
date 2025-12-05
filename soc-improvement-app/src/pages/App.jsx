@@ -148,8 +148,11 @@ const App = () => {
   const theme = useAssessmentStore((s) => s.theme);
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
   const startAssessment = useAssessmentStore((s) => s.startAssessment);
-  const assessmentHistory = useAssessmentStore((s) => s.assessmentHistory);
-  const loadAssessmentFromHistory = useAssessmentStore((s) => s.loadAssessmentFromHistory);
+  const workspaces = useAssessmentStore((s) => s.workspaces || []);
+  const currentWorkspaceId = useAssessmentStore((s) => s.currentWorkspaceId);
+  const currentAssessmentId = useAssessmentStore((s) => s.currentAssessmentId);
+  const loadWorkspace = useAssessmentStore((s) => s.loadWorkspace);
+  const switchAssessment = useAssessmentStore((s) => s.switchAssessment);
   const saveAssessmentToHistory = useAssessmentStore((s) => s.saveAssessmentToHistory);
   const apiKey = useAssessmentStore((s) => s.apiKey);
   const setApiKey = useAssessmentStore((s) => s.setApiKey);
@@ -216,10 +219,17 @@ const App = () => {
     setStartMode(null);
   };
 
-  const handleLoad = (id) => {
-    loadAssessmentFromHistory(id);
+  const handleLoadWorkspace = (workspaceId) => {
+    loadWorkspace(workspaceId);
     setView('assessmentInfo');
   };
+
+  const handleSwitchWorkspace = () => {
+    setView('active-assessments');
+  };
+
+  const currentWorkspace = workspaces.find((w) => w.id === currentWorkspaceId);
+  const workspaceAssessments = currentWorkspace?.assessments || [];
 
   return (
     <>
@@ -262,8 +272,8 @@ const App = () => {
           )}
           {view === 'active-assessments' && (
             <ActiveAssessments
-              assessmentHistory={assessmentHistory}
-              onLoadAssessment={handleLoad}
+              workspaces={workspaces}
+              onLoadWorkspace={handleLoadWorkspace}
             />
           )}
           {view === 'assessment' && (
@@ -272,6 +282,11 @@ const App = () => {
               onNavigateHome={() => setView('home')}
               onOpenAssessmentInfo={handleViewAssessmentInfo}
               onOpenReporting={handleViewReporting}
+              onSwitchWorkspace={handleSwitchWorkspace}
+              workspace={currentWorkspace}
+              assessments={workspaceAssessments}
+              currentAssessmentId={currentAssessmentId}
+              onSwitchAssessment={switchAssessment}
             />
           )}
           {view === 'assessmentInfo' && (
@@ -279,20 +294,30 @@ const App = () => {
               onBack={() => setView('assessment')}
               onNavigateHome={() => setView('home')}
               onOpenReporting={handleViewReporting}
+              onSwitchWorkspace={handleSwitchWorkspace}
               metaRef={metaRef}
               scoresRef={scoresRef}
               onDeleteAssessment={() => setView('home')}
+              workspace={currentWorkspace}
+              assessments={workspaceAssessments}
+              currentAssessmentId={currentAssessmentId}
+              onSwitchAssessment={switchAssessment}
             />
           )}
           {view === 'reporting' && (
             <Reporting
               onBack={() => setView('assessment')}
               onNavigateHome={() => setView('home')}
+              onSwitchWorkspace={handleSwitchWorkspace}
               actionPlanRef={actionPlanRef}
               scoresRef={scoresRef}
               metaRef={metaRef}
               onOpenAssessmentInfo={handleViewAssessmentInfo}
               onOpenReporting={handleViewReporting}
+              workspace={currentWorkspace}
+              assessments={workspaceAssessments}
+              currentAssessmentId={currentAssessmentId}
+              onSwitchAssessment={switchAssessment}
             />
           )}
         </main>

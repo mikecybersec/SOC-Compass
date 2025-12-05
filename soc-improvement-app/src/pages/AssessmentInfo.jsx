@@ -17,7 +17,7 @@ import { frameworks } from '../utils/frameworks';
 import Dialog from '../components/ui/Dialog';
 import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
 
-const AssessmentInfo = ({ onBack, onOpenReporting, metaRef, scoresRef, actionPlanRef, onDeleteAssessment, onNavigateHome }) => {
+const AssessmentInfo = ({ onBack, onOpenReporting, metaRef, scoresRef, actionPlanRef, onDeleteAssessment, onNavigateHome, onSwitchWorkspace, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
   const metadata = useAssessmentStore((s) => s.currentAssessment.metadata);
   const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
   const lastSavedAt = useAssessmentStore((s) => s.lastSavedAt);
@@ -63,11 +63,16 @@ const AssessmentInfo = ({ onBack, onOpenReporting, metaRef, scoresRef, actionPla
         onNavigateHome={onNavigateHome || onBack}
         assessmentInfoActive
         onOpenReporting={onOpenReporting}
+        onSwitchWorkspace={onSwitchWorkspace}
         assessmentCollapsed={assessmentCollapsed}
         setAssessmentCollapsed={setAssessmentCollapsed}
         domainCollapsed={domainCollapsed}
         setDomainCollapsed={setDomainCollapsed}
         answers={answers}
+        workspace={workspace}
+        assessments={assessments}
+        currentAssessmentId={currentAssessmentId}
+        onSwitchAssessment={onSwitchAssessment}
       />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">

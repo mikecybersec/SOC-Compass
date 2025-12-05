@@ -71,6 +71,15 @@ const buildAssessment = ({ frameworkId = defaultFrameworkId, metadata } = {}) =>
   notes: {},
   metadata: { ...defaultMetadata(), ...metadata },
   actionPlan: { steps: [], raw: '' },
+  savedAt: new Date().toISOString(),
+});
+
+const buildWorkspace = (name = 'My Workspace') => ({
+  id: `workspace-${Date.now()}`,
+  name,
+  assessments: [],
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 });
 
 const hydrateAssessment = (assessment, fallbackMetadata) => {
@@ -89,6 +98,34 @@ const hydrateAssessment = (assessment, fallbackMetadata) => {
   };
 };
 
+const migrateToWorkspaces = (saved) => {
+  // If workspaces already exist, return as-is
+  if (saved?.workspaces && Array.isArray(saved.workspaces) && saved.workspaces.length > 0) {
+    return saved;
+  }
+
+  // Migrate from old assessmentHistory structure to workspaces
+  const oldHistory = saved?.assessmentHistory || [];
+  const defaultWorkspace = buildWorkspace('My Workspace');
+  
+  if (oldHistory.length > 0) {
+    // Migrate all assessments to default workspace
+    defaultWorkspace.assessments = oldHistory.map((entry) => ({
+      ...hydrateAssessment(entry, entry.metadata),
+      savedAt: entry.savedAt || new Date().toISOString(),
+    }));
+    defaultWorkspace.updatedAt = new Date().toISOString();
+  }
+
+  return {
+    ...saved,
+    workspaces: [defaultWorkspace],
+    currentWorkspaceId: defaultWorkspace.id,
+    currentAssessmentId: oldHistory.length > 0 ? oldHistory[0].id : null,
+    assessmentHistory: undefined, // Remove old structure
+  };
+};
+
 const hydrateState = (saved) => {
   const defaults = {
     apiKey: '',
@@ -97,7 +134,9 @@ const hydrateState = (saved) => {
     theme: 'system',
     currentAssessment: buildAssessment(),
     upcomingMetadata: defaultMetadata(),
-    assessmentHistory: [],
+    workspaces: [buildWorkspace('My Workspace')],
+    currentWorkspaceId: null,
+    currentAssessmentId: null,
     lastSavedAt: timestampNow(),
     activeAspectKey: null,
     sidebarCollapsed: false,
@@ -106,39 +145,70 @@ const hydrateState = (saved) => {
     skipNextAutoSave: false,
   };
 
-  if (!saved) return defaults;
+  if (!saved) {
+    const defaultWorkspace = defaults.workspaces[0];
+    return {
+      ...defaults,
+      currentWorkspaceId: defaultWorkspace.id,
+    };
+  }
 
-  const seedMetadata = normalizeMetadata(saved.metadata || saved.currentAssessment?.metadata || {});
+  // Migrate old structure to workspaces if needed
+  const migrated = migrateToWorkspaces(saved);
+
+  const seedMetadata = normalizeMetadata(migrated.metadata || migrated.currentAssessment?.metadata || {});
+  
+  // Get current workspace and assessment
+  const workspaces = migrated.workspaces || [buildWorkspace('My Workspace')];
+  const currentWorkspaceId = migrated.currentWorkspaceId || workspaces[0]?.id;
+  const currentWorkspace = workspaces.find((w) => w.id === currentWorkspaceId) || workspaces[0];
+  
+  // Get the last saved assessment from current workspace, or use currentAssessment
+  const workspaceAssessments = currentWorkspace?.assessments || [];
+  const lastAssessment = workspaceAssessments.length > 0 
+    ? workspaceAssessments.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt))[0]
+    : null;
+  
+  const currentAssessmentId = migrated.currentAssessmentId || lastAssessment?.id;
+  const assessmentToLoad = currentAssessmentId 
+    ? workspaceAssessments.find((a) => a.id === currentAssessmentId) || lastAssessment
+    : migrated.currentAssessment || buildAssessment();
+
   const hydrated = {
     ...defaults,
-    ...saved,
+    ...migrated,
     currentAssessment: hydrateAssessment(
-      saved.currentAssessment || {
-        frameworkId: saved.frameworkId,
-        answers: saved.answers,
-        notes: saved.notes,
+      assessmentToLoad || {
+        frameworkId: migrated.frameworkId,
+        answers: migrated.answers,
+        notes: migrated.notes,
         metadata: seedMetadata,
-        actionPlan: saved.actionPlan,
+        actionPlan: migrated.actionPlan,
       },
       seedMetadata
     ),
-    upcomingMetadata: saved.upcomingMetadata ? normalizeMetadata(saved.upcomingMetadata) : seedMetadata,
+    upcomingMetadata: migrated.upcomingMetadata ? normalizeMetadata(migrated.upcomingMetadata) : seedMetadata,
     apiBase: defaultApiBase,
     model: defaultModel,
-    assessmentHistory: (saved.assessmentHistory || []).map((entry) => hydrateAssessment(entry, entry.metadata)),
-    lastSavedAt: saved.lastSavedAt || timestampNow(),
+    workspaces: workspaces.map((w) => ({
+      ...w,
+      assessments: (w.assessments || []).map((entry) => hydrateAssessment(entry, entry.metadata)),
+    })),
+    currentWorkspaceId: currentWorkspaceId || workspaces[0]?.id,
+    currentAssessmentId: currentAssessmentId || lastAssessment?.id,
+    lastSavedAt: migrated.lastSavedAt || timestampNow(),
     skipNextAutoSave: false,
     sidebarCollapsed:
-      saved && Object.prototype.hasOwnProperty.call(saved, 'sidebarCollapsed')
-        ? saved.sidebarCollapsed
+      migrated && Object.prototype.hasOwnProperty.call(migrated, 'sidebarCollapsed')
+        ? migrated.sidebarCollapsed
         : defaults.sidebarCollapsed,
     sidebarAssessmentCollapsed:
-      saved && Object.prototype.hasOwnProperty.call(saved, 'sidebarAssessmentCollapsed')
-        ? saved.sidebarAssessmentCollapsed
+      migrated && Object.prototype.hasOwnProperty.call(migrated, 'sidebarAssessmentCollapsed')
+        ? migrated.sidebarAssessmentCollapsed
         : defaults.sidebarAssessmentCollapsed,
     sidebarDomainCollapsed:
-      saved && Object.prototype.hasOwnProperty.call(saved, 'sidebarDomainCollapsed')
-        ? saved.sidebarDomainCollapsed || defaults.sidebarDomainCollapsed
+      migrated && Object.prototype.hasOwnProperty.call(migrated, 'sidebarDomainCollapsed')
+        ? migrated.sidebarDomainCollapsed || defaults.sidebarDomainCollapsed
         : defaults.sidebarDomainCollapsed,
   };
 
@@ -236,49 +306,53 @@ export const useAssessmentStore = create(
           return { skipNextAutoSave: false };
         }
 
+        const currentWorkspaceId = state.currentWorkspaceId;
+        if (!currentWorkspaceId) {
+          return { currentAssessment: state.currentAssessment, lastSavedAt: state.lastSavedAt };
+        }
+
         const currentAssessment =
           state.currentAssessment.id !== undefined && state.currentAssessment.id !== null
             ? state.currentAssessment
             : { ...state.currentAssessment, id: `assessment-${Date.now()}` };
 
-        const history = state.assessmentHistory || [];
-        const existsInHistory = history.some((entry) => entry.id === currentAssessment.id);
-        const isWorthSaving = hasAssessmentContent(currentAssessment);
-
-        if (!isWorthSaving && !existsInHistory) {
+        const workspaces = state.workspaces || [];
+        const workspaceIndex = workspaces.findIndex((w) => w.id === currentWorkspaceId);
+        if (workspaceIndex === -1) {
           return { currentAssessment, lastSavedAt: state.lastSavedAt };
         }
 
-        const updatedHistory = existsInHistory
-          ? history.map((entry) =>
-              entry.id === currentAssessment.id
-                ? {
-                    ...entry,
-                    ...currentAssessment,
-                    label:
-                      entry.label ||
-                      currentAssessment.metadata?.assessmentTitle ||
-                      currentAssessment.metadata?.name ||
-                      'Saved assessment',
-                    savedAt: new Date().toISOString(),
-                  }
-                : entry
+        const workspace = workspaces[workspaceIndex];
+        const assessments = workspace.assessments || [];
+        const existsInWorkspace = assessments.some((entry) => entry.id === currentAssessment.id);
+        const isWorthSaving = hasAssessmentContent(currentAssessment);
+
+        if (!isWorthSaving && !existsInWorkspace) {
+          return { currentAssessment, lastSavedAt: state.lastSavedAt };
+        }
+
+        const updatedAssessment = {
+          ...currentAssessment,
+          savedAt: new Date().toISOString(),
+        };
+
+        const updatedAssessments = existsInWorkspace
+          ? assessments.map((entry) =>
+              entry.id === currentAssessment.id ? updatedAssessment : entry
             )
-          : [
-              {
-                ...currentAssessment,
-                label:
-                  currentAssessment.metadata?.assessmentTitle ||
-                  currentAssessment.metadata?.name ||
-                  'Saved assessment',
-                savedAt: new Date().toISOString(),
-              },
-              ...history,
-            ];
+          : [updatedAssessment, ...assessments];
+
+        const updatedWorkspaces = [...workspaces];
+        updatedWorkspaces[workspaceIndex] = {
+          ...workspace,
+          assessments: updatedAssessments,
+          updatedAt: new Date().toISOString(),
+        };
 
         return {
-          currentAssessment,
-          assessmentHistory: updatedHistory,
+          currentAssessment: updatedAssessment,
+          currentAssessmentId: updatedAssessment.id,
+          workspaces: updatedWorkspaces,
           lastSavedAt: timestampNow(),
         };
       }),
@@ -286,51 +360,103 @@ export const useAssessmentStore = create(
     startAssessment: ({ frameworkId, metadata }) =>
       set((state) => {
         const startingMetadata = { ...defaultMetadata(), ...state.upcomingMetadata, ...metadata, status: 'Not Started' };
+        const newAssessment = buildAssessment({ frameworkId: frameworkId || defaultFrameworkId, metadata: startingMetadata });
+        
+        // Ensure we have a current workspace
+        let currentWorkspaceId = state.currentWorkspaceId;
+        let workspaces = state.workspaces || [];
+        
+        if (!currentWorkspaceId || workspaces.length === 0) {
+          const defaultWorkspace = buildWorkspace('My Workspace');
+          workspaces = [defaultWorkspace];
+          currentWorkspaceId = defaultWorkspace.id;
+        }
+
         return {
           ...state,
-          currentAssessment: buildAssessment({ frameworkId: frameworkId || defaultFrameworkId, metadata: startingMetadata }),
+          currentAssessment: newAssessment,
+          currentAssessmentId: newAssessment.id,
+          currentWorkspaceId,
+          workspaces,
           upcomingMetadata: startingMetadata,
           activeAspectKey: null,
         };
       }),
     saveAssessmentToHistory: (label) =>
       set((state) => {
+        const currentWorkspaceId = state.currentWorkspaceId;
+        if (!currentWorkspaceId) return state;
+
         const snapshot = {
           ...state.currentAssessment,
-          id: state.currentAssessment.id || `${Date.now()}`,
-          label:
-            label ||
-            state.currentAssessment.metadata.assessmentTitle ||
-            state.currentAssessment.metadata.name ||
-            'Saved assessment',
+          id: state.currentAssessment.id || `assessment-${Date.now()}`,
           savedAt: new Date().toISOString(),
         };
 
-        return { assessmentHistory: [snapshot, ...(state.assessmentHistory || [])] };
+        const workspaces = state.workspaces || [];
+        const workspaceIndex = workspaces.findIndex((w) => w.id === currentWorkspaceId);
+        if (workspaceIndex === -1) return state;
+
+        const workspace = workspaces[workspaceIndex];
+        const updatedWorkspaces = [...workspaces];
+        updatedWorkspaces[workspaceIndex] = {
+          ...workspace,
+          assessments: [snapshot, ...(workspace.assessments || [])],
+          updatedAt: new Date().toISOString(),
+        };
+
+        return {
+          workspaces: updatedWorkspaces,
+          currentAssessmentId: snapshot.id,
+        };
       }),
     loadAssessmentFromHistory: (id) =>
       set((state) => {
-        const existing = (state.assessmentHistory || []).find((entry) => entry.id === id);
+        const currentWorkspaceId = state.currentWorkspaceId;
+        if (!currentWorkspaceId) return state;
+
+        const workspace = (state.workspaces || []).find((w) => w.id === currentWorkspaceId);
+        if (!workspace) return state;
+
+        const existing = (workspace.assessments || []).find((entry) => entry.id === id);
         if (!existing) return state;
+
         return {
           ...state,
           currentAssessment: { ...existing },
-          apiKey: state.apiKey,
-          apiBase: state.apiBase,
-          model: state.model,
-          theme: state.theme,
-          assessmentHistory: state.assessmentHistory,
+          currentAssessmentId: id,
         };
       }),
     deleteCurrentAssessment: () =>
       set((state) => {
         const currentId = state.currentAssessment?.id;
-        const remainingHistory = (state.assessmentHistory || []).filter((entry) => entry.id !== currentId);
+        const currentWorkspaceId = state.currentWorkspaceId;
+        if (!currentWorkspaceId) return state;
+
+        const workspaces = state.workspaces || [];
+        const workspaceIndex = workspaces.findIndex((w) => w.id === currentWorkspaceId);
+        if (workspaceIndex === -1) return state;
+
+        const workspace = workspaces[workspaceIndex];
+        const remainingAssessments = (workspace.assessments || []).filter((entry) => entry.id !== currentId);
+
+        const updatedWorkspaces = [...workspaces];
+        updatedWorkspaces[workspaceIndex] = {
+          ...workspace,
+          assessments: remainingAssessments,
+          updatedAt: new Date().toISOString(),
+        };
+
+        // Load the last assessment or create a new one
+        const lastAssessment = remainingAssessments.length > 0
+          ? remainingAssessments.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt))[0]
+          : null;
 
         return {
           ...state,
-          currentAssessment: buildAssessment(),
-          assessmentHistory: remainingHistory,
+          currentAssessment: lastAssessment ? { ...lastAssessment } : buildAssessment(),
+          currentAssessmentId: lastAssessment?.id || null,
+          workspaces: updatedWorkspaces,
           upcomingMetadata: defaultMetadata(),
           activeAspectKey: null,
           lastSavedAt: timestampNow(),
@@ -338,7 +464,102 @@ export const useAssessmentStore = create(
         };
       }),
     removeAssessmentFromHistory: (id) =>
-      set((state) => ({ assessmentHistory: (state.assessmentHistory || []).filter((entry) => entry.id !== id) })),
+      set((state) => {
+        const currentWorkspaceId = state.currentWorkspaceId;
+        if (!currentWorkspaceId) return state;
+
+        const workspaces = state.workspaces || [];
+        const workspaceIndex = workspaces.findIndex((w) => w.id === currentWorkspaceId);
+        if (workspaceIndex === -1) return state;
+
+        const workspace = workspaces[workspaceIndex];
+        const updatedWorkspaces = [...workspaces];
+        updatedWorkspaces[workspaceIndex] = {
+          ...workspace,
+          assessments: (workspace.assessments || []).filter((entry) => entry.id !== id),
+          updatedAt: new Date().toISOString(),
+        };
+
+        return { workspaces: updatedWorkspaces };
+      }),
+    createWorkspace: (name) =>
+      set((state) => {
+        const newWorkspace = buildWorkspace(name || 'New Workspace');
+        return {
+          workspaces: [...(state.workspaces || []), newWorkspace],
+          currentWorkspaceId: newWorkspace.id,
+          currentAssessmentId: null,
+          currentAssessment: buildAssessment(),
+        };
+      }),
+    loadWorkspace: (workspaceId) =>
+      set((state) => {
+        const workspace = (state.workspaces || []).find((w) => w.id === workspaceId);
+        if (!workspace) return state;
+
+        const assessments = workspace.assessments || [];
+        // Load the last saved assessment
+        const lastAssessment = assessments.length > 0
+          ? assessments.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt))[0]
+          : buildAssessment();
+
+        return {
+          currentWorkspaceId: workspaceId,
+          currentAssessmentId: lastAssessment.id,
+          currentAssessment: { ...lastAssessment },
+          activeAspectKey: null,
+        };
+      }),
+    switchAssessment: (assessmentId) =>
+      set((state) => {
+        const currentWorkspaceId = state.currentWorkspaceId;
+        if (!currentWorkspaceId) return state;
+
+        const workspace = (state.workspaces || []).find((w) => w.id === currentWorkspaceId);
+        if (!workspace) return state;
+
+        const assessment = (workspace.assessments || []).find((a) => a.id === assessmentId);
+        if (!assessment) return state;
+
+        return {
+          currentAssessmentId: assessmentId,
+          currentAssessment: { ...assessment },
+          activeAspectKey: null,
+        };
+      }),
+    updateWorkspace: (workspaceId, updates) =>
+      set((state) => {
+        const workspaces = state.workspaces || [];
+        const workspaceIndex = workspaces.findIndex((w) => w.id === workspaceId);
+        if (workspaceIndex === -1) return state;
+
+        const updatedWorkspaces = [...workspaces];
+        updatedWorkspaces[workspaceIndex] = {
+          ...workspaces[workspaceIndex],
+          ...updates,
+          updatedAt: new Date().toISOString(),
+        };
+
+        return { workspaces: updatedWorkspaces };
+      }),
+    deleteWorkspace: (workspaceId) =>
+      set((state) => {
+        const workspaces = (state.workspaces || []).filter((w) => w.id !== workspaceId);
+        const remainingWorkspaces = workspaces.length > 0 ? workspaces : [buildWorkspace('My Workspace')];
+        const newCurrentWorkspace = remainingWorkspaces[0];
+
+        const assessments = newCurrentWorkspace.assessments || [];
+        const lastAssessment = assessments.length > 0
+          ? assessments.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt))[0]
+          : buildAssessment();
+
+        return {
+          workspaces: remainingWorkspaces,
+          currentWorkspaceId: newCurrentWorkspace.id,
+          currentAssessmentId: lastAssessment.id,
+          currentAssessment: { ...lastAssessment },
+        };
+      }),
     reset: () => set(buildInitialState()),
     scores: () => {
       const activeAssessment = get().currentAssessment;
