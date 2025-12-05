@@ -65,27 +65,27 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
 
   const isIncomplete = completionPercentage < 50;
 
-  // Validate API key when it changes
+  // Reset validation state when API key changes
   useEffect(() => {
-    const checkApiKey = async () => {
-      if (!apiKey || !apiKey.trim()) {
-        setIsKeyValid(false);
-        return;
-      }
-
-      setIsValidatingKey(true);
-      const validation = await validateApiKey(apiKey, apiBase);
-      setIsKeyValid(validation.valid);
+    if (!apiKey || !apiKey.trim()) {
+      setIsKeyValid(false);
       setIsValidatingKey(false);
-    };
+    } else {
+      // Reset validation state when key changes (user is typing)
+      setIsKeyValid(false);
+    }
+  }, [apiKey]);
 
-    // Debounce validation to avoid too many requests
-    const timeoutId = setTimeout(() => {
-      checkApiKey();
-    }, 500);
+  const handleTestKey = async () => {
+    if (!apiKey || !apiKey.trim()) {
+      return;
+    }
 
-    return () => clearTimeout(timeoutId);
-  }, [apiKey, apiBase]);
+    setIsValidatingKey(true);
+    const validation = await validateApiKey(apiKey, apiBase);
+    setIsKeyValid(validation.valid);
+    setIsValidatingKey(false);
+  };
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -150,46 +150,67 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
               </button>
             </p>
           </div>
-        ) : isValidatingKey ? (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Sparkles className="h-4 w-4 animate-pulse" />
-            Validating API key...
-          </div>
-        ) : isKeyValid ? (
-          <div className="flex items-center">
-            <Button onClick={handleGenerateClick} disabled={loading} className="gap-2">
-              {loading ? (
-                <>
-                  <Sparkles className="h-4 w-4 animate-pulse" />
-                  Generating…
-                </>
-              ) : (
-                <>
-                  <Sparkles className="h-4 w-4" />
-                  Generate Action Plan
-                </>
-              )}
-            </Button>
-          </div>
         ) : (
-          <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-            <div className="flex items-start gap-2">
-              <AlertCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
-              <div>
-                <p className="text-sm font-medium text-destructive">Invalid API Key</p>
-                <p className="text-sm text-destructive/80 mt-1">
-                  The API key appears to be invalid. Please check your key or go to{' '}
-                  <button
-                    onClick={onOpenApiModal}
-                    className="text-primary hover:underline font-medium"
-                    style={{ color: 'hsl(var(--primary))' }}
-                  >
-                    AI API Key Management
-                  </button>{' '}
-                  to update it.
-                </p>
+          <div className="space-y-3">
+            {isValidatingKey ? (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Sparkles className="h-4 w-4 animate-pulse" />
+                Validating API key...
               </div>
-            </div>
+            ) : isKeyValid ? (
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+                  <div className="h-2 w-2 rounded-full bg-green-600 dark:bg-green-400" />
+                  API key validated
+                </div>
+                <Button onClick={handleGenerateClick} disabled={loading} className="gap-2">
+                  {loading ? (
+                    <>
+                      <Sparkles className="h-4 w-4 animate-pulse" />
+                      Generating…
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4" />
+                      Generate Action Plan
+                    </>
+                  )}
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <Button
+                  onClick={handleTestKey}
+                  disabled={isValidatingKey || !apiKey?.trim()}
+                  variant="outline"
+                  className="gap-2"
+                >
+                  <Key className="h-4 w-4" />
+                  Test Key
+                </Button>
+                {isKeyValid === false && !isValidatingKey && (
+                  <div className="flex-1 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                    <div className="flex items-start gap-2">
+                      <AlertCircle className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-medium text-destructive">Invalid API Key</p>
+                        <p className="text-xs text-destructive/80 mt-0.5">
+                          The API key is invalid. Please check your key or go to{' '}
+                          <button
+                            onClick={onOpenApiModal}
+                            className="text-primary hover:underline font-medium"
+                            style={{ color: 'hsl(var(--primary))' }}
+                          >
+                            AI API Key Management
+                          </button>{' '}
+                          to update it.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
