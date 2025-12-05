@@ -113,7 +113,7 @@ const ActionPlan = forwardRef((_, ref) => {
       </CardHeader>
       <CardContent className="space-y-6">
         {/* API Key Input */}
-        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
+        <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 w-full sm:max-w-sm">
             <label className="text-sm font-medium mb-2 block">Grok API Key</label>
             <div className="relative">
@@ -130,19 +130,21 @@ const ActionPlan = forwardRef((_, ref) => {
               Requests use Grok 4 Latest via https://api.x.ai/v1/
             </p>
           </div>
-          <Button onClick={handleGenerateClick} disabled={loading || !apiKey} className="gap-2">
-            {loading ? (
-              <>
-                <Sparkles className="h-4 w-4 animate-pulse" />
-                Generating…
-              </>
-            ) : (
-              <>
-                <Sparkles className="h-4 w-4" />
-                Generate Action Plan
-              </>
-            )}
-          </Button>
+          <div className="flex flex-col justify-end">
+            <Button onClick={handleGenerateClick} disabled={loading || !apiKey} className="gap-2 w-full sm:w-auto">
+              {loading ? (
+                <>
+                  <Sparkles className="h-4 w-4 animate-pulse" />
+                  Generating…
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-4 w-4" />
+                  Generate Action Plan
+                </>
+              )}
+            </Button>
+          </div>
         </div>
 
         {/* Context Information */}
