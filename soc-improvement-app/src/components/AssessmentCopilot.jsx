@@ -178,7 +178,7 @@ const AssessmentCopilot = () => {
 
   return (
     <>
-      <button className="copilot-toggle" onClick={() => setOpen((v) => !v)} aria-label="Open Compass Copilot">
+      <button className={`copilot-toggle ${open ? 'copilot-toggle-open' : ''}`} onClick={() => setOpen((v) => !v)} aria-label="Open Compass Copilot">
         <div className="copilot-toggle-content">
           <Bot className="copilot-toggle-icon" />
           <span className="copilot-toggle-text">Compass Copilot</span>

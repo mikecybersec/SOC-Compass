@@ -2902,7 +2902,21 @@ label {
   overflow: hidden;
   transition: all 200ms ease;
   min-width: 56px;
+  width: auto;
   height: 56px;
+}
+
+.copilot-toggle-open {
+  width: 56px;
+  min-width: 56px;
+}
+
+.copilot-toggle-open .copilot-toggle-text {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
 }
 
 .dark .copilot-toggle {
@@ -2930,6 +2944,11 @@ label {
   position: relative;
   z-index: 2;
   transition: all 200ms ease;
+}
+
+.copilot-toggle-open .copilot-toggle-content {
+  padding: 0.875rem;
+  gap: 0;
 }
 
 .copilot-toggle-icon {
@@ -3001,7 +3020,7 @@ label {
 .copilot-panel {
   position: fixed;
   bottom: 5rem;
-  right: 1.25rem;
+  right: 5.5rem;
   width: 360px;
   max-width: calc(100vw - 2.5rem);
   background: hsl(var(--card));
