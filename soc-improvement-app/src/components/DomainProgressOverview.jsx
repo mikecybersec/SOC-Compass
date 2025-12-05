@@ -18,7 +18,7 @@ const DomainProgressOverview = ({ frameworkId, answers }) => {
       };
 
       aspect.questions.forEach((question) => {
-        if (question.type !== 'question') return;
+        if (!question.isAnswerable) return;
         domainEntry.total += 1;
         if (answers[question.code]) {
           domainEntry.answered += 1;

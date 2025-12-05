@@ -93,7 +93,7 @@ const Sidebar = ({
                             const active = showAssessmentState && key === currentKey;
                             const totalQuestions = aspect.questionCount || 0;
                             const answered = aspect.questions.filter(
-                              (q) => q.type === 'question' && answers[q.code]
+                              (q) => q.isAnswerable && answers[q.code]
                             ).length;
                             const completion =
                               totalQuestions === 0 ? 0 : Math.round((answered / totalQuestions) * 100);

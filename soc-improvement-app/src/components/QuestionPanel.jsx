@@ -15,8 +15,9 @@ const QuestionPanel = ({ aspect, nextAspect, onNextAspect }) => {
     );
   }
 
-  const totalQuestions = aspect.questions.filter((q) => q.type === 'question').length;
-  const answered = aspect.questions.filter((q) => q.type === 'question' && answers[q.code]).length;
+  const answerableQuestions = aspect.questions.filter((q) => q.isAnswerable);
+  const totalQuestions = answerableQuestions.length;
+  const answered = answerableQuestions.filter((q) => answers[q.code]).length;
   const completion = totalQuestions === 0 ? 0 : Math.round((answered / totalQuestions) * 100);
 
   return (
@@ -42,7 +43,7 @@ const QuestionPanel = ({ aspect, nextAspect, onNextAspect }) => {
                   </small>
                 )}
               </div>
-              {q.type === 'question' ? (
+              {q.isAnswerable ? (
                 <select
                   value={answers[q.code] || ''}
                   onChange={(e) => setAnswer(q.code, e.target.value)}

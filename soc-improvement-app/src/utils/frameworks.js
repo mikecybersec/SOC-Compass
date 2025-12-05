@@ -5,16 +5,21 @@ import inform from '../../frameworks/inform.json';
 const minutesPerQuestion = 1.5;
 const minimumEstimateMinutes = 10;
 
-const mapQuestion = (question) => ({
-  code: question.code,
-  text: question.text,
-  type: question.item_type,
-  answerOptions: question.answer_options || [],
-  guidance: question.guidance,
-  placeholder: question.placeholder,
-  questionType: question.question_type,
-  importanceOptions: question.importance_options,
-});
+const mapQuestion = (question) => {
+  const answerOptions = question.answer_options || [];
+
+  return {
+    code: question.code,
+    text: question.text,
+    type: question.item_type,
+    answerOptions,
+    guidance: question.guidance,
+    placeholder: question.placeholder,
+    questionType: question.question_type,
+    importanceOptions: question.importance_options,
+    isAnswerable: answerOptions.length > 0,
+  };
+};
 
 const flattenTree = (tree) => {
   const aspects = [];
@@ -25,7 +30,7 @@ const flattenTree = (tree) => {
         domain,
         aspect,
         questions: mappedQuestions,
-        questionCount: mappedQuestions.filter((q) => q.type === 'question').length,
+        questionCount: mappedQuestions.filter((q) => q.isAnswerable).length,
       });
     });
   });
