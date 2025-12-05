@@ -160,6 +160,15 @@
   border-color: hsl(var(--border));
 }
 
+/* Ensure shadcn Card components use proper border color in dark mode */
+.dark [class*="rounded-xl border"] {
+  border-color: hsl(var(--border)) !important;
+}
+
+.dark [class*="rounded-lg border"] {
+  border-color: hsl(var(--border)) !important;
+}
+
 .dark .form-control {
   background: hsl(0 0% 15%);
   border-color: hsl(var(--border));
