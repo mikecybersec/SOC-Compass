@@ -1,5 +1,7 @@
 import React from 'react';
-import Sidebar from '../components/Sidebar';
+import { AppSidebar } from '@/components/app-sidebar';
+import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
+import { Separator } from '@/components/ui/separator';
 import ActionPlan from '../components/ActionPlan';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { frameworks } from '../utils/frameworks';
@@ -11,7 +13,14 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
   const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
   const setActiveAspectKey = useAssessmentStore((s) => s.setActiveAspectKey);
   const metadata = useAssessmentStore((s) => s.currentAssessment.metadata);
+  const answers = useAssessmentStore((s) => s.currentAssessment.answers);
   const state = useAssessmentStore();
+  const sidebarCollapsed = useAssessmentStore((s) => s.sidebarCollapsed);
+  const setSidebarCollapsed = useAssessmentStore((s) => s.setSidebarCollapsed);
+  const assessmentCollapsed = useAssessmentStore((s) => s.sidebarAssessmentCollapsed);
+  const setAssessmentCollapsed = useAssessmentStore((s) => s.setSidebarAssessmentCollapsed);
+  const domainCollapsed = useAssessmentStore((s) => s.sidebarDomainCollapsed || {});
+  const setDomainCollapsed = useAssessmentStore((s) => s.setSidebarDomainCollapsed);
 
   const aspects = frameworks[frameworkId]?.aspects || [];
 
@@ -25,39 +34,53 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
   const handleExportPdf = () => exportPdf({ scoresRef, actionPlanRef, metaRef, metadata });
 
   return (
-    <div className="app-shell">
-      <Sidebar
+    <SidebarProvider open={!sidebarCollapsed} onOpenChange={(open) => setSidebarCollapsed(!open)}>
+      <AppSidebar
+        variant="inset"
         aspects={aspects}
         currentKey={activeAspectKey}
         onSelect={handleSelectAspect}
         onOpenAssessmentInfo={onOpenAssessmentInfo}
         onOpenReporting={onOpenReporting}
         reportingActive
+        assessmentCollapsed={assessmentCollapsed}
+        setAssessmentCollapsed={setAssessmentCollapsed}
+        domainCollapsed={domainCollapsed}
+        setDomainCollapsed={setDomainCollapsed}
+        answers={answers}
       />
-      <main className="main">
-        <div className="flex-between" style={{ alignItems: 'flex-end' }}>
-          <div>
-            <h1>Reporting</h1>
-            <p style={{ color: 'var(--muted)', maxWidth: '720px' }}>
-              Generate the AI-powered report for this assessment. Use the action plan below to request a tailored
-              summary and export it once you are ready to share.
-            </p>
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+          <div className="flex items-center gap-2 px-4">
+            <SidebarTrigger className="-ml-1" />
+            <Separator orientation="vertical" className="mr-2 h-4" />
           </div>
-          <div className="flex" style={{ gap: '0.5rem' }}>
-            <button className="secondary" onClick={handleExportJson}>
-              Export JSON
-            </button>
-            <button className="primary" onClick={handleExportPdf}>
-              Export PDF
-            </button>
+        </header>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          <div className="flex-between" style={{ alignItems: 'flex-end' }}>
+            <div>
+              <h1>Reporting</h1>
+              <p style={{ color: 'var(--muted)', maxWidth: '720px' }}>
+                Generate the AI-powered report for this assessment. Use the action plan below to request a tailored
+                summary and export it once you are ready to share.
+              </p>
+            </div>
+            <div className="flex" style={{ gap: '0.5rem' }}>
+              <button className="secondary" onClick={handleExportJson}>
+                Export JSON
+              </button>
+              <button className="primary" onClick={handleExportPdf}>
+                Export PDF
+              </button>
+            </div>
           </div>
+
+          <div className="section-divider" aria-hidden />
+
+          <ActionPlan ref={actionPlanRef} />
         </div>
-
-        <div className="section-divider" aria-hidden />
-
-        <ActionPlan ref={actionPlanRef} />
-      </main>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 };
 

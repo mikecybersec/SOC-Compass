@@ -100,6 +100,7 @@ const hydrateState = (saved) => {
     assessmentHistory: [],
     lastSavedAt: timestampNow(),
     activeAspectKey: null,
+    sidebarCollapsed: false,
     sidebarAssessmentCollapsed: true,
     sidebarDomainCollapsed: {},
     skipNextAutoSave: false,
@@ -127,6 +128,10 @@ const hydrateState = (saved) => {
     assessmentHistory: (saved.assessmentHistory || []).map((entry) => hydrateAssessment(entry, entry.metadata)),
     lastSavedAt: saved.lastSavedAt || timestampNow(),
     skipNextAutoSave: false,
+    sidebarCollapsed:
+      saved && Object.prototype.hasOwnProperty.call(saved, 'sidebarCollapsed')
+        ? saved.sidebarCollapsed
+        : defaults.sidebarCollapsed,
     sidebarAssessmentCollapsed:
       saved && Object.prototype.hasOwnProperty.call(saved, 'sidebarAssessmentCollapsed')
         ? saved.sidebarAssessmentCollapsed
@@ -190,6 +195,13 @@ export const useAssessmentStore = create(
           metadata: { ...state.currentAssessment.metadata, language },
         },
         upcomingMetadata: { ...state.upcomingMetadata, language },
+      })),
+    setSidebarCollapsed: (sidebarCollapsed) =>
+      set((state) => ({
+        sidebarCollapsed:
+          typeof sidebarCollapsed === 'function'
+            ? sidebarCollapsed(state.sidebarCollapsed)
+            : sidebarCollapsed,
       })),
     setSidebarAssessmentCollapsed: (sidebarAssessmentCollapsed) =>
       set((state) => ({

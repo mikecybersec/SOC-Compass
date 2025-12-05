@@ -2,7 +2,9 @@ import React, { useRef, useState } from 'react';
 import AssessmentInfoSummary from '../components/AssessmentInfoSummary';
 import DomainProgressOverview from '../components/DomainProgressOverview';
 import ScoreBoard from '../components/ScoreBoard';
-import Sidebar from '../components/Sidebar';
+import { AppSidebar } from '@/components/app-sidebar';
+import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
+import { Separator } from '@/components/ui/separator';
 import Toolbar from '../components/Toolbar';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { frameworks } from '../utils/frameworks';
@@ -17,6 +19,12 @@ const AssessmentInfo = ({ onBack, onOpenReporting, metaRef, scoresRef, actionPla
   const setActiveAspectKey = useAssessmentStore((s) => s.setActiveAspectKey);
   const answers = useAssessmentStore((s) => s.currentAssessment.answers);
   const deleteCurrentAssessment = useAssessmentStore((s) => s.deleteCurrentAssessment);
+  const sidebarCollapsed = useAssessmentStore((s) => s.sidebarCollapsed);
+  const setSidebarCollapsed = useAssessmentStore((s) => s.setSidebarCollapsed);
+  const assessmentCollapsed = useAssessmentStore((s) => s.sidebarAssessmentCollapsed);
+  const setAssessmentCollapsed = useAssessmentStore((s) => s.setSidebarAssessmentCollapsed);
+  const domainCollapsed = useAssessmentStore((s) => s.sidebarDomainCollapsed || {});
+  const setDomainCollapsed = useAssessmentStore((s) => s.setSidebarDomainCollapsed);
 
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [metadataDialogOpen, setMetadataDialogOpen] = useState(false);
@@ -40,43 +48,57 @@ const AssessmentInfo = ({ onBack, onOpenReporting, metaRef, scoresRef, actionPla
   };
 
   return (
-    <div className="app-shell">
-      <Sidebar
+    <SidebarProvider open={!sidebarCollapsed} onOpenChange={(open) => setSidebarCollapsed(!open)}>
+      <AppSidebar
+        variant="inset"
         aspects={aspects}
         currentKey={activeAspectKey}
         onSelect={handleSelectAspect}
         assessmentInfoActive
         onOpenReporting={onOpenReporting}
+        assessmentCollapsed={assessmentCollapsed}
+        setAssessmentCollapsed={setAssessmentCollapsed}
+        domainCollapsed={domainCollapsed}
+        setDomainCollapsed={setDomainCollapsed}
+        answers={answers}
       />
-      <div className="main">
-        <div className="flex-between" style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-          <div className="flex" style={{ gap: '0.5rem' }}>
-            <Button variant="outline" className="danger-button" onClick={() => setConfirmDeleteOpen(true)}>
-              Delete assessment
-            </Button>
-            <Button variant="secondary" onClick={() => setMetadataDialogOpen(true)}>
-              Edit Assessment
-            </Button>
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+          <div className="flex items-center gap-2 px-4">
+            <SidebarTrigger className="-ml-1" />
+            <Separator orientation="vertical" className="mr-2 h-4" />
           </div>
+        </header>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          <div className="flex-between" style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+            <div className="flex" style={{ gap: '0.5rem' }}>
+              <Button variant="outline" className="danger-button" onClick={() => setConfirmDeleteOpen(true)}>
+                Delete assessment
+              </Button>
+              <Button variant="secondary" onClick={() => setMetadataDialogOpen(true)}>
+                Edit Assessment
+              </Button>
+            </div>
+          </div>
+
+          <AssessmentInfoSummary ref={summaryRef} metadata={metadata} frameworkName={frameworkName} lastSavedAt={lastSavedAt} />
+
+          <div className="section-divider" aria-hidden />
+
+          <DomainProgressOverview frameworkId={frameworkId} answers={answers} />
+
+          <div className="section-divider" aria-hidden />
+
+          <ScoreBoard ref={scoresRef} />
+          <Toolbar
+            scoresRef={scoresRef}
+            actionPlanRef={actionPlanRef}
+            metaRef={summaryRef}
+            open={metadataDialogOpen}
+            onClose={() => setMetadataDialogOpen(false)}
+          />
         </div>
-
-        <AssessmentInfoSummary ref={summaryRef} metadata={metadata} frameworkName={frameworkName} lastSavedAt={lastSavedAt} />
-
-        <div className="section-divider" aria-hidden />
-
-        <DomainProgressOverview frameworkId={frameworkId} answers={answers} />
-
-        <div className="section-divider" aria-hidden />
-
-        <ScoreBoard ref={scoresRef} />
-        <Toolbar
-          scoresRef={scoresRef}
-          actionPlanRef={actionPlanRef}
-          metaRef={summaryRef}
-          open={metadataDialogOpen}
-          onClose={() => setMetadataDialogOpen(false)}
-        />
-      </div>
+      </SidebarInset>
 
       <Dialog
         open={confirmDeleteOpen}
@@ -99,7 +121,7 @@ const AssessmentInfo = ({ onBack, onOpenReporting, metaRef, scoresRef, actionPla
           action plan once removed.
         </p>
       </Dialog>
-    </div>
+    </SidebarProvider>
   );
 };
 
