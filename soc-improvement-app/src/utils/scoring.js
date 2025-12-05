@@ -10,7 +10,7 @@ export const computeScores = (framework, answers) => {
   framework.aspects.forEach((aspect) => {
     const key = `${aspect.domain}::${aspect.aspect}`;
     const responseValues = aspect.questions
-      .filter((q) => q.type === 'question')
+      .filter((q) => q.isAnswerable)
       .map((q) => {
         const answer = answers[q.code];
         const val = scaleValue(answer, q.answerOptions);
