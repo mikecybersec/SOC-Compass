@@ -1123,6 +1123,10 @@ button, input, select, textarea {
   font-size: 0.9rem;
 }
 
+.metadata-pill-list .pill-button.primary {
+  color: white !important;
+}
+
 .section-divider {
   border-bottom: 1px dashed var(--border);
   margin: 0.25rem 0 0.75rem;

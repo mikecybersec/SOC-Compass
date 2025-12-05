@@ -185,16 +185,19 @@ const Toolbar = ({ open, onClose }) => {
         <div className="metadata-section">
           <div className="metadata-section-label">Objectives</div>
           <div className="metadata-pill-list">
-            {objectiveOptions.map((option) => (
-              <button
-                key={option}
-                type="button"
-                className={`pill-button ${objectives.includes(option) ? 'primary' : 'ghost-button'}`}
-                onClick={() => toggleObjective(option)}
-              >
-                {option}
-              </button>
-            ))}
+            {objectiveOptions.map((option) => {
+              const isSelected = objectives.includes(option);
+              return (
+                <button
+                  key={option}
+                  type="button"
+                  className={`pill-button ${isSelected ? 'primary' : 'ghost-button'}`}
+                  onClick={() => toggleObjective(option)}
+                >
+                  {option}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>

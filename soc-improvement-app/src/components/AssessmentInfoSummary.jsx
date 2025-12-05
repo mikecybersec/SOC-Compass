@@ -32,12 +32,9 @@ const AssessmentInfoSummary = forwardRef(({ metadata, frameworkName, lastSavedAt
           <div>
             <CardTitle className="text-xl">Assessment Details</CardTitle>
             <CardDescription className="mt-1.5">
-              Workspace information for the {frameworkName || 'selected'} framework
+              Assessment information for the {frameworkName || 'selected'} framework
             </CardDescription>
           </div>
-          <Badge variant="info" className="text-xs">
-            {frameworkName || 'Unknown'}
-          </Badge>
         </div>
       </CardHeader>
       <CardContent>
