@@ -192,8 +192,6 @@ body {
     radial-gradient(at 100% 100%, hsl(0 0% 8%) 0px, transparent 50%),
     radial-gradient(at 0% 100%, hsl(0 0% 8%) 0px, transparent 50%);
 }
-  transition: background 200ms ease, color 200ms ease;
-}
 
 /* Force button visibility - override Tailwind reset */
 button.ui-btn-primary,
