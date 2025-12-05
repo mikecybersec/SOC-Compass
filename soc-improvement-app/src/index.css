@@ -3621,3 +3621,199 @@ label {
     grid-template-columns: 1fr;
   }
 }
+
+/* Reporting Page Styles */
+.reporting-metric-card {
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.reporting-metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary) / 0.5));
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.reporting-metric-card:hover::before {
+  opacity: 1;
+}
+
+.reporting-metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dark .reporting-metric-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Action Plan Card Styles */
+.action-plan-card {
+  position: relative;
+}
+
+.action-plan-content {
+  min-height: 200px;
+}
+
+.action-plan-content .markdown-body {
+  color: hsl(var(--foreground));
+}
+
+.action-plan-content .markdown-body h1,
+.action-plan-content .markdown-body h2,
+.action-plan-content .markdown-body h3 {
+  color: hsl(var(--foreground));
+  font-weight: 600;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.action-plan-content .markdown-body h1 {
+  font-size: 1.5em;
+}
+
+.action-plan-content .markdown-body h2 {
+  font-size: 1.25em;
+}
+
+.action-plan-content .markdown-body h3 {
+  font-size: 1.1em;
+}
+
+.action-plan-content .markdown-body p {
+  margin-bottom: 1em;
+  line-height: 1.7;
+}
+
+.action-plan-content .markdown-body ul,
+.action-plan-content .markdown-body ol {
+  margin-left: 1.5em;
+  margin-bottom: 1em;
+}
+
+.action-plan-content .markdown-body li {
+  margin-bottom: 0.5em;
+}
+
+.action-plan-content .markdown-body code {
+  background: hsl(var(--muted));
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+}
+
+.action-plan-content .markdown-body pre {
+  background: hsl(var(--muted));
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin-bottom: 1em;
+}
+
+.action-plan-content .markdown-body pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.action-plan-content .markdown-body strong {
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.action-plan-content .markdown-body em {
+  font-style: italic;
+}
+
+.action-plan-content .markdown-body a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.action-plan-content .markdown-body a:hover {
+  color: hsl(var(--primary) / 0.8);
+}
+
+.action-plan-content .markdown-body blockquote {
+  border-left: 3px solid hsl(var(--border));
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-bottom: 1em;
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
+}
+
+/* Prose styles for better markdown rendering */
+.prose {
+  max-width: 65ch;
+}
+
+.prose p {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  margin-top: 2em;
+  margin-bottom: 1em;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.prose ul,
+.prose ol {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+  padding-left: 1.625em;
+}
+
+.prose li {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose code {
+  font-size: 0.875em;
+  font-weight: 600;
+}
+
+.prose pre {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  overflow-x: auto;
+}
+
+.prose blockquote {
+  margin-top: 1.6em;
+  margin-bottom: 1.6em;
+  padding-left: 1em;
+}
+
+.prose hr {
+  margin-top: 3em;
+  margin-bottom: 3em;
+  border-top-width: 1px;
+}
+
+.dark .prose {
+  color: hsl(var(--foreground));
+}
+
+.dark .prose h1,
+.dark .prose h2,
+.dark .prose h3,
+.dark .prose h4 {
+  color: hsl(var(--foreground));
+}

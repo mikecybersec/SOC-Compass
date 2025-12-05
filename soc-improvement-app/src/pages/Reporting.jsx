@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { AppSidebar } from '@/components/app-sidebar';
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
@@ -9,11 +9,21 @@ import {
   BreadcrumbPage,
 } from '@/components/ui/breadcrumb';
 import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card-shadcn';
 import ActionPlan from '../components/ActionPlan';
+import ScoreBoard from '../components/ScoreBoard';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { frameworks } from '../utils/frameworks';
 import { exportAssessment } from '../utils/storage';
 import { exportPdf } from '../utils/pdf';
+import { FileDown, Download, FileJson, TrendingUp, Target, Calendar, DollarSign, Building2 } from 'lucide-react';
+import Badge from '@/components/ui/Badge';
 
 const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessmentInfo, onOpenReporting, onNavigateHome, onSwitchWorkspace, onOpenApiModal, onOpenPreferences, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
   const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
@@ -38,9 +48,20 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
     onBack();
   };
 
+  const scores = useAssessmentStore((s) => s.scores)();
+  const frameworkName = frameworks[frameworkId]?.name || 'Assessment';
+
   const handleExportJson = () => exportAssessment(state);
 
   const handleExportPdf = () => exportPdf({ scoresRef, actionPlanRef, metaRef, metadata });
+
+  const formattedBudget = useMemo(() => {
+    if (!metadata.budgetAmount) return 'Not set';
+    return `${metadata.budgetCurrency || '$'}${metadata.budgetAmount.toLocaleString()}`;
+  }, [metadata.budgetAmount, metadata.budgetCurrency]);
+
+  const maturityScore = scores.maturity || 0;
+  const maturityPercentage = (maturityScore / 5) * 100;
 
   return (
     <SidebarProvider open={!sidebarCollapsed} onOpenChange={(open) => setSidebarCollapsed(!open)}>
@@ -82,28 +103,116 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="flex-between" style={{ alignItems: 'flex-end' }}>
-            <div>
-              <h1>Reporting</h1>
-              <p style={{ color: 'var(--muted)', maxWidth: '720px' }}>
-                Generate the AI-powered report for this assessment. Use the action plan below to request a tailored
-                summary and export it once you are ready to share.
-              </p>
+        <div className="flex flex-1 flex-col gap-6 p-6 pt-4 overflow-y-auto">
+          {/* Hero Section with Key Metrics */}
+          <div className="space-y-6">
+            <div className="flex items-start justify-between gap-4">
+              <div className="space-y-2">
+                <h1 className="text-3xl font-bold tracking-tight">Assessment Report</h1>
+                <p className="text-muted-foreground max-w-2xl">
+                  Comprehensive maturity assessment and AI-powered action plan for {metadata.name || 'your organization'}.
+                  Review scores, insights, and recommendations below.
+                </p>
+              </div>
+              <div className="flex gap-2 shrink-0">
+                <Button variant="outline" onClick={handleExportJson} className="gap-2">
+                  <FileJson className="h-4 w-4" />
+                  Export JSON
+                </Button>
+                <Button onClick={handleExportPdf} className="gap-2">
+                  <FileDown className="h-4 w-4" />
+                  Export PDF
+                </Button>
+              </div>
             </div>
-            <div className="flex" style={{ gap: '0.5rem' }}>
-              <Button variant="secondary" onClick={handleExportJson}>
-                Export JSON
-              </Button>
-              <Button onClick={handleExportPdf}>
-                Export PDF
-              </Button>
+
+            {/* Key Metrics Cards */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <Card className="reporting-metric-card">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Overall Maturity</CardTitle>
+                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">{maturityScore.toFixed(2)}</div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    out of 5.0 • {maturityPercentage.toFixed(0)}% maturity
+                  </p>
+                  <div className="mt-3 h-2 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-primary transition-all duration-500"
+                      style={{ width: `${maturityPercentage}%` }}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="reporting-metric-card">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Framework</CardTitle>
+                  <Target className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{frameworkName}</div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Assessment framework
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="reporting-metric-card">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Budget</CardTitle>
+                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{formattedBudget}</div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Available budget
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="reporting-metric-card">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Organization</CardTitle>
+                  <Building2 className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold truncate">{metadata.size || 'N/A'}</div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {metadata.sector || 'Organization size'}
+                  </p>
+                </CardContent>
+              </Card>
             </div>
           </div>
 
-          <div className="section-divider" aria-hidden />
+          {/* ScoreBoard Section */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-semibold tracking-tight">Maturity Scoring</h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Detailed breakdown of domain and aspect-level maturity scores
+                </p>
+              </div>
+            </div>
+            <ScoreBoard ref={scoresRef} />
+          </div>
 
-          <ActionPlan ref={actionPlanRef} />
+          {/* Action Plan Section */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-semibold tracking-tight">AI-Powered Action Plan</h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Tailored recommendations based on your assessment results and objectives
+                </p>
+              </div>
+            </div>
+            <ActionPlan ref={actionPlanRef} />
+          </div>
         </div>
       </SidebarInset>
     </SidebarProvider>
