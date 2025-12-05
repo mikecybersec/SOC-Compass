@@ -1,14 +1,13 @@
 import React from 'react';
 import { AppSidebar } from '@/components/app-sidebar';
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
-import { Separator } from '@/components/ui/separator';
 import ActionPlan from '../components/ActionPlan';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { frameworks } from '../utils/frameworks';
 import { exportAssessment } from '../utils/storage';
 import { exportPdf } from '../utils/pdf';
 
-const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessmentInfo, onOpenReporting }) => {
+const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessmentInfo, onOpenReporting, onNavigateHome }) => {
   const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
   const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
   const setActiveAspectKey = useAssessmentStore((s) => s.setActiveAspectKey);
@@ -40,6 +39,7 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
         aspects={aspects}
         currentKey={activeAspectKey}
         onSelect={handleSelectAspect}
+        onNavigateHome={onNavigateHome || onBack}
         onOpenAssessmentInfo={onOpenAssessmentInfo}
         onOpenReporting={onOpenReporting}
         reportingActive
@@ -50,13 +50,10 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
         answers={answers}
       />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
+        <div className="flex flex-1 flex-col gap-4 p-4">
+          <div className="flex items-center mb-2">
+            <SidebarTrigger />
           </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
           <div className="flex-between" style={{ alignItems: 'flex-end' }}>
             <div>
               <h1>Reporting</h1>

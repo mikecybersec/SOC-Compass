@@ -4,9 +4,8 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/s
 import QuestionPanel from '../components/QuestionPanel';
 import { frameworks } from '../utils/frameworks';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
-import { Separator } from '@/components/ui/separator';
 
-const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting }) => {
+const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateHome }) => {
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
   const lastSavedAt = useAssessmentStore((s) => s.lastSavedAt);
   const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
@@ -71,6 +70,7 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting }) => {
         aspects={currentFramework.aspects}
         currentKey={activeAspectKey}
         onSelect={setActiveAspectKey}
+        onNavigateHome={onNavigateHome || onBack}
         onOpenAssessmentInfo={onOpenAssessmentInfo}
         onOpenReporting={onOpenReporting}
         assessmentCollapsed={assessmentCollapsed}
@@ -80,13 +80,10 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting }) => {
         answers={answers}
       />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
+        <div className="flex flex-1 flex-col gap-4 p-4">
+          <div className="flex items-center mb-2">
+            <SidebarTrigger />
           </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
           <QuestionPanel
             aspect={activeAspect}
             nextAspect={nextAspect}

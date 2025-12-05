@@ -1,8 +1,15 @@
 import * as React from "react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
+import { NavHome } from "@/components/nav-home"
 import { TeamSwitcher } from "@/components/team-switcher"
+import {
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar"
 import {
   Sidebar,
   SidebarContent,
@@ -10,11 +17,13 @@ import {
   SidebarHeader,
   SidebarSeparator,
 } from "@/components/ui/sidebar"
+import { Info, FileText } from "lucide-react"
 
 export function AppSidebar({
   aspects,
   currentKey,
   onSelect,
+  onNavigateHome,
   onOpenAssessmentInfo,
   onOpenReporting,
   assessmentInfoActive = false,
@@ -35,18 +44,35 @@ export function AppSidebar({
         <TeamSwitcher />
       </SidebarHeader>
       <SidebarContent>
+        {/* Home */}
+        <NavHome onNavigateHome={onNavigateHome} />
+        
+        <SidebarSeparator className="mx-0 h-px" />
+        
+        {/* Assessment Info */}
         {showAssessmentInfo && (
           <>
-            <NavSecondary
-              onOpenAssessmentInfo={onOpenAssessmentInfo}
-              onOpenReporting={onOpenReporting}
-              assessmentInfoActive={assessmentInfoActive}
-              reportingActive={false}
-              showAssessmentInfo={showAssessmentInfo}
-            />
+            <SidebarGroup>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      onClick={onOpenAssessmentInfo}
+                      isActive={assessmentInfoActive}
+                      tooltip="Assessment Info"
+                    >
+                      <Info />
+                      <span>Assessment Info</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
             <SidebarSeparator className="mx-0 h-px" />
           </>
         )}
+        
+        {/* Assessment sections */}
         {aspects && aspects.length > 0 && (
           <>
             <NavMain
@@ -63,15 +89,24 @@ export function AppSidebar({
             <SidebarSeparator className="mx-0 h-px" />
           </>
         )}
-        {(!showAssessmentInfo || reportingActive) && (
-          <NavSecondary
-            onOpenAssessmentInfo={onOpenAssessmentInfo}
-            onOpenReporting={onOpenReporting}
-            assessmentInfoActive={assessmentInfoActive}
-            reportingActive={reportingActive}
-            showAssessmentInfo={false}
-          />
-        )}
+        
+        {/* Reporting */}
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  onClick={onOpenReporting}
+                  isActive={reportingActive}
+                  tooltip="Reporting"
+                >
+                  <FileText />
+                  <span>Reporting</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
     </Sidebar>
   )
