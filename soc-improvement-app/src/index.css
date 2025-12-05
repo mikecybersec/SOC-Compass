@@ -2123,8 +2123,8 @@ label {
 }
 
 .copilot-message-content {
-  padding: 0.75rem 1rem;
-  font-size: 0.875rem;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.8125rem;
   line-height: 1.5;
   background: hsl(var(--muted) / 0.3);
   color: hsl(var(--foreground));
@@ -2135,6 +2135,15 @@ label {
 
 .dark .copilot-message-content {
   background: hsl(var(--muted) / 0.2);
+}
+
+.copilot-message-content-user {
+  margin-left: auto;
+}
+
+.copilot-message-content-user p {
+  margin: 0;
+  font-size: 0.8125rem;
 }
 
 .copilot-preview-messages::-webkit-scrollbar {
@@ -3095,6 +3104,101 @@ label {
   white-space: pre-wrap;
   line-height: 1.45;
   color: hsl(var(--foreground));
+  font-size: 0.8125rem;
+}
+
+.copilot-message-content {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.copilot-message-content p {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.8125rem;
+}
+
+.copilot-message-content p:last-child {
+  margin-bottom: 0;
+}
+
+.copilot-message-content ul,
+.copilot-message-content ol {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+  font-size: 0.8125rem;
+}
+
+.copilot-message-content li {
+  margin: 0.25rem 0;
+  font-size: 0.8125rem;
+}
+
+.copilot-message-content code {
+  background: hsl(var(--muted) / 0.5);
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-family: 'Courier New', monospace;
+}
+
+.copilot-message-content pre {
+  background: hsl(var(--muted) / 0.5);
+  padding: 0.75rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 0.75rem;
+  margin: 0.5rem 0;
+}
+
+.copilot-message-content pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.copilot-message-content strong {
+  font-weight: 600;
+}
+
+.copilot-suggestions {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid hsl(var(--border));
+}
+
+.copilot-suggestions-label {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.copilot-suggestion-button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.625rem 0.875rem;
+  margin: 0.375rem 0;
+  background: hsl(var(--muted) / 0.3);
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+  color: hsl(var(--foreground));
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.copilot-suggestion-button:hover {
+  background: hsl(var(--muted) / 0.5);
+  border-color: hsl(var(--primary) / 0.5);
+}
+
+.dark .copilot-suggestion-button {
+  background: hsl(var(--muted) / 0.2);
+}
+
+.dark .copilot-suggestion-button:hover {
+  background: hsl(var(--muted) / 0.35);
 }
 
 .copilot-status {

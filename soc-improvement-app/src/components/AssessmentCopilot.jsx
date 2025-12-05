@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { frameworks, defaultFrameworkId } from '../utils/frameworks';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { Bot } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import suggestionsData from '../data/copilot_suggestions_soccmm.json';
 
 const normalizeBase = (apiBase) => (apiBase?.trim() || 'https://api.x.ai/v1/').replace(/\/+$/, '');
 
@@ -43,19 +45,37 @@ const AssessmentCopilot = () => {
   const apiBase = useAssessmentStore((s) => s.apiBase);
   const model = useAssessmentStore((s) => s.model);
   const assessment = useAssessmentStore((s) => s.currentAssessment);
+  const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState([
-    {
-      role: 'assistant',
-      content: "Hi, I'm Grok. Ask me anything about this assessment and I'll answer using the data on the page.",
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(true);
   const listRef = useRef(null);
 
   const assessmentContext = useMemo(() => buildAssessmentContext(assessment), [assessment]);
+
+  // Get suggestions for current aspect
+  const suggestions = useMemo(() => {
+    if (!activeAspectKey || !suggestionsData[activeAspectKey]) {
+      return [];
+    }
+    return suggestionsData[activeAspectKey] || [];
+  }, [activeAspectKey]);
+
+  // Initialize messages when copilot opens
+  useEffect(() => {
+    if (open && messages.length === 0) {
+      setMessages([
+        {
+          role: 'assistant',
+          content: "Hi, I'm Compass Copilot. Ask me anything about this assessment and I'll answer using the data on the page.",
+        },
+      ]);
+      setShowSuggestions(true);
+    }
+  }, [open]);
 
   const systemPrompt = useMemo(
     () =>
@@ -87,6 +107,7 @@ const AssessmentCopilot = () => {
     const userMessage = { role: 'user', content: input.trim() };
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
+    setShowSuggestions(false);
     setLoading(true);
     setError('');
 
@@ -155,13 +176,40 @@ const AssessmentCopilot = () => {
             {messages.map((message, index) => (
               <div
                 key={`${message.role}-${index}`}
-                className={`copilot-message ${message.role === 'assistant' ? 'copilot-assistant' : 'copilot-user'}`}
+                className={`copilot-message ${message.role === 'assistant' ? 'copilot-message-assistant' : 'copilot-message-user'}`}
               >
-                <span className="copilot-role">{message.role === 'assistant' ? 'Grok' : 'You'}</span>
-                <p className="copilot-text">{message.content}</p>
+                {message.role === 'assistant' && (
+                  <div className="copilot-message-avatar">
+                    <Bot className="copilot-avatar-icon" />
+                  </div>
+                )}
+                <div className={`copilot-message-content ${message.role === 'user' ? 'copilot-message-content-user' : ''}`}>
+                  {message.role === 'assistant' ? (
+                    <ReactMarkdown>{message.content}</ReactMarkdown>
+                  ) : (
+                    <p>{message.content}</p>
+                  )}
+                </div>
               </div>
             ))}
-            {loading && <p className="copilot-status">Grok is thinking…</p>}
+            {showSuggestions && suggestions.length > 0 && (
+              <div className="copilot-suggestions">
+                <p className="copilot-suggestions-label">Suggested questions:</p>
+                {suggestions.map((suggestion, idx) => (
+                  <button
+                    key={idx}
+                    className="copilot-suggestion-button"
+                    onClick={() => {
+                      setInput(suggestion);
+                      setShowSuggestions(false);
+                    }}
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+            )}
+            {loading && <p className="copilot-status">Compass Copilot is thinking…</p>}
           </div>
 
           <form className="copilot-input" onSubmit={handleSend}>

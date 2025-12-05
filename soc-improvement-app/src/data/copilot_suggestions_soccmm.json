@@ -1,0 +1,87 @@
+{
+  "Business::Business Drivers": [
+    "How can I better align my SOC services with our business drivers?",
+    "What are the best practices for documenting business drivers in a SOC?"
+  ],
+  "Business::Customers / Stakeholders": [
+    "How do I identify all relevant SOC stakeholders and customers?",
+    "What's the best way to manage stakeholder expectations for SOC services?"
+  ],
+  "Business::Privacy & Policy": [
+    "What privacy policies should a SOC have in place?",
+    "How can I ensure our SOC operations comply with privacy regulations?"
+  ],
+  "Business::Service Catalogue": [
+    "What services should be included in a comprehensive SOC service catalogue?",
+    "How do I keep my SOC service catalogue up to date and relevant?"
+  ],
+  "Business::Service Level Agreements": [
+    "What are the key metrics to include in SOC SLAs?",
+    "How do I set realistic SLA targets for SOC services?"
+  ],
+  "Service::Incident Management": [
+    "What are the essential steps for effective incident management in a SOC?",
+    "How can I improve our incident response times and effectiveness?"
+  ],
+  "Service::Threat Intelligence": [
+    "How do I build an effective threat intelligence program for my SOC?",
+    "What sources should I use for threat intelligence and how do I prioritize them?"
+  ],
+  "Service::Vulnerability Management": [
+    "What's the best approach to vulnerability management in a SOC?",
+    "How do I prioritize vulnerabilities based on risk and business impact?"
+  ],
+  "Service::Security Monitoring": [
+    "What tools and processes are essential for effective security monitoring?",
+    "How can I reduce false positives in my security monitoring?"
+  ],
+  "Process::Change Management": [
+    "How do I implement effective change management processes in a SOC?",
+    "What controls should be in place for SOC-related changes?"
+  ],
+  "Process::Problem Management": [
+    "What's the difference between incident and problem management in a SOC?",
+    "How do I establish a problem management process for recurring issues?"
+  ],
+  "Process::Knowledge Management": [
+    "How do I build and maintain a knowledge base for SOC operations?",
+    "What knowledge management practices improve SOC efficiency?"
+  ],
+  "Process::Continuous Improvement": [
+    "How do I establish a continuous improvement program for my SOC?",
+    "What metrics should I track to measure SOC improvement over time?"
+  ],
+  "Technology::SIEM": [
+    "What should I consider when selecting a SIEM solution for my SOC?",
+    "How do I optimize my SIEM configuration for better detection and alerting?"
+  ],
+  "Technology::SOAR": [
+    "What is SOAR and how can it improve my SOC operations?",
+    "How do I implement automation and orchestration in my SOC?"
+  ],
+  "Technology::Endpoint Detection": [
+    "What endpoint detection and response capabilities should a SOC have?",
+    "How do I choose the right EDR solution for my organization?"
+  ],
+  "Technology::Network Security": [
+    "What network security monitoring tools are essential for a SOC?",
+    "How do I monitor network traffic effectively for security threats?"
+  ],
+  "People::Skills & Competencies": [
+    "What skills and competencies are essential for SOC analysts?",
+    "How do I assess and develop the skills of my SOC team?"
+  ],
+  "People::Training & Development": [
+    "What training programs are most effective for SOC personnel?",
+    "How do I create a continuous learning culture in my SOC?"
+  ],
+  "People::Organizational Structure": [
+    "What organizational structure works best for a SOC?",
+    "How do I organize my SOC team for maximum effectiveness?"
+  ],
+  "People::Retention & Motivation": [
+    "How do I retain skilled SOC analysts and reduce turnover?",
+    "What motivates SOC team members and improves job satisfaction?"
+  ]
+}
+
