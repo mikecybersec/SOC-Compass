@@ -56,6 +56,22 @@ const ApiKeyModal = ({ open, onClose, apiKey, setApiKey, apiBase, setApiBase, mo
 };
 
 const PreferencesModal = ({ open, onClose, language, setLanguage, theme, setTheme }) => {
+  const [systemPreference, setSystemPreference] = useState<'light' | 'dark'>('light');
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const updatePreference = () => {
+      setSystemPreference(mediaQuery.matches ? 'dark' : 'light');
+    };
+    
+    updatePreference();
+    mediaQuery.addEventListener('change', updatePreference);
+    
+    return () => mediaQuery.removeEventListener('change', updatePreference);
+  }, []);
+
   if (!open) return null;
 
   return (
@@ -88,8 +104,14 @@ const PreferencesModal = ({ open, onClose, language, setLanguage, theme, setThem
             <SelectContent>
               <SelectItem value="light">Light</SelectItem>
               <SelectItem value="dark">Dark</SelectItem>
+              <SelectItem value="system">System</SelectItem>
             </SelectContent>
           </Select>
+          <p className="ui-field-help">
+            {theme === 'system' 
+              ? `Following system preference (${systemPreference === 'dark' ? 'Dark' : 'Light'})`
+              : 'Choose your preferred color scheme'}
+          </p>
         </div>
       </div>
       <div className="ui-dialog-footer">
@@ -141,7 +163,32 @@ const App = () => {
 
   useEffect(() => {
     const root = document.documentElement;
-    root.classList.toggle('dark', theme === 'dark');
+    
+    const getEffectiveTheme = () => {
+      if (theme === 'system') {
+        if (typeof window === 'undefined') return 'light';
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      return theme;
+    };
+
+    const applyTheme = () => {
+      const effectiveTheme = getEffectiveTheme();
+      const isDark = effectiveTheme === 'dark';
+      root.classList.toggle('dark', isDark);
+      root.style.colorScheme = effectiveTheme;
+    };
+
+    // Apply theme immediately
+    applyTheme();
+
+    // Listen for system theme changes if in system mode
+    if (theme === 'system' && typeof window !== 'undefined') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleChange = () => applyTheme();
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
   }, [theme]);
 
   const hasActiveAssessment =

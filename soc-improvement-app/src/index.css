@@ -9,6 +9,11 @@
     cursor: pointer;
   }
 
+  /* Smooth theme transitions */
+  html {
+    transition: color-scheme 200ms ease;
+  }
+
   :root {
     /* Existing custom variables */
     --bg: #f4f5f7;
@@ -63,18 +68,23 @@
 
 .dark {
   /* Existing custom variables */
-  --bg: #0d0f13;
-  --bg-subtle: #12151d;
-  --card: #161a1f;
-  --text: #e5e7eb;
-  --muted: #a1a5b3;
+  --bg: #0a0d12;
+  --bg-subtle: #0f1419;
+  --card: #141920;
+  --text: #e4e7eb;
+  --muted: #9ca3af;
   --accent: #ff9f40;
   --accent-strong: #ffb66f;
-  --border: #1f2430;
-  --shadow: 0 25px 60px -30px rgba(0, 0, 0, 0.6);
-  --shadow-light: 0 14px 32px -18px rgba(0, 0, 0, 0.6);
+  --border: #1e2329;
+  --shadow: 0 25px 60px -30px rgba(0, 0, 0, 0.8);
+  --shadow-light: 0 14px 32px -18px rgba(0, 0, 0, 0.7);
+  --sidebar-bg: #0f1419;
+  --sidebar-highlight: #1a1f26;
+  --sidebar-indicator: #ff9f40;
+  --sidebar-text: #e4e7eb;
+  --sidebar-muted: #6b7280;
 
-  /* Shadcn variables */
+  /* Shadcn variables - improved dark mode colors */
   --background: 222.2 84% 4.9%;
   --foreground: 210 40% 98%;
   --card: 222.2 84% 4.9%;
@@ -114,7 +124,9 @@ body {
   margin: 0;
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background: linear-gradient(180deg, var(--bg) 0%, var(--bg-subtle) 100%);
+  background-attachment: fixed;
   color: var(--text);
+  transition: background 200ms ease, color 200ms ease;
 }
 
 /* Force button visibility - override Tailwind reset */
@@ -145,9 +157,9 @@ button.ui-btn-primary:hover {
 }
 
 button.ui-btn-secondary {
-  background: #f3f4f6 !important;
-  color: var(--text) !important;
-  border: 1px solid var(--border) !important;
+  background: hsl(var(--secondary)) !important;
+  color: hsl(var(--secondary-foreground)) !important;
+  border: 1px solid hsl(var(--border)) !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
 }
 
@@ -714,7 +726,8 @@ button, input, select, textarea {
   border: 1px solid hsl(var(--border));
   border-radius: 12px;
   padding: 1.5rem;
-  transition: all 0.2s ease;
+  transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
+  color: hsl(var(--card-foreground));
 }
 
 /* Modern Question Card Styles */

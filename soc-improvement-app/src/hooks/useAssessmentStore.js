@@ -94,7 +94,7 @@ const hydrateState = (saved) => {
     apiKey: '',
     apiBase: defaultApiBase,
     model: defaultModel,
-    theme: 'light',
+    theme: 'system',
     currentAssessment: buildAssessment(),
     upcomingMetadata: defaultMetadata(),
     assessmentHistory: [],
