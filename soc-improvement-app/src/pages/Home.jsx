@@ -655,7 +655,9 @@ const Home = ({
                 '--mouse-y': `${stepMousePositions[3].y}%`,
               }}
             >
-              <div className="streamline-step-top-border" />
+              <div className="streamline-step-top-border-wrapper">
+                <div className="streamline-step-top-border" />
+              </div>
               <div className="cursor-glow" />
               <div className="streamline-step-icon">
                 <Sparkles className="step-icon" />
