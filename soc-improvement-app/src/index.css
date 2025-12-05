@@ -629,6 +629,24 @@ h6 {
   position: relative;
 }
 
+.command-menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.command-menu-icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.6;
+  transition: transform 200ms ease, opacity 200ms ease;
+}
+
+.command-menu:hover .command-menu-icon {
+  opacity: 1;
+  transform: rotate(180deg);
+}
+
 .command-menu .command-sheet {
   display: none;
   position: absolute;

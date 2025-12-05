@@ -1,5 +1,6 @@
 import React from 'react';
 import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
+import { ChevronDown } from 'lucide-react';
 
 const Navbar = ({
   onGoHome,
@@ -32,7 +33,10 @@ const Navbar = ({
           Home
         </Button>
         <div className="command-menu">
-          <Button variant="outline" size="sm">Assessments</Button>
+          <Button variant="ghost" size="sm" className="command-menu-trigger">
+            Assessments
+            <ChevronDown className="command-menu-icon" />
+          </Button>
           <div className="command-sheet">
             <Button variant="ghost" size="sm" onClick={onNewAssessment}>
               New Assessment
@@ -43,7 +47,10 @@ const Navbar = ({
           </div>
         </div>
         <div className="command-menu">
-          <Button variant="outline" size="sm">Administration</Button>
+          <Button variant="ghost" size="sm" className="command-menu-trigger">
+            Administration
+            <ChevronDown className="command-menu-icon" />
+          </Button>
           <div className="command-sheet">
             <Button variant="ghost" size="sm" onClick={onOpenApiModal}>
               API Key
