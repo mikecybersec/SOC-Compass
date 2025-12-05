@@ -42,6 +42,7 @@ const buildAssessmentContext = (assessment) => {
 
 const AssessmentCopilot = ({ onOpenApiModal }) => {
   const apiKey = useAssessmentStore((s) => s.apiKey);
+  const apiKeyValidated = useAssessmentStore((s) => s.apiKeyValidated);
   const apiBase = useAssessmentStore((s) => s.apiBase);
   const model = useAssessmentStore((s) => s.model);
   const assessment = useAssessmentStore((s) => s.currentAssessment);
@@ -126,7 +127,7 @@ const AssessmentCopilot = ({ onOpenApiModal }) => {
 
   const handleSend = async (event) => {
     event.preventDefault();
-    if (!input.trim() || loading || !apiKey) return;
+    if (!input.trim() || loading || !apiKey || !apiKeyValidated) return;
 
     const userMessage = { role: 'user', content: input.trim() };
     setMessages((prev) => [...prev, userMessage]);
@@ -195,11 +196,13 @@ const AssessmentCopilot = ({ onOpenApiModal }) => {
             </button>
           </div>
 
-          {!apiKey ? (
+          {!apiKey || !apiKeyValidated ? (
             <div className="copilot-api-key-prompt">
-              <p className="copilot-api-key-label">No API key detected</p>
+              <p className="copilot-api-key-label">
+                {!apiKey ? 'No API key detected' : 'API key not validated'}
+              </p>
               <p className="copilot-api-key-message">
-                Please configure your API key in{' '}
+                Please configure and validate your API key in{' '}
                 <button
                   type="button"
                   onClick={onOpenApiModal}
@@ -253,7 +256,7 @@ const AssessmentCopilot = ({ onOpenApiModal }) => {
           </div>
           )}
 
-          {apiKey && (
+          {apiKey && apiKeyValidated && (
             <form className="copilot-input" onSubmit={handleSend}>
               <input
                 type="text"

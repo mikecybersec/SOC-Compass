@@ -2952,7 +2952,7 @@ label {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   cursor: pointer;
   font-weight: 600;
-  z-index: 30;
+  z-index: 15;
   overflow: hidden;
   height: 56px;
   min-width: 56px;
@@ -3090,7 +3090,7 @@ label {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  z-index: 40;
+  z-index: 15;
   animation: copilot-panel-rise 600ms cubic-bezier(0.4, 0, 0.2, 1);
   transform-origin: bottom right;
 }
