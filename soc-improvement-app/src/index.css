@@ -2919,6 +2919,24 @@ label {
   transform: translateY(0);
 }
 
+/* Toast container styles */
+#toast-container {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.dark #toast-container [style*="background"] {
+  background: hsl(var(--card)) !important;
+  border-color: hsl(var(--border)) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
 .copilot-toggle {
   position: fixed;
   bottom: 1.5rem;

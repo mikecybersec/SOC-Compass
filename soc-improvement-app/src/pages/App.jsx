@@ -18,32 +18,110 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { validateApiKey } from '../utils/ai';
+import { toastSuccess, toastError } from '../utils/toast';
+import { Key, CheckCircle2, AlertCircle } from 'lucide-react';
 
 const ApiKeyModal = ({ open, onClose, apiKey, setApiKey, apiBase, setApiBase, model, setModel }) => {
+  const [isTesting, setIsTesting] = useState(false);
+  const [isValid, setIsValid] = useState(null);
+
+  // Reset validation state when modal opens/closes or key changes
+  useEffect(() => {
+    if (!open) {
+      setIsValid(null);
+      setIsTesting(false);
+    } else {
+      setIsValid(null);
+    }
+  }, [open, apiKey]);
+
+  const handleTestKey = async () => {
+    if (!apiKey || !apiKey.trim()) {
+      toastError('Please enter an API key first');
+      return;
+    }
+
+    setIsTesting(true);
+    setIsValid(null);
+
+    try {
+      const validation = await validateApiKey(apiKey, apiBase);
+      if (validation.valid) {
+        setIsValid(true);
+        toastSuccess('API key is valid');
+      } else {
+        setIsValid(false);
+        toastError(validation.error || 'API key is invalid');
+      }
+    } catch (error) {
+      setIsValid(false);
+      toastError(error.message || 'Failed to validate API key');
+    } finally {
+      setIsTesting(false);
+    }
+  };
+
   if (!open) return null;
 
   return (
     <Dialog
       open={open}
       onClose={onClose}
-      title="API configuration"
-      description="Centralize your API credentials for the assessment workspace."
+      title="AI API Key Management"
+      description="Configure your Grok API credentials. Your API key is stored locally in your browser."
     >
-      <div className="grid-3">
+      <div className="space-y-4">
         <div className="ui-field">
           <label className="ui-label">API Key</label>
-          <Input
-            type="password"
-            placeholder="Paste your provider key"
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-          />
+          <div className="flex gap-2">
+            <Input
+              type="password"
+              placeholder="Paste your Grok API key (e.g. xai-...)"
+              value={apiKey}
+              onChange={(e) => {
+                setApiKey(e.target.value);
+                setIsValid(null); // Reset validation when key changes
+              }}
+              className="flex-1"
+            />
+            <Button
+              onClick={handleTestKey}
+              disabled={isTesting || !apiKey?.trim()}
+              variant="outline"
+              className="gap-2 shrink-0"
+            >
+              {isTesting ? (
+                <>
+                  <Key className="h-4 w-4 animate-pulse" />
+                  Testing...
+                </>
+              ) : (
+                <>
+                  <Key className="h-4 w-4" />
+                  Test Key
+                </>
+              )}
+            </Button>
+          </div>
+          {isValid === true && (
+            <div className="flex items-center gap-2 mt-2 text-sm text-green-600 dark:text-green-400">
+              <CheckCircle2 className="h-4 w-4" />
+              <span>API key is valid</span>
+            </div>
+          )}
+          {isValid === false && (
+            <div className="flex items-center gap-2 mt-2 text-sm text-destructive">
+              <AlertCircle className="h-4 w-4" />
+              <span>API key is invalid</span>
+            </div>
+          )}
           <p className="ui-field-help">Stored locally in your browser.</p>
         </div>
         <div className="ui-field">
           <label className="ui-label">Model</label>
           <Input value={model} onChange={(e) => setModel(e.target.value)} />
-          <p className="ui-field-help">e.g. gpt-4o-mini, llama-3.1-70b</p>
+          <p className="ui-field-help">e.g. grok-4-latest, grok-beta</p>
         </div>
         <div className="ui-field">
           <label className="ui-label">API Base URL</label>

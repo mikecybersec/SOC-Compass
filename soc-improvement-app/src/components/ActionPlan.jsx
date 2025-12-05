@@ -1,7 +1,7 @@
-import React, { useState, forwardRef, useMemo, useEffect } from 'react';
+import React, { useState, forwardRef, useMemo } from 'react';
 import { renderMarkdown } from '../utils/markdown';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
-import { generateActionPlan, validateApiKey } from '../utils/ai';
+import { generateActionPlan } from '../utils/ai';
 import { frameworks } from '../utils/frameworks';
 import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
 import {
@@ -11,7 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card-shadcn';
-import { Input } from '@/components/ui/Input';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,19 +21,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Sparkles, Key, AlertCircle, AlertTriangle } from 'lucide-react';
+import { Sparkles, AlertTriangle } from 'lucide-react';
 
 const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
   const [loading, setLoading] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [isValidatingKey, setIsValidatingKey] = useState(false);
-  const [isKeyValid, setIsKeyValid] = useState(false);
   const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
   const answers = useAssessmentStore((s) => s.currentAssessment.answers);
   const scores = useAssessmentStore((s) => s.scores)();
   const metadata = useAssessmentStore((s) => s.currentAssessment.metadata);
   const apiKey = useAssessmentStore((s) => s.apiKey);
-  const setApiKey = useAssessmentStore((s) => s.setApiKey);
   const apiBase = useAssessmentStore((s) => s.apiBase);
   const model = useAssessmentStore((s) => s.model);
   const actionPlan = useAssessmentStore((s) => s.currentAssessment.actionPlan);
@@ -64,28 +60,6 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
   }, [frameworkId, answers]);
 
   const isIncomplete = completionPercentage < 50;
-
-  // Reset validation state when API key changes
-  useEffect(() => {
-    if (!apiKey || !apiKey.trim()) {
-      setIsKeyValid(false);
-      setIsValidatingKey(false);
-    } else {
-      // Reset validation state when key changes (user is typing)
-      setIsKeyValid(false);
-    }
-  }, [apiKey]);
-
-  const handleTestKey = async () => {
-    if (!apiKey || !apiKey.trim()) {
-      return;
-    }
-
-    setIsValidatingKey(true);
-    const validation = await validateApiKey(apiKey, apiBase);
-    setIsKeyValid(validation.valid);
-    setIsValidatingKey(false);
-  };
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -151,66 +125,20 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
             </p>
           </div>
         ) : (
-          <div className="space-y-3">
-            {isValidatingKey ? (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Sparkles className="h-4 w-4 animate-pulse" />
-                Validating API key...
-              </div>
-            ) : isKeyValid ? (
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
-                  <div className="h-2 w-2 rounded-full bg-green-600 dark:bg-green-400" />
-                  API key validated
-                </div>
-                <Button onClick={handleGenerateClick} disabled={loading} className="gap-2">
-                  {loading ? (
-                    <>
-                      <Sparkles className="h-4 w-4 animate-pulse" />
-                      Generating…
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="h-4 w-4" />
-                      Generate Action Plan
-                    </>
-                  )}
-                </Button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-3">
-                <Button
-                  onClick={handleTestKey}
-                  disabled={isValidatingKey || !apiKey?.trim()}
-                  variant="outline"
-                  className="gap-2"
-                >
-                  <Key className="h-4 w-4" />
-                  Test Key
-                </Button>
-                {isKeyValid === false && !isValidatingKey && (
-                  <div className="flex-1 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
-                    <div className="flex items-start gap-2">
-                      <AlertCircle className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
-                      <div>
-                        <p className="text-sm font-medium text-destructive">Invalid API Key</p>
-                        <p className="text-xs text-destructive/80 mt-0.5">
-                          The API key is invalid. Please check your key or go to{' '}
-                          <button
-                            onClick={onOpenApiModal}
-                            className="text-primary hover:underline font-medium"
-                            style={{ color: 'hsl(var(--primary))' }}
-                          >
-                            AI API Key Management
-                          </button>{' '}
-                          to update it.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
+          <div className="flex items-center">
+            <Button onClick={handleGenerateClick} disabled={loading} className="gap-2">
+              {loading ? (
+                <>
+                  <Sparkles className="h-4 w-4 animate-pulse" />
+                  Generating…
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-4 w-4" />
+                  Generate Action Plan
+                </>
+              )}
+            </Button>
           </div>
         )}
 
