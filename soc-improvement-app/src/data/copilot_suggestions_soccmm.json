@@ -7,81 +7,104 @@
     "How do I identify all relevant SOC stakeholders and customers?",
     "What's the best way to manage stakeholder expectations for SOC services?"
   ],
+  "Business::Charter": [
+    "What should be included in a SOC charter document?",
+    "How do I create and maintain an effective SOC charter?"
+  ],
+  "Business::Governance": [
+    "What governance structures are essential for effective SOC operations?",
+    "How do I establish proper governance and oversight for my SOC?"
+  ],
   "Business::Privacy & Policy": [
     "What privacy policies should a SOC have in place?",
     "How can I ensure our SOC operations comply with privacy regulations?"
   ],
-  "Business::Service Catalogue": [
-    "What services should be included in a comprehensive SOC service catalogue?",
-    "How do I keep my SOC service catalogue up to date and relevant?"
+  "People::Employees": [
+    "What are the key roles and responsibilities for SOC employees?",
+    "How do I recruit and retain qualified SOC personnel?"
   ],
-  "Business::Service Level Agreements": [
-    "What are the key metrics to include in SOC SLAs?",
-    "How do I set realistic SLA targets for SOC services?"
+  "People::Roles and Hierarchy": [
+    "What organizational roles and hierarchy work best for a SOC?",
+    "How do I structure reporting relationships in my SOC team?"
   ],
-  "Service::Incident Management": [
-    "What are the essential steps for effective incident management in a SOC?",
-    "How can I improve our incident response times and effectiveness?"
+  "People::People Management": [
+    "What are the best practices for managing SOC team members?",
+    "How do I handle performance management and career development in my SOC?"
   ],
-  "Service::Threat Intelligence": [
-    "How do I build an effective threat intelligence program for my SOC?",
-    "What sources should I use for threat intelligence and how do I prioritize them?"
-  ],
-  "Service::Vulnerability Management": [
-    "What's the best approach to vulnerability management in a SOC?",
-    "How do I prioritize vulnerabilities based on risk and business impact?"
-  ],
-  "Service::Security Monitoring": [
-    "What tools and processes are essential for effective security monitoring?",
-    "How can I reduce false positives in my security monitoring?"
-  ],
-  "Process::Change Management": [
-    "How do I implement effective change management processes in a SOC?",
-    "What controls should be in place for SOC-related changes?"
-  ],
-  "Process::Problem Management": [
-    "What's the difference between incident and problem management in a SOC?",
-    "How do I establish a problem management process for recurring issues?"
-  ],
-  "Process::Knowledge Management": [
+  "People::Knowledge Management": [
     "How do I build and maintain a knowledge base for SOC operations?",
     "What knowledge management practices improve SOC efficiency?"
   ],
-  "Process::Continuous Improvement": [
-    "How do I establish a continuous improvement program for my SOC?",
-    "What metrics should I track to measure SOC improvement over time?"
-  ],
-  "Technology::SIEM": [
-    "What should I consider when selecting a SIEM solution for my SOC?",
-    "How do I optimize my SIEM configuration for better detection and alerting?"
-  ],
-  "Technology::SOAR": [
-    "What is SOAR and how can it improve my SOC operations?",
-    "How do I implement automation and orchestration in my SOC?"
-  ],
-  "Technology::Endpoint Detection": [
-    "What endpoint detection and response capabilities should a SOC have?",
-    "How do I choose the right EDR solution for my organization?"
-  ],
-  "Technology::Network Security": [
-    "What network security monitoring tools are essential for a SOC?",
-    "How do I monitor network traffic effectively for security threats?"
-  ],
-  "People::Skills & Competencies": [
-    "What skills and competencies are essential for SOC analysts?",
-    "How do I assess and develop the skills of my SOC team?"
-  ],
-  "People::Training & Development": [
+  "People::Training and Education": [
     "What training programs are most effective for SOC personnel?",
     "How do I create a continuous learning culture in my SOC?"
   ],
-  "People::Organizational Structure": [
-    "What organizational structure works best for a SOC?",
-    "How do I organize my SOC team for maximum effectiveness?"
+  "Process::SOC Management": [
+    "What are the key management processes for running an effective SOC?",
+    "How do I establish day-to-day operational management for my SOC?"
   ],
-  "People::Retention & Motivation": [
-    "How do I retain skilled SOC analysts and reduce turnover?",
-    "What motivates SOC team members and improves job satisfaction?"
+  "Process::Log Management": [
+    "What are the best practices for log management in a SOC?",
+    "How do I ensure proper log collection, storage, and retention?"
+  ],
+  "Process::Operations and Facilities": [
+    "What operational facilities and infrastructure does a SOC need?",
+    "How do I design and maintain SOC operations facilities?"
+  ],
+  "Process::Reporting & communication": [
+    "What reporting structures are essential for SOC operations?",
+    "How do I establish effective communication channels in my SOC?"
+  ],
+  "Process::Use Case Management": [
+    "How do I develop and manage security use cases in my SOC?",
+    "What's the best approach to use case lifecycle management?"
+  ],
+  "Process::Detection Engineering & Validation": [
+    "How do I build effective detection rules and signatures?",
+    "What processes should I use to validate detection capabilities?"
+  ],
+  "Process::Automation Engineering": [
+    "How do I implement automation in my SOC operations?",
+    "What automation opportunities provide the most value for a SOC?"
+  ],
+  "Technology::Log Monitoring": [
+    "What tools and techniques are best for log monitoring in a SOC?",
+    "How do I optimize log monitoring for better security visibility?"
+  ],
+  "Technology::Network Monitoring": [
+    "What network security monitoring tools are essential for a SOC?",
+    "How do I monitor network traffic effectively for security threats?"
+  ],
+  "Technology::Endpoint monitoring": [
+    "What endpoint detection and response capabilities should a SOC have?",
+    "How do I choose the right endpoint monitoring solution for my organization?"
+  ],
+  "Technology::SecOps Automation": [
+    "What is SecOps automation and how can it improve my SOC?",
+    "How do I implement security operations automation effectively?"
+  ],
+  "Services::Security Monitoring": [
+    "What tools and processes are essential for effective security monitoring?",
+    "How can I reduce false positives in my security monitoring?"
+  ],
+  "Services::Security Incident Management": [
+    "What are the essential steps for effective incident management in a SOC?",
+    "How can I improve our incident response times and effectiveness?"
+  ],
+  "Services::Forensic analysis": [
+    "What forensic analysis capabilities should a SOC have?",
+    "How do I build effective digital forensics processes in my SOC?"
+  ],
+  "Services::Threat Intelligence": [
+    "How do I build an effective threat intelligence program for my SOC?",
+    "What sources should I use for threat intelligence and how do I prioritize them?"
+  ],
+  "Services::Threat Hunting": [
+    "What is threat hunting and how do I implement it in my SOC?",
+    "What techniques and methodologies are most effective for threat hunting?"
+  ],
+  "Services::Vulnerability Management": [
+    "What's the best approach to vulnerability management in a SOC?",
+    "How do I prioritize vulnerabilities based on risk and business impact?"
   ]
 }
-
