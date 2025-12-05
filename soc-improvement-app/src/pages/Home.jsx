@@ -551,7 +551,7 @@ const Home = ({
         style={{
           '--mouse-x': `${mousePosition.x}%`,
           '--mouse-y': `${mousePosition.y}%`,
-        } as React.CSSProperties}
+        }}
       >
         <div className="cursor-glow" />
         <div className="hero-copy">
