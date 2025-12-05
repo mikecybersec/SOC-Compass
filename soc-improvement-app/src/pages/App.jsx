@@ -9,7 +9,8 @@ import Footer from '../components/Footer';
 import AssessmentCopilot from '../components/AssessmentCopilot';
 import Dialog from '../components/ui/Dialog';
 import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
-import { Input, Select } from '../components/ui/Input';
+import { Input } from '../components/ui/Input';
+import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
 
 const ApiKeyModal = ({ open, onClose, apiKey, setApiKey, apiBase, setApiBase, model, setModel }) => {
   if (!open) return null;
@@ -60,18 +61,18 @@ const PreferencesModal = ({ open, onClose, language, setLanguage, theme, setThem
       <div className="grid-2">
         <div className="ui-field">
           <label className="ui-label">Language</label>
-          <Select value={language} onChange={(e) => setLanguage(e.target.value)}>
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="fr">Français</option>
-          </Select>
+          <NativeSelect value={language} onChange={(e) => setLanguage(e.target.value)}>
+            <NativeSelectOption value="en">English</NativeSelectOption>
+            <NativeSelectOption value="es">Español</NativeSelectOption>
+            <NativeSelectOption value="fr">Français</NativeSelectOption>
+          </NativeSelect>
         </div>
         <div className="ui-field">
           <label className="ui-label">Theme</label>
-          <Select value={theme} onChange={(e) => setTheme(e.target.value)}>
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-          </Select>
+          <NativeSelect value={theme} onChange={(e) => setTheme(e.target.value)}>
+            <NativeSelectOption value="light">Light</NativeSelectOption>
+            <NativeSelectOption value="dark">Dark</NativeSelectOption>
+          </NativeSelect>
         </div>
       </div>
       <div className="ui-dialog-footer">

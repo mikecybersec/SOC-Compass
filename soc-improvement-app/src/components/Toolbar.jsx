@@ -4,6 +4,7 @@ import { importAssessment } from '../utils/storage';
 import { objectiveOptions } from '../constants/objectives';
 import Dialog from './ui/Dialog';
 import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
+import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
 import { formatBudgetAmount } from '../utils/format';
 
 const Toolbar = ({ open, onClose }) => {
@@ -74,34 +75,34 @@ const Toolbar = ({ open, onClose }) => {
             </div>
             <div className="metadata-field">
               <label>Sector</label>
-              <select
+              <NativeSelect
                 value={state.currentAssessment.metadata.sector}
                 onChange={(e) => setMetadata({ sector: e.target.value })}
               >
-                <option value="MSSP">MSSP</option>
-                <option value="Technology">Technology</option>
-                <option value="Finance">Finance</option>
-                <option value="Healthcare">Healthcare</option>
-                <option value="Government">Government</option>
-                <option value="Manufacturing">Manufacturing</option>
-                <option value="Other">Other</option>
-              </select>
+                <NativeSelectOption value="MSSP">MSSP</NativeSelectOption>
+                <NativeSelectOption value="Technology">Technology</NativeSelectOption>
+                <NativeSelectOption value="Finance">Finance</NativeSelectOption>
+                <NativeSelectOption value="Healthcare">Healthcare</NativeSelectOption>
+                <NativeSelectOption value="Government">Government</NativeSelectOption>
+                <NativeSelectOption value="Manufacturing">Manufacturing</NativeSelectOption>
+                <NativeSelectOption value="Other">Other</NativeSelectOption>
+              </NativeSelect>
             </div>
             <div className="metadata-field">
               <label>SOC Age</label>
-              <select
+              <NativeSelect
                 value={state.currentAssessment.metadata.socAge}
                 onChange={(e) => setMetadata({ socAge: e.target.value })}
               >
-                <option value="" disabled hidden>
+                <NativeSelectOption value="" disabled hidden>
                   Select SOC age
-                </option>
-                <option value="0-6 months">0-6 months</option>
-                <option value="6-12 months">6-12 months</option>
-                <option value="1-2 years">1-2 years</option>
-                <option value="2-5 years">2-5 years</option>
-                <option value="5+ years">5+ years</option>
-              </select>
+                </NativeSelectOption>
+                <NativeSelectOption value="0-6 months">0-6 months</NativeSelectOption>
+                <NativeSelectOption value="6-12 months">6-12 months</NativeSelectOption>
+                <NativeSelectOption value="1-2 years">1-2 years</NativeSelectOption>
+                <NativeSelectOption value="2-5 years">2-5 years</NativeSelectOption>
+                <NativeSelectOption value="5+ years">5+ years</NativeSelectOption>
+              </NativeSelect>
             </div>
             <div className="metadata-field">
               <label>Size</label>
@@ -112,14 +113,14 @@ const Toolbar = ({ open, onClose }) => {
             </div>
             <div className="metadata-field">
               <label>Status</label>
-              <select
+              <NativeSelect
                 value={state.currentAssessment.metadata.status}
                 onChange={(e) => setMetadata({ status: e.target.value })}
               >
-                <option value="Not Started">Not Started</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Completed">Completed</option>
-              </select>
+                <NativeSelectOption value="Not Started">Not Started</NativeSelectOption>
+                <NativeSelectOption value="In Progress">In Progress</NativeSelectOption>
+                <NativeSelectOption value="Completed">Completed</NativeSelectOption>
+              </NativeSelect>
             </div>
           </div>
         </div>
@@ -142,15 +143,15 @@ const Toolbar = ({ open, onClose }) => {
             </div>
             <div className="metadata-field">
               <label>Currency</label>
-              <select
+              <NativeSelect
                 value={state.currentAssessment.metadata.budgetCurrency}
                 onChange={(e) => setMetadata({ budgetCurrency: e.target.value })}
               >
-                <option value="$">USD ($)</option>
-                <option value="€">EUR (€)</option>
-                <option value="£">GBP (£)</option>
-                <option value="¥">JPY (¥)</option>
-              </select>
+                <NativeSelectOption value="$">USD ($)</NativeSelectOption>
+                <NativeSelectOption value="€">EUR (€)</NativeSelectOption>
+                <NativeSelectOption value="£">GBP (£)</NativeSelectOption>
+                <NativeSelectOption value="¥">JPY (¥)</NativeSelectOption>
+              </NativeSelect>
             </div>
           </div>
         </div>

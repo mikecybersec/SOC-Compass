@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
+import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
 
 const QuestionPanel = ({ aspect, nextAspect, onNextAspect }) => {
   const answers = useAssessmentStore((s) => s.currentAssessment.answers);
@@ -45,18 +46,18 @@ const QuestionPanel = ({ aspect, nextAspect, onNextAspect }) => {
                 )}
               </div>
               {q.isAnswerable ? (
-                <select
+                <NativeSelect
                   value={answers[q.code] || ''}
                   onChange={(e) => setAnswer(q.code, e.target.value)}
                   style={{ maxWidth: '260px' }}
                 >
-                  <option value="">Select maturity</option>
+                  <NativeSelectOption value="">Select maturity</NativeSelectOption>
                   {q.answerOptions.map((opt) => (
-                    <option key={opt} value={opt}>
+                    <NativeSelectOption key={opt} value={opt}>
                       {opt}
-                    </option>
+                    </NativeSelectOption>
                   ))}
-                </select>
+                </NativeSelect>
               ) : null}
             </div>
             <div style={{ marginTop: '0.5rem' }}>
