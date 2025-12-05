@@ -213,13 +213,6 @@ const App = () => {
           )}
           {view === 'active-assessments' && (
             <ActiveAssessments
-              onGoHome={() => setView('home')}
-              onNewAssessment={() => {
-                setView('home');
-                setModeModalOpen(true);
-              }}
-              onOpenApiModal={() => setApiModalOpen(true)}
-              onOpenPreferences={() => setPreferencesModalOpen(true)}
               assessmentHistory={assessmentHistory}
               onLoadAssessment={handleLoad}
             />

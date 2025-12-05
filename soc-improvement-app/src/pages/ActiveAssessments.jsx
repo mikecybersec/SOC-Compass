@@ -7,13 +7,8 @@ import {
   CardDescription,
   CardContent,
 } from '../components/ui/card-shadcn';
-import Navbar from '../components/Navbar';
 
 const ActiveAssessments = ({
-  onGoHome,
-  onNewAssessment,
-  onOpenApiModal,
-  onOpenPreferences,
   assessmentHistory,
   onLoadAssessment,
 }) => {
@@ -23,15 +18,7 @@ const ActiveAssessments = ({
   });
 
   return (
-    <>
-      <Navbar
-        onGoHome={onGoHome}
-        onNewAssessment={onNewAssessment}
-        onExistingAssessments={() => {}}
-        onOpenApiModal={onOpenApiModal}
-        onOpenPreferences={onOpenPreferences}
-      />
-      <div className="app-main">
+    <div className="app-main">
         <div className="container" style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem 1.5rem' }}>
           <div style={{ marginBottom: '2rem' }}>
             <h1 className="text-2xl font-semibold tracking-tight">Active Assessments</h1>
@@ -110,7 +97,6 @@ const ActiveAssessments = ({
           )}
         </div>
       </div>
-    </>
   );
 };
 
