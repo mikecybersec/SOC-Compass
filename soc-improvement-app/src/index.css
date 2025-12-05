@@ -405,6 +405,22 @@ button.ui-btn-ghost {
   box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.22);
 }
 
+.dark .ui-input {
+  background: hsl(var(--input, 0 0% 18%));
+  color: hsl(var(--foreground));
+  border-color: hsl(var(--border));
+}
+
+.dark .ui-input:focus {
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.22);
+  background: hsl(var(--input, 0 0% 20%));
+}
+
+.dark .ui-input::placeholder {
+  color: hsl(var(--muted-foreground));
+}
+
 .ui-textarea {
   min-height: 120px;
   resize: vertical;
