@@ -517,6 +517,20 @@ const Home = ({
   const upcomingMetadata = useAssessmentStore((s) => s.upcomingMetadata);
   const currentFrameworkId = currentAssessment.frameworkId;
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
+  const heroRef = React.useRef(null);
+
+  const handleMouseMove = (e) => {
+    if (!heroRef.current) return;
+    const rect = heroRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setMousePosition({ x, y });
+  };
+
+  const handleMouseLeave = () => {
+    setMousePosition({ x: 50, y: 50 });
+  };
 
 
   return (
@@ -529,7 +543,17 @@ const Home = ({
         </button>
       </div>
 
-      <header className="home-hero glass-hero">
+      <header 
+        ref={heroRef}
+        className="home-hero glass-hero"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          '--mouse-x': `${mousePosition.x}%`,
+          '--mouse-y': `${mousePosition.y}%`,
+        } as React.CSSProperties}
+      >
+        <div className="cursor-glow" />
         <div className="hero-copy">
           <h1 className="hero-title">
             Deliver every SOC assessment from one place
