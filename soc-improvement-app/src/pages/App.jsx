@@ -221,8 +221,8 @@ const App = () => {
 
   const handleLoadWorkspace = (workspaceId) => {
     loadWorkspace(workspaceId);
-    // Navigate to assessment view (not assessmentInfo) to show the actual assessment
-    setView('assessment');
+    // Navigate to assessment info page when clicking into a workspace
+    setView('assessmentInfo');
   };
 
   const handleSwitchWorkspace = () => {
