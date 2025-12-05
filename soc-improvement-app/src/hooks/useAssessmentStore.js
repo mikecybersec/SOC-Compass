@@ -498,14 +498,14 @@ export const useAssessmentStore = create(
         if (!workspace) return state;
 
         const assessments = workspace.assessments || [];
-        // Load the last saved assessment
+        // Load the last saved assessment, or create a new one if none exist
         const lastAssessment = assessments.length > 0
-          ? assessments.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt))[0]
+          ? assessments.sort((a, b) => new Date(b.savedAt || 0) - new Date(a.savedAt || 0))[0]
           : buildAssessment();
 
         return {
           currentWorkspaceId: workspaceId,
-          currentAssessmentId: lastAssessment.id,
+          currentAssessmentId: lastAssessment.id || null,
           currentAssessment: { ...lastAssessment },
           activeAspectKey: null,
         };
