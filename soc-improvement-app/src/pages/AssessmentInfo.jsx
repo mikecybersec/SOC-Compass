@@ -17,7 +17,7 @@ import { frameworks } from '../utils/frameworks';
 import Dialog from '../components/ui/Dialog';
 import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
 
-const AssessmentInfo = ({ onBack, onOpenReporting, metaRef, scoresRef, actionPlanRef, onDeleteAssessment, onNavigateHome, onSwitchWorkspace, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
+const AssessmentInfo = ({ onBack, onOpenReporting, metaRef, scoresRef, actionPlanRef, onDeleteAssessment, onNavigateHome, onSwitchWorkspace, onOpenApiModal, onOpenPreferences, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
   const metadata = useAssessmentStore((s) => s.currentAssessment.metadata);
   const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
   const lastSavedAt = useAssessmentStore((s) => s.lastSavedAt);
@@ -31,6 +31,8 @@ const AssessmentInfo = ({ onBack, onOpenReporting, metaRef, scoresRef, actionPla
   const setAssessmentCollapsed = useAssessmentStore((s) => s.setSidebarAssessmentCollapsed);
   const domainCollapsed = useAssessmentStore((s) => s.sidebarDomainCollapsed || {});
   const setDomainCollapsed = useAssessmentStore((s) => s.setSidebarDomainCollapsed);
+  const administrationCollapsed = useAssessmentStore((s) => s.sidebarAdministrationCollapsed);
+  const setAdministrationCollapsed = useAssessmentStore((s) => s.setSidebarAdministrationCollapsed);
 
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [metadataDialogOpen, setMetadataDialogOpen] = useState(false);
@@ -64,10 +66,14 @@ const AssessmentInfo = ({ onBack, onOpenReporting, metaRef, scoresRef, actionPla
         assessmentInfoActive
         onOpenReporting={onOpenReporting}
         onSwitchWorkspace={onSwitchWorkspace}
+        onOpenApiModal={onOpenApiModal}
+        onOpenPreferences={onOpenPreferences}
         assessmentCollapsed={assessmentCollapsed}
         setAssessmentCollapsed={setAssessmentCollapsed}
         domainCollapsed={domainCollapsed}
         setDomainCollapsed={setDomainCollapsed}
+        administrationCollapsed={administrationCollapsed}
+        setAdministrationCollapsed={setAdministrationCollapsed}
         answers={answers}
         workspace={workspace}
         assessments={assessments}

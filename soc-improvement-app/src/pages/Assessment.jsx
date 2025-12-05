@@ -14,7 +14,7 @@ import QuestionPanel from '../components/QuestionPanel';
 import { frameworks } from '../utils/frameworks';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 
-const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateHome, onSwitchWorkspace, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
+const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateHome, onSwitchWorkspace, onOpenApiModal, onOpenPreferences, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
   const lastSavedAt = useAssessmentStore((s) => s.lastSavedAt);
   const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
@@ -26,6 +26,8 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateH
   const setAssessmentCollapsed = useAssessmentStore((s) => s.setSidebarAssessmentCollapsed);
   const domainCollapsed = useAssessmentStore((s) => s.sidebarDomainCollapsed || {});
   const setDomainCollapsed = useAssessmentStore((s) => s.setSidebarDomainCollapsed);
+  const administrationCollapsed = useAssessmentStore((s) => s.sidebarAdministrationCollapsed);
+  const setAdministrationCollapsed = useAssessmentStore((s) => s.setSidebarAdministrationCollapsed);
 
   const frameworkId = currentAssessment.frameworkId;
   const [showSaveToast, setShowSaveToast] = useState(false);
@@ -83,10 +85,14 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateH
         onOpenAssessmentInfo={onOpenAssessmentInfo}
         onOpenReporting={onOpenReporting}
         onSwitchWorkspace={onSwitchWorkspace}
+        onOpenApiModal={onOpenApiModal}
+        onOpenPreferences={onOpenPreferences}
         assessmentCollapsed={assessmentCollapsed}
         setAssessmentCollapsed={setAssessmentCollapsed}
         domainCollapsed={domainCollapsed}
         setDomainCollapsed={setDomainCollapsed}
+        administrationCollapsed={administrationCollapsed}
+        setAdministrationCollapsed={setAdministrationCollapsed}
         answers={answers}
         workspace={workspace}
         assessments={assessments}

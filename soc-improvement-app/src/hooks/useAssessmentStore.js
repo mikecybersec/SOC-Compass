@@ -142,6 +142,7 @@ const hydrateState = (saved) => {
     sidebarCollapsed: false,
     sidebarAssessmentCollapsed: true,
     sidebarDomainCollapsed: {},
+    sidebarAdministrationCollapsed: true,
     skipNextAutoSave: false,
   };
 
@@ -210,6 +211,10 @@ const hydrateState = (saved) => {
       migrated && Object.prototype.hasOwnProperty.call(migrated, 'sidebarDomainCollapsed')
         ? migrated.sidebarDomainCollapsed || defaults.sidebarDomainCollapsed
         : defaults.sidebarDomainCollapsed,
+    sidebarAdministrationCollapsed:
+      migrated && Object.prototype.hasOwnProperty.call(migrated, 'sidebarAdministrationCollapsed')
+        ? migrated.sidebarAdministrationCollapsed
+        : defaults.sidebarAdministrationCollapsed,
   };
 
   return hydrated;
@@ -294,6 +299,13 @@ export const useAssessmentStore = create(
           },
         };
       }),
+    setSidebarAdministrationCollapsed: (sidebarAdministrationCollapsed) =>
+      set((state) => ({
+        sidebarAdministrationCollapsed:
+          typeof sidebarAdministrationCollapsed === 'function'
+            ? sidebarAdministrationCollapsed(state.sidebarAdministrationCollapsed)
+            : sidebarAdministrationCollapsed,
+      })),
     setApiKey: (apiKey) => set({ apiKey }),
     setApiBase: (apiBase) => set({ apiBase }),
     setModel: (model) => set({ model }),

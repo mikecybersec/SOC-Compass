@@ -286,6 +286,8 @@ const App = () => {
               onOpenAssessmentInfo={handleViewAssessmentInfo}
               onOpenReporting={handleViewReporting}
               onSwitchWorkspace={handleSwitchWorkspace}
+              onOpenApiModal={() => setApiModalOpen(true)}
+              onOpenPreferences={() => setPreferencesModalOpen(true)}
               workspace={currentWorkspace}
               assessments={workspaceAssessments}
               currentAssessmentId={currentAssessmentId}
@@ -298,6 +300,8 @@ const App = () => {
               onNavigateHome={() => setView('home')}
               onOpenReporting={handleViewReporting}
               onSwitchWorkspace={handleSwitchWorkspace}
+              onOpenApiModal={() => setApiModalOpen(true)}
+              onOpenPreferences={() => setPreferencesModalOpen(true)}
               metaRef={metaRef}
               scoresRef={scoresRef}
               onDeleteAssessment={() => setView('home')}
@@ -312,6 +316,8 @@ const App = () => {
               onBack={() => setView('assessment')}
               onNavigateHome={() => setView('home')}
               onSwitchWorkspace={handleSwitchWorkspace}
+              onOpenApiModal={() => setApiModalOpen(true)}
+              onOpenPreferences={() => setPreferencesModalOpen(true)}
               actionPlanRef={actionPlanRef}
               scoresRef={scoresRef}
               metaRef={metaRef}

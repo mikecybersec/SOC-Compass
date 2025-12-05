@@ -15,7 +15,7 @@ import { frameworks } from '../utils/frameworks';
 import { exportAssessment } from '../utils/storage';
 import { exportPdf } from '../utils/pdf';
 
-const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessmentInfo, onOpenReporting, onNavigateHome, onSwitchWorkspace, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
+const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessmentInfo, onOpenReporting, onNavigateHome, onSwitchWorkspace, onOpenApiModal, onOpenPreferences, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
   const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
   const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
   const setActiveAspectKey = useAssessmentStore((s) => s.setActiveAspectKey);
@@ -28,6 +28,8 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
   const setAssessmentCollapsed = useAssessmentStore((s) => s.setSidebarAssessmentCollapsed);
   const domainCollapsed = useAssessmentStore((s) => s.sidebarDomainCollapsed || {});
   const setDomainCollapsed = useAssessmentStore((s) => s.setSidebarDomainCollapsed);
+  const administrationCollapsed = useAssessmentStore((s) => s.sidebarAdministrationCollapsed);
+  const setAdministrationCollapsed = useAssessmentStore((s) => s.setSidebarAdministrationCollapsed);
 
   const aspects = frameworks[frameworkId]?.aspects || [];
 
@@ -51,11 +53,15 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
         onOpenAssessmentInfo={onOpenAssessmentInfo}
         onOpenReporting={onOpenReporting}
         onSwitchWorkspace={onSwitchWorkspace}
+        onOpenApiModal={onOpenApiModal}
+        onOpenPreferences={onOpenPreferences}
         reportingActive
         assessmentCollapsed={assessmentCollapsed}
         setAssessmentCollapsed={setAssessmentCollapsed}
         domainCollapsed={domainCollapsed}
         setDomainCollapsed={setDomainCollapsed}
+        administrationCollapsed={administrationCollapsed}
+        setAdministrationCollapsed={setAdministrationCollapsed}
         answers={answers}
         workspace={workspace}
         assessments={assessments}

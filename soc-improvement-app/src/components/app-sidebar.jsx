@@ -2,6 +2,7 @@ import * as React from "react"
 
 import { NavMain } from "@/components/nav-main"
 import { NavHome } from "@/components/nav-home"
+import { NavAdministration } from "@/components/nav-administration"
 import { TeamSwitcher } from "@/components/team-switcher"
 import {
   SidebarGroup,
@@ -27,12 +28,16 @@ export function AppSidebar({
   onOpenAssessmentInfo,
   onOpenReporting,
   onSwitchWorkspace,
+  onOpenApiModal,
+  onOpenPreferences,
   assessmentInfoActive = false,
   reportingActive = false,
   assessmentCollapsed,
   setAssessmentCollapsed,
   domainCollapsed,
   setDomainCollapsed,
+  administrationCollapsed,
+  setAdministrationCollapsed,
   answers,
   workspace,
   assessments = [],
@@ -119,6 +124,15 @@ export function AppSidebar({
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <SidebarSeparator className="mx-0 h-px" />
+        <NavAdministration
+          onOpenApiModal={onOpenApiModal}
+          onOpenPreferences={onOpenPreferences}
+          administrationCollapsed={administrationCollapsed}
+          setAdministrationCollapsed={setAdministrationCollapsed}
+        />
+      </SidebarFooter>
     </Sidebar>
   )
 }
