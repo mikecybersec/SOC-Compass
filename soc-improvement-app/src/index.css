@@ -677,6 +677,15 @@ h6 {
   gap: 0.35rem;
 }
 
+.command-sheet button {
+  text-align: left;
+  justify-content: flex-start;
+}
+
+.command-sheet button > * {
+  text-align: left;
+}
+
 .nav-link.active {
   background: hsl(var(--primary));
   color: hsl(var(--primary-foreground));
