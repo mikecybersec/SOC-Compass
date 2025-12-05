@@ -9,6 +9,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import AssessmentCopilot from '../components/AssessmentCopilot';
 import Dialog from '../components/ui/Dialog';
+import DisclaimerDialog, { hasAcceptedDisclaimer } from '../components/DisclaimerDialog';
 import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
 import { Input } from '../components/ui/Input';
 import {
@@ -224,6 +225,8 @@ const App = () => {
   const [modeModalOpen, setModeModalOpen] = useState(false);
   const [apiModalOpen, setApiModalOpen] = useState(false);
   const [preferencesModalOpen, setPreferencesModalOpen] = useState(false);
+  const [disclaimerOpen, setDisclaimerOpen] = useState(false);
+  const [pendingWorkspaceId, setPendingWorkspaceId] = useState(null);
   const scoresRef = useRef();
   const actionPlanRef = useRef();
   const [startMode, setStartMode] = useState(null);
@@ -303,9 +306,25 @@ const App = () => {
   };
 
   const handleLoadWorkspace = (workspaceId) => {
+    // Check if disclaimer has been accepted
+    if (!hasAcceptedDisclaimer()) {
+      setPendingWorkspaceId(workspaceId);
+      setDisclaimerOpen(true);
+      return;
+    }
+    
+    // If accepted, proceed normally
     loadWorkspace(workspaceId);
-    // Navigate to assessment info page when clicking into a workspace
     setView('assessmentInfo');
+  };
+
+  const handleDisclaimerAccept = () => {
+    setDisclaimerOpen(false);
+    if (pendingWorkspaceId) {
+      loadWorkspace(pendingWorkspaceId);
+      setView('assessmentInfo');
+      setPendingWorkspaceId(null);
+    }
   };
 
   const handleSwitchWorkspace = () => {
@@ -433,6 +452,10 @@ const App = () => {
         setLanguage={setLanguage}
         theme={theme}
         setTheme={setTheme}
+      />
+      <DisclaimerDialog
+        open={disclaimerOpen}
+        onAccept={handleDisclaimerAccept}
       />
     </>
   );

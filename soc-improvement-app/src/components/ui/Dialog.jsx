@@ -12,7 +12,7 @@ const Dialog = ({ open, onClose, title, description, children, footer }) => {
           <CardHeader>
             <CardTitle>{title}</CardTitle>
             {description && <CardDescription>{description}</CardDescription>}
-            {onClose && (
+            {onClose !== null && onClose && (
               <CardAction>
                 <Button variant="ghost" size="sm" onClick={onClose} aria-label="Close dialog">
                   Close
