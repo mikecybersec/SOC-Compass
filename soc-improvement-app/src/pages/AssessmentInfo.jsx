@@ -83,25 +83,27 @@ const AssessmentInfo = ({ onBack, onOpenReporting, metaRef, scoresRef, actionPla
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="flex-between" style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-            <div className="flex" style={{ gap: '0.5rem' }}>
-              <Button variant="outline" className="danger-button" onClick={() => setConfirmDeleteOpen(true)}>
-                Delete assessment
-              </Button>
-              <Button variant="secondary" onClick={() => setMetadataDialogOpen(true)}>
+        <div className="flex flex-1 flex-col gap-6 p-6 pt-0">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold tracking-tight">Assessment Overview</h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Review your assessment details, progress, and maturity scores
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setMetadataDialogOpen(true)}>
                 Edit Assessment
+              </Button>
+              <Button variant="destructive" onClick={() => setConfirmDeleteOpen(true)}>
+                Delete
               </Button>
             </div>
           </div>
 
           <AssessmentInfoSummary ref={summaryRef} metadata={metadata} frameworkName={frameworkName} lastSavedAt={lastSavedAt} />
 
-          <div className="section-divider" aria-hidden />
-
           <DomainProgressOverview frameworkId={frameworkId} answers={answers} />
-
-          <div className="section-divider" aria-hidden />
 
           <ScoreBoard ref={scoresRef} />
           <Toolbar

@@ -1,8 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, TrendingUp } from 'lucide-react';
 import { frameworks } from '../utils/frameworks';
 import { ButtonGroup } from '@/components/ui/button-group';
 import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card-shadcn';
 
 const chunkSize = 3;
 
@@ -57,56 +64,78 @@ const DomainProgressOverview = ({ frameworkId, answers }) => {
   const canNext = startIndex + chunkSize < domainProgress.length;
 
   return (
-    <div className="card domain-progress">
-      <div className="domain-progress-header">
-        <div>
-          <p className="badge">Assessment Progress</p>
-          <p className="muted-label">Track how many answers are complete across Business, Process, Service and more.</p>
-        </div>
-        {domainProgress.length > chunkSize && (
-          <ButtonGroup aria-label="Domain progress carousel controls">
-            <Button
-              variant="outline"
-              size="icon"
-              disabled={!canPrev}
-              onClick={() => setStartIndex((prev) => Math.max(0, prev - chunkSize))}
-              aria-label="Previous domains"
-            >
-              <ChevronLeft />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              disabled={!canNext}
-              onClick={() => setStartIndex((prev) => Math.min(prev + chunkSize, domainProgress.length - chunkSize))}
-              aria-label="Next domains"
-            >
-              <ChevronRight />
-            </Button>
-          </ButtonGroup>
-        )}
-      </div>
-
-      <div className="domain-progress-grid">
-        {visible.map((domain) => (
-          <div key={domain.domain} className="domain-progress-panel">
-            <div className="domain-panel-top">
-              <p className="muted-label">{domain.domain}</p>
-              <span className="domain-progress-count">
-                {domain.answered} of {domain.total} answered
-              </span>
-            </div>
-            <div className="domain-percentage-row">
-              <span className="domain-percentage">{domain.percentage}%</span>
-              <span className="domain-percentage-helper">Answer coverage</span>
-            </div>
-            <div className="progress-bar" role="progressbar" aria-valuenow={domain.percentage} aria-valuemin="0" aria-valuemax="100">
-              <div className="progress-fill" style={{ width: `${domain.percentage}%` }} />
-            </div>
+    <Card>
+      <CardHeader>
+        <div className="flex items-start justify-between">
+          <div>
+            <CardTitle className="text-xl flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+              Assessment Progress
+            </CardTitle>
+            <CardDescription className="mt-1.5">
+              Track completion across all assessment domains
+            </CardDescription>
           </div>
-        ))}
-      </div>
-    </div>
+          {domainProgress.length > chunkSize && (
+            <ButtonGroup aria-label="Domain progress carousel controls">
+              <Button
+                variant="outline"
+                size="icon"
+                disabled={!canPrev}
+                onClick={() => setStartIndex((prev) => Math.max(0, prev - chunkSize))}
+                aria-label="Previous domains"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                disabled={!canNext}
+                onClick={() => setStartIndex((prev) => Math.min(prev + chunkSize, domainProgress.length - chunkSize))}
+                aria-label="Next domains"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </ButtonGroup>
+          )}
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="grid gap-4 md:grid-cols-3">
+          {visible.map((domain) => (
+            <div
+              key={domain.domain}
+              className="rounded-lg border bg-card p-4 transition-all hover:shadow-md"
+            >
+              <div className="mb-3 flex items-center justify-between">
+                <h3 className="text-sm font-medium">{domain.domain}</h3>
+                <span className="text-xs text-muted-foreground">
+                  {domain.answered}/{domain.total}
+                </span>
+              </div>
+              <div className="mb-2">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl font-bold">{domain.percentage}%</span>
+                  <span className="text-xs text-muted-foreground">complete</span>
+                </div>
+              </div>
+              <div
+                className="h-2 w-full overflow-hidden rounded-full bg-muted"
+                role="progressbar"
+                aria-valuenow={domain.percentage}
+                aria-valuemin="0"
+                aria-valuemax="100"
+              >
+                <div
+                  className="h-full rounded-full bg-primary transition-all duration-500"
+                  style={{ width: `${domain.percentage}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
