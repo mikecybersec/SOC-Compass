@@ -127,7 +127,7 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
             </p>
           </div>
         ) : (
-          <div className="flex items-center justify-end">
+          <div className="flex items-center">
             <Button onClick={handleGenerateClick} disabled={loading} className="gap-2">
               {loading ? (
                 <>
