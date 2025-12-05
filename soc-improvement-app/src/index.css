@@ -1660,19 +1660,39 @@ label {
   border-color: hsl(var(--border));
 }
 
-/* Cursor-following orange glow effect */
+/* Cursor-following orange glow effect - Pixelated pattern */
 .glass-hero .cursor-glow {
   position: absolute;
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(255, 159, 64, 0.12) 0%, transparent 70%);
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 159, 64, 0.08) 0px,
+      rgba(255, 159, 64, 0.08) 6px,
+      transparent 6px,
+      transparent 12px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 159, 64, 0.08) 0px,
+      rgba(255, 159, 64, 0.08) 6px,
+      transparent 6px,
+      transparent 12px
+    );
+  background-size: 12px 12px;
+  background-position: center;
+  mask: radial-gradient(circle, black 0%, transparent 70%);
+  -webkit-mask: radial-gradient(circle, black 0%, transparent 70%);
   top: calc(var(--mouse-y, 50%) - 200px);
   left: calc(var(--mouse-x, 50%) - 200px);
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.3s ease;
   z-index: 0;
-  filter: blur(50px);
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
   will-change: top, left;
 }
 
@@ -1681,7 +1701,21 @@ label {
 }
 
 .dark .glass-hero .cursor-glow {
-  background: radial-gradient(circle, rgba(255, 159, 64, 0.18) 0%, transparent 70%);
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 159, 64, 0.12) 0px,
+      rgba(255, 159, 64, 0.12) 6px,
+      transparent 6px,
+      transparent 12px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 159, 64, 0.12) 0px,
+      rgba(255, 159, 64, 0.12) 6px,
+      transparent 6px,
+      transparent 12px
+    );
 }
 
 .glass-hero > * {
