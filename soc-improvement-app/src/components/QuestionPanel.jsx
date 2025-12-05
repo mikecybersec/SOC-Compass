@@ -38,43 +38,47 @@ const QuestionPanel = ({ aspect, nextAspect, onNextAspect }) => {
         <p style={{ color: 'var(--muted)' }}>Answer questions or leave notes to capture evidence.</p>
       </div>
 
-      <div style={{ display: 'grid', gap: '1rem' }}>
+      <div style={{ display: 'grid', gap: '0.75rem' }}>
         {aspect.questions.map((q) => (
-          <div key={q.code} className="card" style={{ borderStyle: 'dashed' }}>
-            <div className="flex-between" style={{ gap: '1rem' }}>
-              <div>
-                <p className="badge">{q.code}</p>
-                <h4 style={{ margin: '0.1rem 0' }}>{q.text}</h4>
+          <div key={q.code} className="question-card">
+            <div className="question-card-header">
+              <div className="question-card-content">
+                <span className="question-code">{q.code}</span>
+                <h4 className="question-text">{q.text}</h4>
                 {q.guidance && (
-                  <small style={{ color: 'var(--muted)' }}>
-                    Guidance: {Object.values(q.guidance).join(' / ')}
-                  </small>
+                  <p className="question-guidance">
+                    {Object.values(q.guidance).join(' • ')}
+                  </p>
                 )}
               </div>
-              {q.isAnswerable ? (
-                <Select
-                  value={answers[q.code] || ''}
-                  onValueChange={(value) => setAnswer(q.code, value)}
-                >
-                  <SelectTrigger style={{ maxWidth: '260px' }}>
-                    <SelectValue placeholder="Select maturity" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {q.answerOptions.map((opt) => (
-                      <SelectItem key={opt} value={opt}>
-                        {opt}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              ) : null}
+              {q.isAnswerable && (
+                <div className="question-card-select">
+                  <Select
+                    value={answers[q.code] || ''}
+                    onValueChange={(value) => setAnswer(q.code, value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select maturity" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {q.answerOptions.map((opt) => (
+                        <SelectItem key={opt} value={opt}>
+                          {opt}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
             </div>
-            <div style={{ marginTop: '0.5rem' }}>
-              <label>Notes</label>
+            <div className="question-card-notes">
+              <label className="question-notes-label">Notes</label>
               <textarea
-                placeholder={q.placeholder || 'Observations, evidence, actions...'}
+                className="question-notes-textarea"
+                placeholder={q.placeholder || 'Add observations, evidence, or actions...'}
                 value={notes[q.code] || ''}
                 onChange={(e) => setNote(q.code, e.target.value)}
+                rows={3}
               />
             </div>
           </div>
