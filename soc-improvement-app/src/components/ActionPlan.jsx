@@ -127,40 +127,20 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
             </p>
           </div>
         ) : (
-          <div className="space-y-2">
-            <label className="text-sm font-medium block">Grok API Key</label>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-1 w-full sm:max-w-sm">
-                <div className="relative">
-                  <Key className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="password"
-                    placeholder="Enter your Grok API key"
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                    className="pl-9"
-                  />
-                </div>
-                <p className="text-xs text-muted-foreground mt-1.5">
-                  Requests use Grok 4 Latest via https://api.x.ai/v1/
-                </p>
-              </div>
-              <div className="flex items-center">
-                <Button onClick={handleGenerateClick} disabled={loading} className="gap-2 w-full sm:w-auto">
-                  {loading ? (
-                    <>
-                      <Sparkles className="h-4 w-4 animate-pulse" />
-                      Generating…
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="h-4 w-4" />
-                      Generate Action Plan
-                    </>
-                  )}
-                </Button>
-              </div>
-            </div>
+          <div className="flex items-center justify-end">
+            <Button onClick={handleGenerateClick} disabled={loading} className="gap-2">
+              {loading ? (
+                <>
+                  <Sparkles className="h-4 w-4 animate-pulse" />
+                  Generating…
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-4 w-4" />
+                  Generate Action Plan
+                </>
+              )}
+            </Button>
           </div>
         )}
 
