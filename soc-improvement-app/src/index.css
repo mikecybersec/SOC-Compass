@@ -160,6 +160,11 @@ button.ui-btn-ghost {
 }
 
 @layer components {
+  /* Shadcn Card overrides for better integration */
+  .rounded-xl {
+    border-radius: 1rem;
+  }
+  
   /* shadcn-inspired primitives */
   .ui-btn {
   border: 1px solid transparent;

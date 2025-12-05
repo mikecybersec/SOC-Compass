@@ -9,7 +9,8 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from '../components/ui/Card';
+  CardAction,
+} from '../components/ui/card-shadcn';
 import { Input, Select } from '../components/ui/Input';
 import Label from '../components/ui/Label';
 import Badge from '../components/ui/Badge';
