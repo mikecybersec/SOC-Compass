@@ -24,7 +24,7 @@ import Badge from '../components/ui/Badge';
 import Dialog from '../components/ui/Dialog';
 import { objectiveOptions } from '../constants/objectives';
 import { formatBudgetAmount } from '../utils/format';
-import { FolderPlus, FileText, Sparkles, Bot } from 'lucide-react';
+import { FolderPlus, FileText, Sparkles, Bot, Minus, ChevronUp } from 'lucide-react';
 
 const disabledFrameworks = ['sim3', 'inform'];
 const getInitialFrameworkId = (frameworkId) =>
@@ -519,6 +519,7 @@ const Home = ({
   const currentFrameworkId = currentAssessment.frameworkId;
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
+  const [copilotExpanded, setCopilotExpanded] = useState(false);
   const heroRef = React.useRef(null);
 
   const handleMouseMove = (e) => {
@@ -625,10 +626,30 @@ const Home = ({
                   Record assessment findings, leverage Compass Copilot for expert guidance, and generate actionable roadmaps and action plans.
                 </p>
               </div>
-              <div className="copilot-preview">
+              {!copilotExpanded ? (
+                <button
+                  className="copilot-preview-minimized"
+                  onClick={() => setCopilotExpanded(true)}
+                  aria-label="Expand Compass Copilot"
+                >
+                  <Bot className="copilot-minimized-icon" />
+                  <span className="copilot-minimized-text">Compass Copilot</span>
+                  <ChevronUp className="copilot-minimized-chevron" />
+                </button>
+              ) : (
+                <div className="copilot-preview">
                   <div className="copilot-preview-header">
-                    <Bot className="copilot-preview-icon" />
-                    <span className="copilot-preview-title">Compass Copilot</span>
+                    <div className="copilot-preview-header-left">
+                      <Bot className="copilot-preview-icon" />
+                      <span className="copilot-preview-title">Compass Copilot</span>
+                    </div>
+                    <button
+                      className="copilot-preview-minimize-btn"
+                      onClick={() => setCopilotExpanded(false)}
+                      aria-label="Minimize Compass Copilot"
+                    >
+                      <Minus className="copilot-minimize-icon" />
+                    </button>
                   </div>
                   <div className="copilot-preview-messages">
                     <div className="copilot-message copilot-message-user">
@@ -646,6 +667,7 @@ const Home = ({
                     </div>
                   </div>
                 </div>
+              )}
             </div>
           </div>
         </div>

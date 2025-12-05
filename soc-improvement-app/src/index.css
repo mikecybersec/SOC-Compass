@@ -1782,7 +1782,8 @@ label {
     padding: 1.5rem;
   }
   
-  .copilot-preview {
+  .copilot-preview,
+  .copilot-preview-minimized {
     position: relative;
     top: 0;
     right: 0;
@@ -1904,7 +1905,64 @@ label {
   margin: 0;
 }
 
-/* Copilot Preview */
+/* Copilot Preview - Minimized State */
+.copilot-preview-minimized {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 200ms ease;
+  z-index: 10;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: hsl(var(--foreground));
+}
+
+.copilot-preview-minimized:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  border-color: hsl(var(--primary) / 0.3);
+}
+
+.dark .copilot-preview-minimized {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.dark .copilot-preview-minimized:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.copilot-minimized-icon {
+  width: 16px;
+  height: 16px;
+  color: hsl(var(--primary));
+}
+
+.copilot-minimized-text {
+  font-weight: 600;
+}
+
+.copilot-minimized-chevron {
+  width: 14px;
+  height: 14px;
+  color: hsl(var(--muted-foreground));
+  transition: transform 200ms ease;
+}
+
+.copilot-preview-minimized:hover .copilot-minimized-chevron {
+  transform: translateY(-2px);
+  color: hsl(var(--primary));
+}
+
+/* Copilot Preview - Expanded State */
 .copilot-preview {
   position: absolute;
   top: -12px;
@@ -1942,10 +2000,41 @@ label {
 .copilot-preview-header {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: space-between;
   padding: 0.75rem 1rem;
   background: hsl(var(--muted) / 0.3);
   border-bottom: 1px solid hsl(var(--border));
+}
+
+.copilot-preview-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.copilot-preview-minimize-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: hsl(var(--muted-foreground));
+  transition: all 150ms ease;
+}
+
+.copilot-preview-minimize-btn:hover {
+  background: hsl(var(--muted) / 0.5);
+  color: hsl(var(--foreground));
+}
+
+.copilot-minimize-icon {
+  width: 14px;
+  height: 14px;
 }
 
 .dark .copilot-preview-header {
