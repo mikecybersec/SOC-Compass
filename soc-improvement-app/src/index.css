@@ -1574,65 +1574,59 @@ label {
   box-shadow: 260px -40px 120px -160px rgba(59, 130, 246, 0.18);
 }
 
-.assessment-banner {
+.assessment-frameworks-section {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0 1.5rem;
+  padding: 0 1rem;
+}
+
+.assessment-frameworks-container {
+  width: 100%;
+  max-width: 1200px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.55rem;
-  margin: 0 0 0.5rem;
+  gap: 1rem;
 }
 
-.assessment-eyebrow {
+.assessment-frameworks-label {
   margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--muted);
-  font-weight: 700;
-  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  color: hsl(var(--muted-foreground));
 }
 
-.assessment-track {
-  position: relative;
-  width: min(780px, 100%);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(247, 249, 252, 0.94));
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 0.85rem 1.25rem;
-  box-shadow: 0 10px 34px -28px rgba(15, 23, 42, 0.35);
-  overflow: hidden;
-}
-
-.assessment-types {
+.assessment-frameworks-grid {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.assessment-framework-badge {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 1.25rem;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  color: var(--muted);
+  padding: 0.625rem 1.25rem;
+  font-size: 0.9375rem;
   font-weight: 600;
-  letter-spacing: 0.01em;
-  flex-wrap: wrap;
-  position: relative;
-  z-index: 1;
+  color: hsl(var(--foreground));
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 }
 
-.assessment-types li {
-  position: relative;
-  padding-right: 1rem;
-}
-
-.assessment-types li:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--border);
+.assessment-framework-badge:hover {
+  border-color: hsl(var(--primary) / 0.5);
+  box-shadow: 0 2px 4px 0 rgb(0 0 0 / 0.1);
+  transform: translateY(-1px);
 }
 
 .assessment-fade {
