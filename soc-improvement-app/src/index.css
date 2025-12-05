@@ -1741,7 +1741,7 @@ label {
   max-width: 1200px;
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 1.5rem;
 }
 
 .streamline-container .assessment-frameworks-section {
