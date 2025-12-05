@@ -2097,10 +2097,11 @@ label {
 }
 
 .copilot-message-user .copilot-message-content {
-  background: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
   border-radius: 12px 12px 4px 12px;
   max-width: 85%;
+  margin-left: auto;
 }
 
 .copilot-message-assistant {
@@ -2144,6 +2145,19 @@ label {
 
 .dark .copilot-message-content {
   background: hsl(var(--muted) / 0.2);
+}
+
+.copilot-preview-messages .copilot-message-user .copilot-message-content {
+  background: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+  border-radius: 12px 12px 4px 12px;
+  max-width: 85%;
+  margin-left: auto;
+}
+
+.dark .copilot-preview-messages .copilot-message-user .copilot-message-content {
+  background: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
 }
 
 .copilot-message-content-user {
