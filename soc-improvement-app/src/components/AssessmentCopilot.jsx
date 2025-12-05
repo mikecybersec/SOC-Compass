@@ -46,8 +46,10 @@ const AssessmentCopilot = () => {
   const model = useAssessmentStore((s) => s.model);
   const assessment = useAssessmentStore((s) => s.currentAssessment);
   const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
+  const setApiKey = useAssessmentStore((s) => s.setApiKey);
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState('');
+  const [apiKeyInput, setApiKeyInput] = useState('');
   const [messages, setMessages] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -97,12 +99,7 @@ const AssessmentCopilot = () => {
 
   const handleSend = async (event) => {
     event.preventDefault();
-    if (!input.trim() || loading) return;
-
-    if (!apiKey) {
-      setError('Add an API key in the top navigation to chat with Grok.');
-      return;
-    }
+    if (!input.trim() || loading || !apiKey) return;
 
     const userMessage = { role: 'user', content: input.trim() };
     setMessages((prev) => [...prev, userMessage]);
@@ -164,15 +161,45 @@ const AssessmentCopilot = () => {
         <div className="copilot-panel">
           <div className="copilot-header">
             <div>
-              <p className="copilot-title">Assessment copilot</p>
-              <p className="copilot-subtitle">Grok will reference your current assessment JSON.</p>
+              <p className="copilot-title">Compass Copilot</p>
             </div>
             <button className="copilot-close" onClick={() => setOpen(false)} aria-label="Close chat">
               ✕
             </button>
           </div>
 
-          <div className="copilot-body" ref={listRef}>
+          {!apiKey ? (
+            <div className="copilot-api-key-prompt">
+              <p className="copilot-api-key-label">Enter your Grok API key here</p>
+              <input
+                type="password"
+                className="copilot-api-key-input"
+                value={apiKeyInput}
+                onChange={(e) => setApiKeyInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && apiKeyInput.trim()) {
+                    setApiKey(apiKeyInput.trim());
+                    setApiKeyInput('');
+                  }
+                }}
+                placeholder="sk-..."
+                autoFocus
+              />
+              <button
+                className="copilot-api-key-submit"
+                onClick={() => {
+                  if (apiKeyInput.trim()) {
+                    setApiKey(apiKeyInput.trim());
+                    setApiKeyInput('');
+                  }
+                }}
+                disabled={!apiKeyInput.trim()}
+              >
+                Save API Key
+              </button>
+            </div>
+          ) : (
+            <div className="copilot-body" ref={listRef}>
             {messages.map((message, index) => (
               <div
                 key={`${message.role}-${index}`}
@@ -211,18 +238,21 @@ const AssessmentCopilot = () => {
             )}
             {loading && <p className="copilot-status">Compass Copilot is thinking…</p>}
           </div>
+          )}
 
-          <form className="copilot-input" onSubmit={handleSend}>
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder={apiKey ? 'Ask about this assessment…' : 'Add an API key to chat with Grok'}
-            />
-            <button type="submit" disabled={!input.trim() || loading}>
-              Send
-            </button>
-          </form>
+          {apiKey && (
+            <form className="copilot-input" onSubmit={handleSend}>
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask about this assessment…"
+              />
+              <button type="submit" disabled={!input.trim() || loading}>
+                Send
+              </button>
+            </form>
+          )}
 
           {error && <div className="copilot-error">{error}</div>}
         </div>
