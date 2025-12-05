@@ -46,13 +46,47 @@ const buildPrompt = ({ frameworkName, answers, scores, metadata }) => {
     ? `${metadata.budgetCurrency || '$'}${metadata.budgetAmount}`
     : 'n/a';
 
-  return `You are an SOC consultant. Build a concise, prioritized action plan.\nFramework: ${frameworkName}\nOrganization: ${
-    metadata.name || 'Unknown'
-  } (${metadata.size || 'size n/a'}) in sector ${metadata.sector || 'n/a'} with budget ${budget}. SOC age: ${
-    metadata.socAge || 'n/a'
-  }.\nObjectives: ${
-    (metadata.objectives || []).join(', ') || 'Not specified'
-  }.\nScores: ${JSON.stringify(scores)}\nAnswers: ${JSON.stringify(answers)}\nRespond with 5-8 actionable steps, each including rationale and expected impact.`;
+  return `You are an experienced SOC consultant and capability maturity model (CMM) expert. Analyze the provided assessment data and generate a comprehensive action plan.
+
+**Context:**
+- Framework: ${frameworkName}
+- Organization: ${metadata.name || 'Unknown'} (${metadata.size || 'size n/a'}) in sector ${metadata.sector || 'n/a'}
+- Budget: ${budget}
+- SOC Age: ${metadata.socAge || 'n/a'}
+- Objectives: ${(metadata.objectives || []).join(', ') || 'Not specified'}
+- Assessment Scores: ${JSON.stringify(scores)}
+- Detailed Answers: ${JSON.stringify(answers)}
+
+**Required Structure:**
+
+1. **BLUF (Bottom Line Up Front)** - Start with a concise 2-3 paragraph executive summary that provides:
+   - Overall CMM maturity assessment (current state)
+   - Key strengths and critical gaps
+   - Primary maturity level estimate (e.g., Level 1-5 or Initial/Managed/Defined/etc.)
+   - Most significant risks or opportunities
+
+2. **Low-Hanging Fruit** - Provide 3-5 quick-win recommendations that are:
+   - Relatively inexpensive or resource-unintensive
+   - Can be implemented quickly (within weeks to a few months)
+   - Have cross-benefits across multiple domains/aspects
+   - Provide immediate value or risk reduction
+   - For each item, briefly explain the action, why it's low-hanging fruit, and expected cross-benefits
+
+3. **Comprehensive Action Plan** - Provide 5-8 detailed, prioritized action steps that:
+   - Address the most critical maturity gaps
+   - Are tailored to the organization's size, sector, budget, and SOC age
+   - Consider the stated objectives (but maintain flexibility)
+   - Include rationale, expected impact, and resource considerations
+   - Are sequenced logically (foundational items first, building to more advanced capabilities)
+
+**Guidance:**
+- Be practical and realistic given the organization's constraints
+- Focus on security leadership, SOC management, and team management where relevant
+- Ensure recommendations are attainable based on resources, budget, and sector context
+- Consider the objectives but don't overly fixate on them - maintain flexibility
+- Use clear, professional language suitable for SOC leaders and executives
+
+Format your response using clear section headers (## BLUF, ## Low-Hanging Fruit, ## Action Plan) and markdown formatting for readability.`;
 };
 
 export const generateActionPlan = async ({
@@ -87,7 +121,7 @@ export const generateActionPlan = async ({
       body: JSON.stringify({
         model,
         messages: [
-          { role: 'system', content: 'You are a seasoned SOC transformation advisor.' },
+          { role: 'system', content: 'You are a seasoned SOC transformation advisor and capability maturity model expert with deep expertise in security operations centers, SOC management, and leading SOC teams. You provide practical, actionable advice tailored to each organization\'s unique context, constraints, and objectives.' },
           { role: 'user', content: prompt },
         ],
       }),
