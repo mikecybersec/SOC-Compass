@@ -17,7 +17,7 @@ import {
   SidebarHeader,
   SidebarSeparator,
 } from "@/components/ui/sidebar"
-import { Info, FileText, ArrowLeftRight } from "lucide-react"
+import { Info, FileText } from "lucide-react"
 
 export function AppSidebar({
   aspects,
@@ -51,6 +51,7 @@ export function AppSidebar({
           assessments={assessments}
           currentAssessmentId={currentAssessmentId}
           onSwitchAssessment={onSwitchAssessment}
+          onSwitchWorkspace={onSwitchWorkspace}
         />
       </SidebarHeader>
       <SidebarContent>
@@ -58,28 +59,6 @@ export function AppSidebar({
         <NavHome onNavigateHome={onNavigateHome} />
         
         <SidebarSeparator className="mx-0 h-px" />
-        
-        {/* Switch Workspace */}
-        {onSwitchWorkspace && (
-          <>
-            <SidebarGroup>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton
-                      onClick={onSwitchWorkspace}
-                      tooltip="Switch Workspace"
-                    >
-                      <ArrowLeftRight />
-                      <span>Switch Workspace</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-            <SidebarSeparator className="mx-0 h-px" />
-          </>
-        )}
         
         {/* Assessment Info */}
         {showAssessmentInfo && (

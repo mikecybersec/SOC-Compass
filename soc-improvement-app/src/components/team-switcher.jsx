@@ -13,13 +13,16 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectSeparator,
 } from "@/components/ui/select"
+import { ArrowLeftRight } from "lucide-react"
 
 export function TeamSwitcher({
   workspace,
   assessments = [],
   currentAssessmentId,
   onSwitchAssessment,
+  onSwitchWorkspace,
 }) {
   const { isMobile } = useSidebar()
   const [open, setOpen] = React.useState(false)
@@ -65,6 +68,13 @@ export function TeamSwitcher({
         <Select
           value={currentAssessmentId || ''}
           onValueChange={(value) => {
+            if (value === 'switch-workspace') {
+              // Don't set the value, just switch workspace
+              if (onSwitchWorkspace) {
+                onSwitchWorkspace()
+              }
+              return
+            }
             if (onSwitchAssessment) {
               onSwitchAssessment(value)
             }
@@ -94,6 +104,17 @@ export function TeamSwitcher({
                     {assessment.metadata?.assessmentTitle || assessment.metadata?.name || 'Untitled Assessment'}
                   </SelectItem>
                 ))
+            )}
+            {onSwitchWorkspace && uniqueAssessments.length > 0 && (
+              <>
+                <SelectSeparator />
+                <SelectItem value="switch-workspace" className="text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <ArrowLeftRight className="size-4" />
+                    <span>Switch Workspace</span>
+                  </div>
+                </SelectItem>
+              </>
             )}
           </SelectContent>
         </Select>
