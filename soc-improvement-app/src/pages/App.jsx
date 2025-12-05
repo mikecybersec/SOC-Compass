@@ -158,16 +158,18 @@ const App = () => {
     <>
       <AutoSave />
       <div className="app-container">
-        <Navbar
-          onGoHome={() => setView('home')}
-          onNewAssessment={() => {
-            setView('home');
-            setModeModalOpen(true);
-          }}
-          onExistingAssessments={() => setView('home')}
-          onOpenApiModal={() => setApiModalOpen(true)}
-          onOpenPreferences={() => setPreferencesModalOpen(true)}
-        />
+        {view === 'home' && (
+          <Navbar
+            onGoHome={() => setView('home')}
+            onNewAssessment={() => {
+              setView('home');
+              setModeModalOpen(true);
+            }}
+            onExistingAssessments={() => setView('home')}
+            onOpenApiModal={() => setApiModalOpen(true)}
+            onOpenPreferences={() => setPreferencesModalOpen(true)}
+          />
+        )}
         <main className="app-main">
           {view === 'home' && (
             <Home
