@@ -104,17 +104,9 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
   return (
     <Card ref={ref} id="action-plan" className="action-plan-card">
       <CardHeader>
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1">
-            <CardTitle className="text-xl flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              AI Action Plan
-            </CardTitle>
-            <CardDescription className="mt-1.5">
-              Generate tailored recommendations using Grok AI. Your API key is never stored on the server.
-            </CardDescription>
-          </div>
-        </div>
+        <CardDescription>
+          Generate tailored recommendations using Grok AI.
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* API Key Section */}
