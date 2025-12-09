@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { frameworks } from '../utils/frameworks';
 import {
   Card,
@@ -7,9 +7,10 @@ import {
   CardDescription,
   CardContent,
 } from '../components/ui/card-shadcn';
-import { Pencil, Check, X, Trash2, AlertTriangle, FolderOpen, FileText, Clock, ChevronRight } from 'lucide-react';
+import { Pencil, Check, X, Trash2, AlertTriangle, FolderOpen, FileText, Clock, ChevronRight, Database, AlertCircle } from 'lucide-react';
 import { Input } from '../components/ui/Input';
 import { ButtonShadcn as Button } from '../components/ui/button-shadcn';
+import { getLocalStorageSize, formatBytes } from '../utils/storage';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -38,6 +39,36 @@ const Workspaces = ({
   const [editValue, setEditValue] = useState('');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [workspaceToDelete, setWorkspaceToDelete] = useState(null);
+  const [storageInfo, setStorageInfo] = useState(() => getLocalStorageSize());
+
+  // Update storage info periodically and when workspaces change
+  useEffect(() => {
+    const updateStorage = () => {
+      setStorageInfo(getLocalStorageSize());
+    };
+
+    // Update immediately
+    updateStorage();
+
+    // Update periodically (every 5 seconds) to catch external changes
+    const interval = setInterval(updateStorage, 5000);
+
+    // Also update when storage events fire (from other tabs)
+    window.addEventListener('storage', updateStorage);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('storage', updateStorage);
+    };
+  }, [workspaces]);
+
+  // Calculate storage warning level
+  const storageWarning = useMemo(() => {
+    const { percentage, totalSize, limit } = storageInfo;
+    if (percentage >= 90) return { level: 'critical', color: 'hsl(var(--destructive))' };
+    if (percentage >= 75) return { level: 'warning', color: 'hsl(var(--primary))' };
+    return { level: 'normal', color: 'hsl(var(--muted-foreground))' };
+  }, [storageInfo]);
 
   const handleStartEdit = (e, workspace) => {
     e.stopPropagation();
@@ -106,19 +137,108 @@ const Workspaces = ({
     <TooltipProvider>
       <div className="app-main">
       <div className="container" style={{ maxWidth: '1600px', margin: '0 auto', padding: '1.5rem 1rem' }}>
-        <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight mb-1">Workspaces</h1>
-            <p className="text-sm text-muted-foreground">
-              Manage your assessment workspaces and organize your SOC evaluations
-            </p>
+        <div style={{ marginBottom: '1.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight mb-1">Workspaces</h1>
+              <p className="text-sm text-muted-foreground">
+                Manage your assessment workspaces and organize your SOC evaluations
+              </p>
+            </div>
+            {onNewWorkspace && (
+              <Button variant="primary" onClick={onNewWorkspace} className="gap-2">
+                <FolderOpen className="size-4" />
+                New Workspace
+              </Button>
+            )}
           </div>
-          {onNewWorkspace && (
-            <Button variant="primary" onClick={onNewWorkspace} className="gap-2">
-              <FolderOpen className="size-4" />
-              New Workspace
-            </Button>
-          )}
+
+          {/* Storage Indicator */}
+          <Card style={{ 
+            padding: '0.75rem 1rem', 
+            background: storageWarning.level === 'critical' 
+              ? 'hsl(var(--destructive) / 0.1)' 
+              : storageWarning.level === 'warning'
+              ? 'hsl(var(--primary) / 0.05)'
+              : 'hsl(var(--muted) / 0.3)',
+            border: `1px solid ${storageWarning.level === 'critical' 
+              ? 'hsl(var(--destructive) / 0.3)' 
+              : storageWarning.level === 'warning'
+              ? 'hsl(var(--primary) / 0.2)'
+              : 'hsl(var(--border))'}`,
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <Database className="size-4" style={{ color: storageWarning.color, flexShrink: 0 }} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                  <span className="text-sm font-medium" style={{ color: 'hsl(var(--foreground))' }}>
+                    Local Storage
+                  </span>
+                  {storageWarning.level !== 'normal' && (
+                    <AlertCircle className="size-3.5" style={{ color: storageWarning.color, flexShrink: 0 }} />
+                  )}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <span className="text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                    {formatBytes(storageInfo.totalSize)} / {formatBytes(storageInfo.limit)} used
+                  </span>
+                  {storageInfo.appSize > 0 && (
+                    <>
+                      <span className="text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                        •
+                      </span>
+                      <span className="text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                        App data: {formatBytes(storageInfo.appSize)}
+                      </span>
+                    </>
+                  )}
+                </div>
+              </div>
+              <div style={{ minWidth: '120px', flexShrink: 0 }}>
+                <div style={{ 
+                  width: '100%', 
+                  height: '8px', 
+                  background: 'hsl(var(--muted))', 
+                  borderRadius: '4px',
+                  overflow: 'hidden'
+                }}>
+                  <div style={{
+                    width: `${storageInfo.percentage}%`,
+                    height: '100%',
+                    background: storageWarning.level === 'critical' 
+                      ? 'hsl(var(--destructive))' 
+                      : storageWarning.level === 'warning'
+                      ? 'hsl(var(--primary))'
+                      : 'hsl(var(--primary) / 0.6)',
+                    transition: 'width 0.3s ease, background 0.3s ease',
+                  }} />
+                </div>
+                <span className="text-xs" style={{ 
+                  color: storageWarning.color, 
+                  fontWeight: storageWarning.level !== 'normal' ? '600' : '500',
+                  marginTop: '0.25rem',
+                  display: 'block',
+                  textAlign: 'right'
+                }}>
+                  {storageInfo.percentage.toFixed(1)}%
+                </span>
+              </div>
+            </div>
+            {storageWarning.level === 'critical' && (
+              <div style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid hsl(var(--destructive) / 0.2)' }}>
+                <p className="text-xs" style={{ color: 'hsl(var(--destructive))' }}>
+                  Warning: Storage is nearly full. Consider deleting unused workspaces or assessments to free up space.
+                </p>
+              </div>
+            )}
+            {storageWarning.level === 'warning' && (
+              <div style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid hsl(var(--primary) / 0.1)' }}>
+                <p className="text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                  Storage usage is getting high. Monitor your workspace and assessment count.
+                </p>
+              </div>
+            )}
+          </Card>
         </div>
 
         {workspaces.length === 0 ? (
