@@ -3871,6 +3871,50 @@ label {
   font-style: italic;
 }
 
+/* Knight Rider Style Progress Bar */
+.knight-rider-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 30%;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(249, 115, 22, 0.8) 20%, 
+    rgba(236, 72, 153, 0.9) 50%, 
+    rgba(168, 85, 247, 0.8) 80%, 
+    transparent 100%);
+  border-radius: 999px;
+  animation: knight-rider 2s ease-in-out infinite;
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.5), 
+              0 0 20px rgba(236, 72, 153, 0.3);
+}
+
+@keyframes knight-rider {
+  0% {
+    left: -30%;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+.dark .knight-rider-bar {
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(249, 115, 22, 0.9) 20%, 
+    rgba(236, 72, 153, 1) 50%, 
+    rgba(168, 85, 247, 0.9) 80%, 
+    transparent 100%);
+  box-shadow: 0 0 15px rgba(249, 115, 22, 0.6), 
+              0 0 25px rgba(236, 72, 153, 0.4);
+}
+
 /* Prose styles for better markdown rendering */
 .prose {
   max-width: 65ch;

@@ -23,7 +23,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Sparkles, AlertTriangle } from 'lucide-react';
+import { Sparkles, AlertTriangle, AlertCircle, Compass } from 'lucide-react';
 
 const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
   const [loading, setLoading] = useState(false);
@@ -237,58 +237,87 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
 
         {/* Action Plan Content */}
         <div className="action-plan-content">
-          {actionPlan.raw ? (
-            parsedPlan.hasSections ? (
-              <Tabs defaultValue="intro" className="w-full">
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="intro">Summary</TabsTrigger>
-                  <TabsTrigger value="quick-wins">Quick Wins</TabsTrigger>
-                  <TabsTrigger value="action-plan">Action Plan</TabsTrigger>
-                </TabsList>
-                <TabsContent value="intro" className="mt-4">
-                  <div
-                    className="markdown-body prose prose-sm max-w-none dark:prose-invert"
-                    style={{ lineHeight: 1.7 }}
-                    dangerouslySetInnerHTML={{ __html: renderMarkdown(parsedPlan.bluf || 'No summary available.') }}
-                  />
-                </TabsContent>
-                <TabsContent value="quick-wins" className="mt-4">
-                  <div
-                    className="markdown-body prose prose-sm max-w-none dark:prose-invert"
-                    style={{ lineHeight: 1.7 }}
-                    dangerouslySetInnerHTML={{ __html: renderMarkdown(parsedPlan.lowHangingFruit || 'No quick wins identified.') }}
-                  />
-                </TabsContent>
-                <TabsContent value="action-plan" className="mt-4">
-                  <div
-                    className="markdown-body prose prose-sm max-w-none dark:prose-invert"
-                    style={{ lineHeight: 1.7 }}
-                    dangerouslySetInnerHTML={{ __html: renderMarkdown(parsedPlan.actionPlan || actionPlan.raw) }}
-                  />
-                </TabsContent>
-              </Tabs>
-            ) : (
-              <div
-                className="markdown-body prose prose-sm max-w-none dark:prose-invert"
-                style={{ lineHeight: 1.7 }}
-                dangerouslySetInnerHTML={{ __html: renderMarkdown(actionPlan.raw) }}
-              />
-            )
-          ) : actionPlan.steps?.length ? (
-            <ol className="space-y-4 list-decimal list-inside">
-              {actionPlan.steps.map((step, idx) => (
-                <li
-                  key={idx}
+          {loading ? (
+            <div className="bg-muted/30 dark:bg-muted/20 rounded-lg border p-6">
+              <div className="bg-card dark:bg-card rounded-lg border shadow-sm p-6 max-w-2xl mx-auto">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 mt-0.5">
+                    <Compass className="h-6 w-6 text-primary" />
+                  </div>
+                  <div className="flex-1 space-y-3">
+                    <div>
+                      <h3 className="text-lg font-semibold text-foreground">Compass is analysing</h3>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Your report will be available shortly...
+                      </p>
+                    </div>
+                    {/* Knight Rider Style Progress Bar */}
+                    <div className="relative w-full h-2 bg-muted rounded-full overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 opacity-20 dark:opacity-30"></div>
+                      <div className="knight-rider-bar"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : actionPlan.raw ? (
+            <div className="bg-muted/30 dark:bg-muted/20 rounded-lg border p-6">
+              {parsedPlan.hasSections ? (
+                <Tabs defaultValue="intro" className="w-full">
+                  <TabsList className="grid w-full grid-cols-3">
+                    <TabsTrigger value="intro">Summary</TabsTrigger>
+                    <TabsTrigger value="quick-wins">Quick Wins</TabsTrigger>
+                    <TabsTrigger value="action-plan">Action Plan</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="intro" className="mt-4">
+                    <div
+                      className="markdown-body prose prose-sm max-w-none dark:prose-invert"
+                      style={{ lineHeight: 1.7 }}
+                      dangerouslySetInnerHTML={{ __html: renderMarkdown(parsedPlan.bluf || 'No summary available.') }}
+                    />
+                  </TabsContent>
+                  <TabsContent value="quick-wins" className="mt-4">
+                    <div
+                      className="markdown-body prose prose-sm max-w-none dark:prose-invert"
+                      style={{ lineHeight: 1.7 }}
+                      dangerouslySetInnerHTML={{ __html: renderMarkdown(parsedPlan.lowHangingFruit || 'No quick wins identified.') }}
+                    />
+                  </TabsContent>
+                  <TabsContent value="action-plan" className="mt-4">
+                    <div
+                      className="markdown-body prose prose-sm max-w-none dark:prose-invert"
+                      style={{ lineHeight: 1.7 }}
+                      dangerouslySetInnerHTML={{ __html: renderMarkdown(parsedPlan.actionPlan || actionPlan.raw) }}
+                    />
+                  </TabsContent>
+                </Tabs>
+              ) : (
+                <div
                   className="markdown-body prose prose-sm max-w-none dark:prose-invert"
-                  dangerouslySetInnerHTML={{ __html: renderMarkdown(step) }}
+                  style={{ lineHeight: 1.7 }}
+                  dangerouslySetInnerHTML={{ __html: renderMarkdown(actionPlan.raw) }}
                 />
-              ))}
-            </ol>
+              )}
+            </div>
+          ) : actionPlan.steps?.length ? (
+            <div className="bg-muted/30 dark:bg-muted/20 rounded-lg border p-6">
+              <ol className="space-y-4 list-decimal list-inside">
+                {actionPlan.steps.map((step, idx) => (
+                  <li
+                    key={idx}
+                    className="markdown-body prose prose-sm max-w-none dark:prose-invert"
+                    dangerouslySetInnerHTML={{ __html: renderMarkdown(step) }}
+                  />
+                ))}
+              </ol>
+            </div>
           ) : (
-            <div className="text-center py-12 text-muted-foreground">
-              <Sparkles className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p className="text-base font-medium">No action plan generated yet</p>
-              <p className="text-sm mt-1">Enter your API key and click "Generate Action Plan" to get started</p>
+            <div className="bg-muted/30 dark:bg-muted/20 rounded-lg border p-6">
+              <div className="text-center py-12 text-muted-foreground">
+                <Sparkles className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                <p className="text-base font-medium">No action plan generated yet</p>
+                <p className="text-sm mt-1">Enter your API key and click "Generate Action Plan" to get started</p>
+              </div>
             </div>
           )}
         </div>
