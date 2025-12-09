@@ -3656,6 +3656,12 @@ label {
   justify-content: center;
   gap: 0.75rem;
   z-index: 999;
+  padding: 2rem;
+}
+
+.wizard-loading-content {
+  width: 100%;
+  max-width: 600px;
 }
 
 .wizard-loading-spinner {
@@ -3677,6 +3683,21 @@ label {
   margin: 0;
   color: var(--text-muted);
   text-align: center;
+}
+
+/* Tips Carousel */
+.tips-carousel {
+  display: flex;
+  flex-direction: column;
+}
+
+.tips-carousel p {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
 }
 
 /* Wizard API Key Step Styles */

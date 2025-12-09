@@ -25,7 +25,7 @@ import Dialog from '../components/ui/Dialog';
 import { objectiveOptions } from '../constants/objectives';
 import { formatBudgetAmount } from '../utils/format';
 import { validateApiKey } from '../utils/ai';
-import { FolderPlus, FileText, Sparkles, Bot, Minus, ChevronUp, Key, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import { FolderPlus, FileText, Sparkles, Bot, Minus, ChevronUp, Key, CheckCircle2, AlertCircle, Loader2, Compass } from 'lucide-react';
 
 const disabledFrameworks = ['sim3', 'inform'];
 const getInitialFrameworkId = (frameworkId) =>
@@ -113,6 +113,26 @@ export const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, 
   const [isTestingKey, setIsTestingKey] = useState(false);
   const [isKeyValid, setIsKeyValid] = useState(null);
   const [apiKeyError, setApiKeyError] = useState('');
+  const [currentTipIndex, setCurrentTipIndex] = useState(0);
+  
+  const tips = [
+    "Compass speeds up SOC Assessments by ~50%",
+    "Perform assessments across popular frameworks",
+    "Use AI to generate insights during the reporting lifecycle"
+  ];
+
+  useEffect(() => {
+    if (!showLoading) {
+      setCurrentTipIndex(0);
+      return;
+    }
+    
+    const interval = setInterval(() => {
+      setCurrentTipIndex((prev) => (prev + 1) % tips.length);
+    }, 3000); // Change tip every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [showLoading, tips.length]);
   const selectedFramework = frameworks[getInitialFrameworkId(form.frameworkId)];
   const setApiKey = useAssessmentStore((s) => s.setApiKey);
   const setApiKeyValidated = useAssessmentStore((s) => s.setApiKeyValidated);
@@ -571,10 +591,48 @@ export const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, 
   if (showLoading) {
     return (
       <div className="wizard-loading-screen">
-        <div className="wizard-loading-spinner" aria-hidden="true" />
-        <div className="wizard-loading-copy">
-          <p className="wizard-loading-title">We're getting your SOC assessment workspace ready.</p>
-          <p className="wizard-loading-subtitle">Prepare for a mature SOC!</p>
+        <div className="wizard-loading-content">
+          <div className="bg-card dark:bg-card rounded-lg border shadow-sm p-6 max-w-2xl mx-auto">
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 mt-0.5">
+                <Compass className="h-6 w-6 text-primary" />
+              </div>
+              <div className="flex-1 space-y-3">
+                <div>
+                  <h3 className="text-lg font-semibold text-foreground">Your workspace is preparing...</h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    We're getting your SOC assessment workspace ready.
+                  </p>
+                </div>
+                {/* Knight Rider Style Progress Bar */}
+                <div className="relative w-full h-2 bg-muted rounded-full overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 opacity-20 dark:opacity-30"></div>
+                  <div className="knight-rider-bar"></div>
+                </div>
+                {/* Tips Carousel */}
+                <div className="mt-6 pt-4 border-t border-border">
+                  <div className="relative h-8 overflow-hidden">
+                    <div 
+                      className="tips-carousel"
+                      style={{ 
+                        transform: `translateY(-${currentTipIndex * 100}%)`,
+                        transition: 'transform 0.5s ease-in-out'
+                      }}
+                    >
+                      {tips.map((tip, index) => (
+                        <p 
+                          key={index}
+                          className="text-sm text-muted-foreground text-center"
+                        >
+                          {tip}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
