@@ -257,6 +257,42 @@ button.ui-btn-ghost {
 
 .dark button.ui-btn-ghost {
   color: hsl(var(--foreground)) !important;
+  background: transparent !important;
+}
+
+/* Ensure shadcn buttons are visible in dark mode */
+.dark button[class*="ghost"],
+.dark .ghost {
+  color: hsl(var(--foreground)) !important;
+  background: transparent !important;
+}
+
+.dark button[class*="outline"],
+.dark .outline {
+  color: hsl(var(--foreground)) !important;
+  border-color: hsl(var(--border)) !important;
+  background: transparent !important;
+}
+
+.dark button[class*="secondary"],
+.dark .secondary {
+  color: hsl(var(--secondary-foreground)) !important;
+  background: hsl(var(--secondary)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+/* Force button text visibility in dark mode dialogs */
+.dark .ui-dialog button {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .ui-dialog button[class*="ghost"] {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .ui-dialog button[class*="primary"] {
+  color: hsl(var(--primary-foreground)) !important;
+  background: hsl(var(--primary)) !important;
 }
 
 .dark button.ui-btn-secondary {
