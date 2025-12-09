@@ -1,27 +1,8 @@
-import React, { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card-shadcn';
-import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
-import { ThumbsUp, ThumbsDown, Sparkles } from 'lucide-react';
+import React from 'react';
+import { Sparkles } from 'lucide-react';
 
-const CompassRecommends = ({ recommendation, onDismiss, onRate }) => {
-  const [rating, setRating] = useState(null);
-  const [isDismissed, setIsDismissed] = useState(false);
-
-  if (!recommendation || isDismissed) return null;
-
-  const handleRate = (value) => {
-    setRating(value);
-    if (onRate) {
-      onRate(value);
-    }
-  };
-
-  const handleDismiss = () => {
-    setIsDismissed(true);
-    if (onDismiss) {
-      onDismiss();
-    }
-  };
+const CompassRecommends = ({ recommendation }) => {
+  if (!recommendation) return null;
 
   // Display plain text without highlights
   const displayText = recommendation.text || '';
@@ -63,61 +44,10 @@ const CompassRecommends = ({ recommendation, onDismiss, onRate }) => {
         </div>
 
         {/* Recommendation Text */}
-        <div className="mb-4">
+        <div>
           <p className="text-sm leading-relaxed" style={{ color: 'hsl(var(--foreground))' }}>
             {displayText}
           </p>
-        </div>
-
-        {/* Footer with Rating and Actions */}
-        <div
-          className="flex items-center justify-between gap-4 pt-3"
-          style={{ borderTop: '1px solid hsl(var(--border))' }}
-        >
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-muted-foreground">Rate recommendation</span>
-            <div className="flex items-center gap-1">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => handleRate('up')}
-                className={rating === 'up' ? 'bg-green-100 dark:bg-green-900/30' : ''}
-                style={{ padding: '0.25rem', minWidth: 'auto', height: 'auto' }}
-                aria-label="Thumbs up"
-              >
-                <ThumbsUp className="size-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => handleRate('down')}
-                className={rating === 'down' ? 'bg-red-100 dark:bg-red-900/30' : ''}
-                style={{ padding: '0.25rem', minWidth: 'auto', height: 'auto' }}
-                aria-label="Thumbs down"
-              >
-                <ThumbsDown className="size-4" />
-              </Button>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleDismiss}
-              className="text-xs"
-            >
-              Deny all
-            </Button>
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={handleDismiss}
-              className="text-xs"
-            >
-              Approve all
-            </Button>
-          </div>
         </div>
       </div>
     </div>
