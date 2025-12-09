@@ -90,7 +90,7 @@ export const ModeSelectionModal = ({ open, onClose, onSelectSolo }) => {
   );
 };
 
-const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, currentFrameworkId, startMode }) => {
+export const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, currentFrameworkId, startMode }) => {
   const buildInitialForm = () => ({
     workspaceName: '',
     assessmentTitle: '',
@@ -853,14 +853,6 @@ const Home = ({
       </section>
 
 
-      <StartAssessmentModal
-        open={startModalOpen}
-        onClose={onCloseStartModal}
-        onStart={onStartAssessment}
-        initialMetadata={upcomingMetadata}
-        currentFrameworkId={currentFrameworkId}
-        startMode={startMode}
-      />
       <Dialog
         open={feedbackModalOpen}
         onClose={() => setFeedbackModalOpen(false)}

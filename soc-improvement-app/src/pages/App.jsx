@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Home from './Home';
-import { ModeSelectionModal } from './Home';
+import { ModeSelectionModal, StartAssessmentModal } from './Home';
 import Assessment from './Assessment';
 import AssessmentInfo from './AssessmentInfo';
 import Reporting from './Reporting';
@@ -247,7 +247,8 @@ const App = () => {
   const setApiBase = useAssessmentStore((s) => s.setApiBase);
   const model = useAssessmentStore((s) => s.model);
   const setModel = useAssessmentStore((s) => s.setModel);
-  const language = useAssessmentStore((s) => s.upcomingMetadata.language);
+  const upcomingMetadata = useAssessmentStore((s) => s.upcomingMetadata);
+  const language = upcomingMetadata.language;
   const setLanguage = useAssessmentStore((s) => s.setLanguage);
   const setTheme = useAssessmentStore((s) => s.setTheme);
 
@@ -449,6 +450,17 @@ const App = () => {
           setStartModalOpen(true);
           setModeModalOpen(false);
         }}
+      />
+      <StartAssessmentModal
+        open={startModalOpen}
+        onClose={() => {
+          setStartModalOpen(false);
+          setStartMode(null);
+        }}
+        onStart={handleStart}
+        initialMetadata={upcomingMetadata}
+        currentFrameworkId={currentAssessment?.frameworkId || 'soc_cmm'}
+        startMode={startMode}
       />
       <ApiKeyModal
         open={apiModalOpen}
