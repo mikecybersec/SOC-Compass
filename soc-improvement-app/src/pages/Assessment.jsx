@@ -32,6 +32,8 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateH
 
   const frameworkId = currentAssessment.frameworkId;
   const hydratedRef = useRef(false);
+  const lastSavedAtRef = useRef(null);
+  const toastTimeoutRef = useRef(null);
 
   const currentFramework = frameworks[frameworkId];
   const aspectKeys = useMemo(
@@ -61,10 +63,31 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateH
   useEffect(() => {
     if (!hydratedRef.current) {
       hydratedRef.current = true;
+      lastSavedAtRef.current = lastSavedAt;
       return;
     }
 
-    toastSuccess('Changes saved to assessment', 2000);
+    // Only show toast if lastSavedAt actually changed to a different value
+    if (lastSavedAt && lastSavedAt !== lastSavedAtRef.current) {
+      // Clear any pending toast timeout
+      if (toastTimeoutRef.current) {
+        clearTimeout(toastTimeoutRef.current);
+      }
+
+      // Check if there's already a "Changes saved" toast visible
+      const container = document.getElementById('toast-container');
+      const existingToast = container && Array.from(container.children).find(
+        (toast) => toast.textContent === 'Changes saved to assessment'
+      );
+
+      // Only show new toast if one isn't already visible
+      if (!existingToast) {
+        toastSuccess('Changes saved to assessment', 2000);
+      }
+
+      // Update the ref to the new value
+      lastSavedAtRef.current = lastSavedAt;
+    }
   }, [lastSavedAt]);
 
   const activeAspect = activeAspectKey ? aspectLookup[activeAspectKey] : null;

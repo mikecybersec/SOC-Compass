@@ -1,5 +1,6 @@
 // Simple toast notification utility
 let toastContainer = null;
+const activeToasts = new Map(); // Track active toasts by message
 
 const createToastContainer = () => {
   if (toastContainer) return toastContainer;
@@ -11,7 +12,12 @@ const createToastContainer = () => {
   return toastContainer;
 };
 
-export const toast = (message, type = 'default', duration = 3000) => {
+export const toast = (message, type = 'default', duration = 3000, preventDuplicate = true) => {
+  // Check if a toast with the same message is already active
+  if (preventDuplicate && activeToasts.has(message)) {
+    return; // Don't show duplicate toast
+  }
+
   const container = createToastContainer();
   const toast = document.createElement('div');
   
@@ -48,6 +54,11 @@ export const toast = (message, type = 'default', duration = 3000) => {
   toast.textContent = message;
   container.appendChild(toast);
 
+  // Track this toast
+  if (preventDuplicate) {
+    activeToasts.set(message, toast);
+  }
+
   // Trigger animation
   requestAnimationFrame(() => {
     toast.style.opacity = '1';
@@ -61,6 +72,10 @@ export const toast = (message, type = 'default', duration = 3000) => {
     setTimeout(() => {
       if (toast.parentNode) {
         toast.parentNode.removeChild(toast);
+      }
+      // Remove from active toasts
+      if (preventDuplicate) {
+        activeToasts.delete(message);
       }
     }, 200);
   }, duration);
