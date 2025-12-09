@@ -4413,3 +4413,16 @@ label {
   border-color: hsl(var(--border));
   opacity: 0.9;
 }
+
+/* Action Plan Tabs Styling */
+.action-plan-tab-trigger {
+  position: relative;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.action-plan-tab-trigger[data-state=active] {
+  color: hsl(var(--foreground));
+  font-weight: 600;
+  border-bottom-color: #F97316;
+}
