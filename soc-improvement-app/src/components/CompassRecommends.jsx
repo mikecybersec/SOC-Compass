@@ -23,53 +23,8 @@ const CompassRecommends = ({ recommendation, onDismiss, onRate }) => {
     }
   };
 
-  // Parse highlights from the recommendation text
-  const highlightTerms = recommendation.highlights || [];
-  let displayText = recommendation.text || '';
-
-  // Create highlighted version of text - simple word-by-word approach
-  const renderHighlightedText = () => {
-    if (highlightTerms.length === 0) {
-      return <span>{displayText}</span>;
-    }
-
-    // Create a simple map of terms to highlight types
-    const termMap = new Map();
-    highlightTerms.forEach((h) => {
-      termMap.set(h.term.toLowerCase(), h.type || 'concept');
-    });
-
-    // Split text into words and check each
-    const words = displayText.split(/(\s+)/);
-    return (
-      <>
-        {words.map((word, idx) => {
-          const cleanWord = word.trim().toLowerCase();
-          const highlightType = termMap.get(cleanWord);
-          
-          if (highlightType) {
-            const colorClass =
-              highlightType === 'role'
-                ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-300 dark:border-green-700'
-                : highlightType === 'policy'
-                ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-300 dark:border-blue-700'
-                : 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 border-purple-300 dark:border-purple-700';
-
-            return (
-              <span
-                key={idx}
-                className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-xs font-medium border ${colorClass}`}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-current opacity-70" />
-                {word}
-              </span>
-            );
-          }
-          return <span key={idx}>{word}</span>;
-        })}
-      </>
-    );
-  };
+  // Display plain text without highlights
+  const displayText = recommendation.text || '';
 
   return (
     <div
@@ -110,7 +65,7 @@ const CompassRecommends = ({ recommendation, onDismiss, onRate }) => {
         {/* Recommendation Text */}
         <div className="mb-4">
           <p className="text-sm leading-relaxed" style={{ color: 'hsl(var(--foreground))' }}>
-            {renderHighlightedText()}
+            {displayText}
           </p>
         </div>
 
