@@ -379,6 +379,10 @@ const App = () => {
               workspaces={workspaces}
               onLoadWorkspace={handleLoadWorkspace}
               onUpdateWorkspace={updateWorkspace}
+              onNewWorkspace={() => {
+                setView('home');
+                setModeModalOpen(true);
+              }}
             />
           )}
           {view === 'assessment' && (

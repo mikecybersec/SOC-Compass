@@ -32,20 +32,9 @@ const Navbar = ({
         <Button variant="ghost" size="sm" onClick={onGoHome}>
           Home
         </Button>
-        <div className="command-menu">
-          <Button variant="ghost" size="sm" className="command-menu-trigger">
-            Assessments
-            <ChevronDown className="command-menu-icon" />
-          </Button>
-          <div className="command-sheet">
-            <Button variant="ghost" size="sm" onClick={onNewAssessment}>
-              New Assessment
-            </Button>
-            <Button variant="ghost" size="sm" onClick={onExistingAssessments}>
-              Workspaces
-            </Button>
-          </div>
-        </div>
+        <Button variant="ghost" size="sm" onClick={onExistingAssessments}>
+          Platform
+        </Button>
         <div className="command-menu">
           <Button variant="ghost" size="sm" className="command-menu-trigger">
             Administration

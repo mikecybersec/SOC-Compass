@@ -15,6 +15,7 @@ const Workspaces = ({
   workspaces = [],
   onLoadWorkspace,
   onUpdateWorkspace,
+  onNewWorkspace,
 }) => {
   const [editingId, setEditingId] = useState(null);
   const [editValue, setEditValue] = useState('');
@@ -55,11 +56,18 @@ const Workspaces = ({
   return (
     <div className="app-main">
       <div className="container" style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem 1.5rem' }}>
-        <div style={{ marginBottom: '2rem' }}>
-          <h1 className="text-2xl font-semibold tracking-tight">Workspaces</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Select a workspace to view and manage assessments. Each workspace can contain multiple assessments.
-          </p>
+        <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">Workspaces</h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Select a workspace to view and manage assessments. Each workspace can contain multiple assessments.
+            </p>
+          </div>
+          {onNewWorkspace && (
+            <Button variant="primary" onClick={onNewWorkspace}>
+              New Workspace
+            </Button>
+          )}
         </div>
 
         {workspaces.length === 0 ? (
