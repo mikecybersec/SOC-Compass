@@ -104,9 +104,6 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
   return (
     <Card ref={ref} id="action-plan" className="action-plan-card">
       <CardHeader>
-        <CardDescription>
-          Generate tailored recommendations using Grok AI.
-        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* API Key Section */}
