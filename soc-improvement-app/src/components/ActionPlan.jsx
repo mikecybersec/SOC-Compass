@@ -93,10 +93,6 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
     handleGenerate();
   };
 
-  const formattedBudget = metadata.budgetAmount
-    ? `${metadata.budgetCurrency || '$'}${metadata.budgetAmount}`
-    : 'Not set';
-
   // Parse the action plan into sections
   const parsedPlan = useMemo(() => {
     if (!actionPlan.raw) {
@@ -164,34 +160,6 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
             </p>
           </div>
         )}
-
-        {/* Context Information */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 p-4 bg-muted/30 rounded-lg border">
-          <div>
-            <p className="text-sm font-medium mb-1">Objectives</p>
-            <p className="text-sm text-muted-foreground">
-              {(metadata.objectives || []).length > 0
-                ? (metadata.objectives || []).join(', ')
-                : 'No objectives set'}
-            </p>
-          </div>
-          <div>
-            <p className="text-sm font-medium mb-1">Available Budget</p>
-            <p className="text-sm text-muted-foreground">{formattedBudget}</p>
-          </div>
-          <div>
-            <p className="text-sm font-medium mb-1">Sector</p>
-            <p className="text-sm text-muted-foreground">{metadata.sector || 'Not specified'}</p>
-          </div>
-          <div>
-            <p className="text-sm font-medium mb-1">Organization Size</p>
-            <p className="text-sm text-muted-foreground">{metadata.size || 'Not specified'}</p>
-          </div>
-          <div>
-            <p className="text-sm font-medium mb-1">SOC Age</p>
-            <p className="text-sm text-muted-foreground">{metadata.socAge || 'Not specified'}</p>
-          </div>
-        </div>
 
         {/* Error Message */}
         {actionPlan.error && (
