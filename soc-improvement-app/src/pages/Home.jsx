@@ -612,17 +612,21 @@ export const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, 
                 {/* Tips Carousel */}
                 <div className="mt-6 pt-4 border-t border-border">
                   <div className="relative h-8 overflow-hidden">
-                    <div 
-                      className="tips-carousel"
-                      style={{ 
-                        transform: `translateY(-${currentTipIndex * 100}%)`,
-                        transition: 'transform 0.5s ease-in-out'
-                      }}
-                    >
+                    <div className="tips-carousel">
                       {tips.map((tip, index) => (
                         <p 
                           key={index}
-                          className="text-sm text-muted-foreground text-center"
+                          className="text-sm text-muted-foreground text-center tips-carousel-item"
+                          style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            transform: `translateY(${(index - currentTipIndex) * 100}%)`,
+                            transition: 'transform 0.5s ease-in-out, opacity 0.5s ease-in-out',
+                            opacity: Math.abs(index - currentTipIndex) <= 1 ? 1 : 0,
+                            pointerEvents: index === currentTipIndex ? 'auto' : 'none',
+                          }}
                         >
                           {tip}
                         </p>
