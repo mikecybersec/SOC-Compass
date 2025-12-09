@@ -79,7 +79,7 @@ const CompassRecommends = ({ recommendation, onDismiss, onRate }) => {
         borderRadius: '12px',
         marginBottom: '1rem',
         padding: '1px',
-        background: 'linear-gradient(135deg, #EC4899, #A855F7)',
+        background: 'linear-gradient(135deg, #F97316, #A855F7)',
       }}
     >
       <div
@@ -96,9 +96,9 @@ const CompassRecommends = ({ recommendation, onDismiss, onRate }) => {
             <div
               className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
               style={{
-                background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(168, 85, 247, 0.1))',
-                border: '1px solid rgba(236, 72, 153, 0.3)',
-                color: '#EC4899',
+                background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(168, 85, 247, 0.1))',
+                border: '1px solid rgba(249, 115, 22, 0.3)',
+                color: '#F97316',
               }}
             >
               <Sparkles className="size-3" />
