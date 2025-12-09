@@ -27,11 +27,13 @@ const hasAssessmentContent = (assessment) => {
   const answers = assessment.answers || {};
   const notes = assessment.notes || {};
   const actionPlan = assessment.actionPlan || {};
+  const aspectRecommendations = assessment.aspectRecommendations || {};
   const metadata = assessment.metadata || {};
 
   const hasAnswers = Object.keys(answers).length > 0;
   const hasNotes = Object.keys(notes).length > 0;
   const hasActionPlan = Boolean(actionPlan.raw?.trim()) || (actionPlan.steps || []).length > 0;
+  const hasRecommendations = Object.keys(aspectRecommendations).length > 0;
 
   const defaults = defaultMetadata();
   const trackedKeys = [
@@ -50,7 +52,7 @@ const hasAssessmentContent = (assessment) => {
     (metadata.objectives || []).join('|') !== (defaults.objectives || []).join('|') ||
     trackedKeys.some((key) => (metadata[key] ?? defaults[key]) !== defaults[key]);
 
-  return hasAnswers || hasNotes || hasActionPlan || metadataChanged;
+  return hasAnswers || hasNotes || hasActionPlan || hasRecommendations || metadataChanged;
 };
 
 const normalizeMetadata = (metadata = {}) => ({

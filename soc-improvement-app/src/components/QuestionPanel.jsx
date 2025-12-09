@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
+import { Sparkles, Loader2 } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -9,7 +10,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-const QuestionPanel = ({ aspect, nextAspect, onNextAspect }) => {
+const QuestionPanel = ({ aspect, nextAspect, onNextAspect, onGenerateRecommendations, isLoadingRecommendations, hasRecommendation }) => {
   const answers = useAssessmentStore((s) => s.currentAssessment.answers);
   const notes = useAssessmentStore((s) => s.currentAssessment.notes);
   const setAnswer = useAssessmentStore((s) => s.setAnswer);
@@ -30,6 +31,35 @@ const QuestionPanel = ({ aspect, nextAspect, onNextAspect }) => {
 
   return (
     <div className="card">
+      {/* Compass Recommendations Button */}
+      {aspect && (
+        <div className="mb-4 pb-4" style={{ borderBottom: '1px solid hsl(var(--border))' }}>
+          <button
+            className="compass-recommendations-button"
+            onClick={onGenerateRecommendations}
+            disabled={isLoadingRecommendations}
+            type="button"
+          >
+            <div className="compass-recommendations-button-content">
+              {isLoadingRecommendations ? (
+                <Loader2 className="compass-recommendations-button-icon" style={{ animation: 'spin 1s linear infinite' }} />
+              ) : (
+                <Sparkles className="compass-recommendations-button-icon" />
+              )}
+              <span className="compass-recommendations-button-text">
+                {isLoadingRecommendations 
+                  ? 'Loading recommendations...' 
+                  : hasRecommendation 
+                    ? 'Regenerate Recommendations' 
+                    : 'Compass Recommendations'}
+              </span>
+            </div>
+            {!hasRecommendation && !isLoadingRecommendations && (
+              <div className="compass-recommendations-button-pulse" />
+            )}
+          </button>
+        </div>
+      )}
       <div style={{ display: 'grid', gap: '0.75rem' }}>
         {aspect.questions.map((q) => (
           <div key={q.code} className="question-card">

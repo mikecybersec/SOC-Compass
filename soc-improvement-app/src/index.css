@@ -4274,3 +4274,110 @@ label {
   background: hsl(var(--card));
   border-radius: 11px;
 }
+
+/* Compass Recommendations Button Styling */
+.compass-recommendations-button {
+  position: relative;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  border-radius: 12px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  font-weight: 600;
+  overflow: hidden;
+  height: 44px;
+  min-width: 44px;
+  width: auto;
+  transition: all 0.2s ease;
+}
+
+.compass-recommendations-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  border-color: hsl(var(--primary) / 0.5);
+}
+
+.dark .compass-recommendations-button {
+  background: hsl(var(--card));
+  border-color: hsl(var(--border));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.dark .compass-recommendations-button:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  border-color: hsl(var(--primary) / 0.6);
+}
+
+.compass-recommendations-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.compass-recommendations-button-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  position: relative;
+  z-index: 2;
+  transition: gap 0.2s ease, padding 0.2s ease;
+}
+
+.compass-recommendations-button-icon {
+  width: 18px;
+  height: 18px;
+  color: hsl(var(--primary));
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.compass-recommendations-button:hover .compass-recommendations-button-icon {
+  transform: scale(1.1);
+}
+
+.compass-recommendations-button-text {
+  font-size: 0.875rem;
+  white-space: nowrap;
+  color: hsl(var(--foreground));
+  transition: opacity 0.2s ease;
+}
+
+.compass-recommendations-button-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: hsl(var(--primary) / 0.1);
+  opacity: 0;
+  animation: compass-recommendations-pulse 2s ease-in-out infinite;
+  z-index: 1;
+}
+
+.dark .compass-recommendations-button-pulse {
+  background: hsl(var(--primary) / 0.15);
+}
+
+@keyframes compass-recommendations-pulse {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

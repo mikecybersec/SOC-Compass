@@ -45,6 +45,7 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateH
   const metadata = useAssessmentStore((s) => s.currentAssessment.metadata);
   const aspectRecommendations = useAssessmentStore((s) => s.currentAssessment.aspectRecommendations || {});
   const setAspectRecommendation = useAssessmentStore((s) => s.setAspectRecommendation);
+  const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false);
 
   const currentFramework = frameworks[frameworkId];
   const aspectKeys = useMemo(
@@ -115,44 +116,41 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateH
     return answered === answerableQuestions.length;
   }, [activeAspect, activeAspectKey, answers]);
 
-  // Detect aspect completion and generate recommendations
-  useEffect(() => {
-    if (!activeAspectKey || !activeAspect || !isAspectCompleted) return;
-    if (generatingRef.current) return;
-    
-    // Check if we've already generated recommendations for this aspect
-    if (aspectRecommendations[activeAspectKey]) return;
-    if (completedAspectsRef.current.has(activeAspectKey)) return;
+  // Manual recommendation generation handler
+  const handleGenerateRecommendations = async () => {
+    if (!activeAspectKey || !activeAspect || !apiKey) {
+      return;
+    }
 
-    // Check if API key is available
-    if (!apiKey) return;
+    // Allow regenerating even if recommendations exist
+    // User can click again to get fresh recommendations
 
-    // Mark as generating and completed
+    setIsLoadingRecommendations(true);
     generatingRef.current = true;
-    completedAspectsRef.current.add(activeAspectKey);
 
-    // Generate recommendations
-    generateAspectRecommendations({
-      apiKey,
-      apiBase,
-      model,
-      aspectKey: activeAspectKey,
-      aspect: activeAspect,
-      answers,
-      metadata,
-    })
-      .then((recommendation) => {
-        if (recommendation && recommendation.text) {
-          setAspectRecommendation(activeAspectKey, recommendation);
-        }
-      })
-      .catch((error) => {
-        console.error('Failed to generate aspect recommendations:', error);
-      })
-      .finally(() => {
-        generatingRef.current = false;
+    try {
+      const recommendation = await generateAspectRecommendations({
+        apiKey,
+        apiBase,
+        model,
+        aspectKey: activeAspectKey,
+        aspect: activeAspect,
+        answers,
+        metadata,
       });
-  }, [activeAspectKey, activeAspect, isAspectCompleted, answers, metadata, apiKey, apiBase, model, aspectRecommendations, setAspectRecommendation]);
+
+      if (recommendation && recommendation.text) {
+        setAspectRecommendation(activeAspectKey, recommendation);
+        // Trigger auto-save to persist recommendations
+        useAssessmentStore.getState().autoSaveAssessment();
+      }
+    } catch (error) {
+      console.error('Failed to generate aspect recommendations:', error);
+    } finally {
+      setIsLoadingRecommendations(false);
+      generatingRef.current = false;
+    }
+  };
 
   // Reset completed aspects when framework changes
   useEffect(() => {
@@ -214,7 +212,7 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateH
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          {currentRecommendation && isAspectCompleted && (
+          {currentRecommendation && (
             <CompassRecommends
               recommendation={currentRecommendation}
               onDismiss={() => {
@@ -229,6 +227,9 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateH
             aspect={activeAspect}
             nextAspect={nextAspect}
             onNextAspect={() => nextAspectKey && setActiveAspectKey(nextAspectKey)}
+            onGenerateRecommendations={handleGenerateRecommendations}
+            isLoadingRecommendations={isLoadingRecommendations}
+            hasRecommendation={!!currentRecommendation}
           />
         </div>
       </SidebarInset>
