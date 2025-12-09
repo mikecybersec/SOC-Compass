@@ -118,7 +118,16 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateH
 
   // Manual recommendation generation handler
   const handleGenerateRecommendations = async () => {
-    if (!activeAspectKey || !activeAspect || !apiKey) {
+    console.log('handleGenerateRecommendations called', { activeAspectKey, activeAspect: !!activeAspect, apiKey: !!apiKey });
+    
+    if (!activeAspectKey || !activeAspect) {
+      console.warn('Missing aspect information');
+      return;
+    }
+
+    if (!apiKey) {
+      console.warn('No API key configured');
+      toastSuccess('Please configure an API key to generate recommendations', 3000);
       return;
     }
 
@@ -129,6 +138,7 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateH
     generatingRef.current = true;
 
     try {
+      console.log('Generating recommendations...');
       const recommendation = await generateAspectRecommendations({
         apiKey,
         apiBase,
@@ -139,13 +149,20 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateH
         metadata,
       });
 
+      console.log('Recommendation received:', recommendation);
+
       if (recommendation && recommendation.text) {
         setAspectRecommendation(activeAspectKey, recommendation);
         // Trigger auto-save to persist recommendations
         useAssessmentStore.getState().autoSaveAssessment();
+        toastSuccess('Recommendations generated successfully', 2000);
+      } else {
+        console.warn('No recommendation text received');
+        toastSuccess('No recommendations could be generated', 2000);
       }
     } catch (error) {
       console.error('Failed to generate aspect recommendations:', error);
+      toastSuccess(`Failed to generate recommendations: ${error.message}`, 3000);
     } finally {
       setIsLoadingRecommendations(false);
       generatingRef.current = false;

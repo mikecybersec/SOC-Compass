@@ -36,7 +36,16 @@ const QuestionPanel = ({ aspect, nextAspect, onNextAspect, onGenerateRecommendat
         <div className="mb-4 pb-4" style={{ borderBottom: '1px solid hsl(var(--border))' }}>
           <button
             className="compass-recommendations-button"
-            onClick={onGenerateRecommendations}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('Compass Recommendations button clicked');
+              if (onGenerateRecommendations) {
+                onGenerateRecommendations();
+              } else {
+                console.error('onGenerateRecommendations handler is not defined');
+              }
+            }}
             disabled={isLoadingRecommendations}
             type="button"
           >

@@ -4294,6 +4294,7 @@ label {
   min-width: 44px;
   width: auto;
   transition: all 0.2s ease;
+  pointer-events: auto;
 }
 
 .compass-recommendations-button:hover {
@@ -4356,6 +4357,7 @@ label {
   opacity: 0;
   animation: compass-recommendations-pulse 2s ease-in-out infinite;
   z-index: 1;
+  pointer-events: none;
 }
 
 .dark .compass-recommendations-button-pulse {
