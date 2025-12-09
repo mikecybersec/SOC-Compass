@@ -4427,25 +4427,24 @@ label {
 
 .action-plan-tab-trigger {
   position: relative;
-  border-bottom: 3px solid transparent;
-  margin-bottom: -1px;
   transition: all 0.2s ease;
   background: transparent !important;
   border-radius: 0;
   box-shadow: none !important;
+  border: none !important;
 }
 
 .action-plan-tab-trigger[data-state="active"] {
-  color: hsl(var(--foreground)) !important;
+  color: white !important;
   font-weight: 600 !important;
-  border-bottom-color: #F97316 !important;
-  background: transparent !important;
+  background: linear-gradient(135deg, #F97316, #E67E22) !important;
 }
 
 .action-plan-tab-trigger[data-state="inactive"],
 .action-plan-tab-trigger:not([data-state="active"]) {
   color: hsl(var(--muted-foreground)) !important;
   font-weight: 500;
+  background: transparent !important;
 }
 
 .action-plan-tab-trigger:hover:not([data-state="active"]) {
