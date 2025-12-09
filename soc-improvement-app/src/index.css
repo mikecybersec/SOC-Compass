@@ -135,6 +135,16 @@
   color-scheme: dark;
 }
 
+/* Fix select dropdown border in dark mode */
+.dark [data-radix-select-content] {
+  border-color: hsl(var(--border)) !important;
+}
+
+/* Ensure popover/select content uses proper border in dark mode */
+.dark .bg-popover {
+  border-color: hsl(var(--border)) !important;
+}
+
 /* Dark mode specific overrides for better contrast and elevation */
 .dark .question-card {
   background: hsl(var(--card));
