@@ -145,21 +145,40 @@
   border-color: hsl(var(--border)) !important;
 }
 
-/* Apply purple-to-orange gradient to primary buttons */
+/* Apply purple-to-orange gradient to primary buttons and backgrounds */
+.bg-primary,
 button.bg-primary,
-.bg-primary:is(button),
-button[class*="bg-primary"] {
+[class*="bg-primary"]:not([class*="text-primary"]):not([class*="border-primary"]) {
   background: linear-gradient(135deg, #A855F7, #EC4899, #F97316) !important;
   background-image: linear-gradient(135deg, #A855F7, #EC4899, #F97316) !important;
 }
 
+.bg-primary:hover,
 button.bg-primary:hover,
-.bg-primary:is(button):hover,
-button[class*="bg-primary"]:hover {
+[class*="bg-primary"]:not([class*="text-primary"]):not([class*="border-primary"]):hover {
   background: linear-gradient(135deg, #9333EA, #DB2777, #EA580C) !important;
   background-image: linear-gradient(135deg, #9333EA, #DB2777, #EA580C) !important;
   opacity: 0.95;
 }
+
+/* Apply gradient to text-primary icons and text */
+.text-primary,
+[class*="text-primary"]:not([class*="bg-primary"]) {
+  background: linear-gradient(135deg, #A855F7, #EC4899, #F97316);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* For SVG icons, we need to style them directly */
+.text-primary svg,
+[class*="text-primary"] svg {
+  fill: #F97316; /* Use orange as fallback, or we can use a gradient via CSS variable */
+}
+
+/* Alternative: Use CSS filter or create gradient effect for SVGs */
+/* Since SVG gradients are complex, let's use a purple-to-orange via currentColor with a wrapper */
 
 /* Dark mode specific overrides for better contrast and elevation */
 .dark .question-card {
