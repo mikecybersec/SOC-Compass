@@ -19,7 +19,6 @@ import { generateAspectRecommendations } from '../utils/ai';
 
 const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateHome, onSwitchWorkspace, onOpenApiModal, onOpenPreferences, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
-  const lastSavedAt = useAssessmentStore((s) => s.lastSavedAt);
   const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
   const setActiveAspectKey = useAssessmentStore((s) => s.setActiveAspectKey);
   const answers = useAssessmentStore((s) => s.currentAssessment.answers);
@@ -33,9 +32,6 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateH
   const setAdministrationCollapsed = useAssessmentStore((s) => s.setSidebarAdministrationCollapsed);
 
   const frameworkId = currentAssessment.frameworkId;
-  const hydratedRef = useRef(false);
-  const lastSavedAtRef = useRef(null);
-  const toastTimeoutRef = useRef(null);
   const completedAspectsRef = useRef(new Set());
   const generatingRef = useRef(false);
 
@@ -72,35 +68,6 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateH
     }
   }, [activeAspectKey, aspectLookup, currentFramework, setActiveAspectKey]);
 
-  useEffect(() => {
-    if (!hydratedRef.current) {
-      hydratedRef.current = true;
-      lastSavedAtRef.current = lastSavedAt;
-      return;
-    }
-
-    // Only show toast if lastSavedAt actually changed to a different value
-    if (lastSavedAt && lastSavedAt !== lastSavedAtRef.current) {
-      // Clear any pending toast timeout
-      if (toastTimeoutRef.current) {
-        clearTimeout(toastTimeoutRef.current);
-      }
-
-      // Check if there's already a "Changes saved" toast visible
-      const container = document.getElementById('toast-container');
-      const existingToast = container && Array.from(container.children).find(
-        (toast) => toast.textContent === 'Changes saved to assessment'
-      );
-
-      // Only show new toast if one isn't already visible
-      if (!existingToast) {
-        toastSuccess('Changes saved to assessment', 2000);
-      }
-
-      // Update the ref to the new value
-      lastSavedAtRef.current = lastSavedAt;
-    }
-  }, [lastSavedAt]);
 
   const activeAspect = activeAspectKey ? aspectLookup[activeAspectKey] : null;
   const currentIndex = aspectKeys.indexOf(activeAspectKey);
