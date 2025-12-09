@@ -7,7 +7,7 @@ import {
   CardDescription,
   CardContent,
 } from '../components/ui/card-shadcn';
-import { Pencil, Check, X, Trash2, AlertTriangle } from 'lucide-react';
+import { Pencil, Check, X, Trash2, AlertTriangle, FolderOpen, FileText, Clock, ChevronRight } from 'lucide-react';
 import { Input } from '../components/ui/Input';
 import { ButtonShadcn as Button } from '../components/ui/button-shadcn';
 import {
@@ -80,47 +80,81 @@ const Workspaces = ({
     setDeleteDialogOpen(false);
     setWorkspaceToDelete(null);
   };
+  const formatRelativeTime = (dateString) => {
+    if (!dateString) return 'Never';
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return date.toLocaleDateString();
+  };
+
   return (
     <div className="app-main">
-      <div className="container" style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem 1.5rem' }}>
-        <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <div className="container" style={{ maxWidth: '1600px', margin: '0 auto', padding: '1.5rem 1rem' }}>
+        <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Workspaces</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Select a workspace to view and manage assessments. Each workspace can contain multiple assessments.
+            <h1 className="text-3xl font-bold tracking-tight mb-1">Workspaces</h1>
+            <p className="text-sm text-muted-foreground">
+              Manage your assessment workspaces and organize your SOC evaluations
             </p>
           </div>
           {onNewWorkspace && (
-            <Button variant="primary" onClick={onNewWorkspace}>
+            <Button variant="primary" onClick={onNewWorkspace} className="gap-2">
+              <FolderOpen className="size-4" />
               New Workspace
             </Button>
           )}
         </div>
 
         {workspaces.length === 0 ? (
-          <Card>
-            <CardContent className="py-12">
+          <Card className="workspace-empty-state">
+            <CardContent className="py-16">
               <div style={{ textAlign: 'center' }}>
-                <p style={{ color: 'hsl(var(--muted-foreground))', marginBottom: '1rem' }}>
-                  No workspaces yet. Create a new workspace to get started.
+                <FolderOpen className="size-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                <p className="text-base font-medium mb-1" style={{ color: 'hsl(var(--foreground))' }}>
+                  No workspaces yet
                 </p>
+                <p style={{ color: 'hsl(var(--muted-foreground))', marginBottom: '1.5rem' }}>
+                  Create your first workspace to start organizing assessments
+                </p>
+                {onNewWorkspace && (
+                  <Button variant="primary" onClick={onNewWorkspace}>
+                    Create Workspace
+                  </Button>
+                )}
               </div>
             </CardContent>
           </Card>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
             {workspaces.map((workspace) => {
               const assessments = workspace.assessments || [];
               const assessmentCount = assessments.length;
-              const lastUpdated = workspace.updatedAt 
-                ? new Date(workspace.updatedAt).toLocaleString()
-                : 'Never';
+              const lastAssessment = assessments.length > 0
+                ? assessments.sort((a, b) => new Date(b.savedAt || 0) - new Date(a.savedAt || 0))[0]
+                : null;
+              const lastUpdated = formatRelativeTime(workspace.updatedAt);
 
               return (
                 <Card
                   key={workspace.id}
-                  className="assessment-row-link workspace-card"
-                  style={{ cursor: 'pointer', transition: 'all 0.2s ease', position: 'relative' }}
+                  className="workspace-card"
+                  style={{ 
+                    cursor: 'pointer', 
+                    transition: 'all 0.2s ease', 
+                    position: 'relative',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column'
+                  }}
                   onClick={() => {
                     if (editingId !== workspace.id) {
                       onLoadWorkspace(workspace.id);
@@ -136,119 +170,179 @@ const Workspaces = ({
                   role="button"
                   aria-label={`Open workspace ${workspace.name}`}
                   onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.1)';
                     const editBtn = e.currentTarget.querySelector('.workspace-edit-button');
                     const deleteBtn = e.currentTarget.querySelector('.workspace-delete-button');
-                    if (editBtn && editingId !== workspace.id) {
-                      editBtn.style.opacity = '1';
-                    }
-                    if (deleteBtn && editingId !== workspace.id) {
-                      deleteBtn.style.opacity = '1';
-                    }
+                    const arrow = e.currentTarget.querySelector('.workspace-arrow');
+                    if (editBtn && editingId !== workspace.id) editBtn.style.opacity = '1';
+                    if (deleteBtn && editingId !== workspace.id) deleteBtn.style.opacity = '1';
+                    if (arrow) arrow.style.opacity = '1';
                   }}
                   onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '';
                     const editBtn = e.currentTarget.querySelector('.workspace-edit-button');
                     const deleteBtn = e.currentTarget.querySelector('.workspace-delete-button');
-                    if (editBtn && editingId !== workspace.id) {
-                      editBtn.style.opacity = '0';
-                    }
-                    if (deleteBtn && editingId !== workspace.id) {
-                      deleteBtn.style.opacity = '0';
-                    }
+                    const arrow = e.currentTarget.querySelector('.workspace-arrow');
+                    if (editBtn && editingId !== workspace.id) editBtn.style.opacity = '0';
+                    if (deleteBtn && editingId !== workspace.id) deleteBtn.style.opacity = '0';
+                    if (arrow) arrow.style.opacity = '0';
                   }}
                 >
-                  <CardHeader>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'space-between' }}>
-                      {editingId === workspace.id ? (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1 }}>
-                          <Input
-                            value={editValue}
-                            onChange={(e) => setEditValue(e.target.value.slice(0, 20))}
-                            onKeyDown={(e) => handleKeyDown(e, workspace.id)}
-                            autoFocus
-                            style={{ flex: 1 }}
-                            onClick={(e) => e.stopPropagation()}
-                          />
-                          <div style={{ display: 'flex', gap: '0.25rem' }}>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={(e) => handleSaveEdit(e, workspace.id)}
-                              style={{ padding: '0.25rem', minWidth: 'auto', height: 'auto' }}
-                            >
-                              <Check className="size-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={handleCancelEdit}
-                              style={{ padding: '0.25rem', minWidth: 'auto', height: 'auto' }}
-                            >
-                              <X className="size-4" />
-                            </Button>
+                  <CardHeader className="pb-3">
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                      <div style={{ 
+                        flexShrink: 0, 
+                        width: '40px', 
+                        height: '40px', 
+                        borderRadius: '10px',
+                        background: 'linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--primary) / 0.05))',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        border: '1px solid hsl(var(--primary) / 0.2)'
+                      }}>
+                        <FolderOpen className="size-5" style={{ color: 'hsl(var(--primary))' }} />
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        {editingId === workspace.id ? (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <Input
+                              value={editValue}
+                              onChange={(e) => setEditValue(e.target.value.slice(0, 20))}
+                              onKeyDown={(e) => handleKeyDown(e, workspace.id)}
+                              autoFocus
+                              style={{ flex: 1, fontSize: '0.95rem', fontWeight: '600' }}
+                              onClick={(e) => e.stopPropagation()}
+                            />
+                            <div style={{ display: 'flex', gap: '0.25rem' }}>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={(e) => handleSaveEdit(e, workspace.id)}
+                                style={{ padding: '0.25rem', minWidth: 'auto', height: 'auto' }}
+                              >
+                                <Check className="size-4" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={handleCancelEdit}
+                                style={{ padding: '0.25rem', minWidth: 'auto', height: 'auto' }}
+                              >
+                                <X className="size-4" />
+                              </Button>
+                            </div>
                           </div>
-                        </div>
-                      ) : (
-                        <>
-                          <CardTitle style={{ flex: 1, margin: 0 }}>{workspace.name}</CardTitle>
-                          <div style={{ display: 'flex', gap: '0.25rem' }}>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={(e) => handleStartEdit(e, workspace)}
-                              style={{ 
-                                padding: '0.25rem', 
-                                minWidth: 'auto', 
-                                height: 'auto',
+                        ) : (
+                          <>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' }}>
+                              <CardTitle style={{ margin: 0, fontSize: '1rem', fontWeight: '600', lineHeight: '1.3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                {workspace.name}
+                              </CardTitle>
+                              <ChevronRight 
+                                className="size-4 workspace-arrow" 
+                                style={{ 
+                                  color: 'hsl(var(--muted-foreground))',
+                                  opacity: 0,
+                                  transition: 'opacity 0.2s ease',
+                                  flexShrink: 0
+                                }} 
+                              />
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>
+                              <div style={{ 
+                                display: 'inline-flex', 
+                                alignItems: 'center', 
+                                gap: '0.25rem',
+                                padding: '0.125rem 0.5rem',
+                                borderRadius: '12px',
+                                background: assessmentCount > 0 ? 'hsl(var(--primary) / 0.1)' : 'hsl(var(--muted) / 0.5)',
+                                fontSize: '0.75rem',
+                                fontWeight: '500',
+                                color: assessmentCount > 0 ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground))'
+                              }}>
+                                <FileText className="size-3" />
+                                {assessmentCount}
+                              </div>
+                              <div style={{ 
+                                display: 'flex', 
+                                gap: '0.25rem',
+                                marginLeft: 'auto',
                                 opacity: 0,
                                 transition: 'opacity 0.2s ease'
-                              }}
-                              className="workspace-edit-button"
-                              aria-label={`Edit workspace ${workspace.name}`}
-                            >
-                              <Pencil className="size-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={(e) => handleDeleteClick(e, workspace)}
-                              style={{ 
-                                padding: '0.25rem', 
-                                minWidth: 'auto', 
-                                height: 'auto',
-                                opacity: 0,
-                                transition: 'opacity 0.2s ease',
-                                color: 'hsl(var(--destructive))'
-                              }}
-                              className="workspace-delete-button"
-                              aria-label={`Delete workspace ${workspace.name}`}
-                            >
-                              <Trash2 className="size-4" />
-                            </Button>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                    <CardDescription>
-                      {assessmentCount === 0 
-                        ? 'No assessments yet'
-                        : `${assessmentCount} assessment${assessmentCount !== 1 ? 's' : ''}`
-                      }
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div style={{ fontSize: '0.875rem', color: 'hsl(var(--muted-foreground))' }}>
-                      <div style={{ marginBottom: '0.5rem' }}>
-                        <strong>Last updated:</strong> {lastUpdated}
+                              }}>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={(e) => handleStartEdit(e, workspace)}
+                                  className="workspace-edit-button"
+                                  style={{ 
+                                    padding: '0.25rem', 
+                                    minWidth: 'auto', 
+                                    height: 'auto'
+                                  }}
+                                  aria-label={`Edit workspace ${workspace.name}`}
+                                >
+                                  <Pencil className="size-3.5" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={(e) => handleDeleteClick(e, workspace)}
+                                  className="workspace-delete-button"
+                                  style={{ 
+                                    padding: '0.25rem', 
+                                    minWidth: 'auto', 
+                                    height: 'auto',
+                                    color: 'hsl(var(--destructive))'
+                                  }}
+                                  aria-label={`Delete workspace ${workspace.name}`}
+                                >
+                                  <Trash2 className="size-3.5" />
+                                </Button>
+                              </div>
+                            </div>
+                          </>
+                        )}
                       </div>
-                      {assessmentCount > 0 && (
-                        <div>
-                          <strong>Latest assessment:</strong>{' '}
-                          {assessments
-                            .sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt))[0]
-                            ?.metadata?.assessmentTitle || 'Untitled'}
-                        </div>
-                      )}
                     </div>
+                  </CardHeader>
+                  <CardContent className="pt-0" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    {lastAssessment ? (
+                      <div>
+                        <div style={{ 
+                          fontSize: '0.8rem', 
+                          color: 'hsl(var(--muted-foreground))',
+                          marginBottom: '0.5rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.375rem'
+                        }}>
+                          <Clock className="size-3" />
+                          <span>Updated {lastUpdated}</span>
+                        </div>
+                        <div style={{ 
+                          fontSize: '0.85rem',
+                          color: 'hsl(var(--foreground))',
+                          fontWeight: '500',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
+                        }}>
+                          {lastAssessment.metadata?.assessmentTitle || 'Untitled Assessment'}
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{ 
+                        fontSize: '0.8rem', 
+                        color: 'hsl(var(--muted-foreground))',
+                        fontStyle: 'italic'
+                      }}>
+                        No assessments yet
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               );

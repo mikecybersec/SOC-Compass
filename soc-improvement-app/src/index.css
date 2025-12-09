@@ -4235,3 +4235,29 @@ label {
 .dark .prose h4 {
   color: hsl(var(--foreground));
 }
+
+/* Workspace Cards Styling */
+.workspace-card {
+  border: 1px solid hsl(var(--border));
+  transition: all 0.2s ease;
+}
+
+.workspace-card:hover {
+  border-color: hsl(var(--primary) / 0.3);
+}
+
+.workspace-empty-state {
+  border: 2px dashed hsl(var(--border));
+  background: hsl(var(--muted) / 0.2);
+}
+
+.workspace-edit-button,
+.workspace-delete-button {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.workspace-card:hover .workspace-edit-button,
+.workspace-card:hover .workspace-delete-button {
+  opacity: 1;
+}
