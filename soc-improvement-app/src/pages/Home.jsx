@@ -785,7 +785,7 @@ const Home = ({
       <section className="streamline-section" aria-label="How it works">
         <div className="streamline-container">
           <h2 className="streamline-header">
-            Streamline Assessments of Security Operations Centres
+            Say goodbye to SOC assessments that take months
           </h2>
           
           <section className="assessment-frameworks-section" aria-label="Assessment frameworks available">
