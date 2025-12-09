@@ -9,8 +9,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card-shadcn';
-import { BarChart3, Radar as RadarIcon, Table } from 'lucide-react';
+import { BarChart3, Radar as RadarIcon, Table, ChevronDown } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 const ScoreBoard = forwardRef((_, ref) => {
   const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
@@ -126,34 +127,41 @@ const ScoreBoard = forwardRef((_, ref) => {
         </div>
 
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center gap-2">
-              <Table className="h-4 w-4" />
-              Answer Details
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="rounded-md border">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b bg-muted/50">
-                      <th className="h-10 px-4 text-left align-middle font-medium text-sm">Code</th>
-                      <th className="h-10 px-4 text-left align-middle font-medium text-sm">Answer</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Object.entries(answers).map(([code, val]) => (
-                      <tr key={code} className="border-b transition-colors hover:bg-muted/50">
-                        <td className="p-4 align-middle text-sm font-mono">{code}</td>
-                        <td className="p-4 align-middle text-sm">{val}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </CardContent>
+          <Collapsible defaultOpen={false}>
+            <CollapsibleTrigger asChild>
+              <CardHeader className="pb-3 cursor-pointer hover:bg-muted/50 transition-colors rounded-t-lg group">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Table className="h-4 w-4" />
+                  Answer Details
+                  <ChevronDown className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                </CardTitle>
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent>
+                <div className="rounded-md border">
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b bg-muted/50">
+                          <th className="h-10 px-4 text-left align-middle font-medium text-sm">Code</th>
+                          <th className="h-10 px-4 text-left align-middle font-medium text-sm">Answer</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Object.entries(answers).map(([code, val]) => (
+                          <tr key={code} className="border-b transition-colors hover:bg-muted/50">
+                            <td className="p-4 align-middle text-sm font-mono">{code}</td>
+                            <td className="p-4 align-middle text-sm">{val}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </CardContent>
+            </CollapsibleContent>
+          </Collapsible>
         </Card>
       </CardContent>
     </Card>
