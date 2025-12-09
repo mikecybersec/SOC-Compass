@@ -145,56 +145,6 @@
   border-color: hsl(var(--border)) !important;
 }
 
-/* Apply purple-to-orange gradient to ALL primary buttons and backgrounds */
-.bg-primary,
-button.bg-primary,
-[class*="bg-primary"]:not([class*="text-primary"]):not([class*="border-primary"]) {
-  background: linear-gradient(135deg, #A855F7, #EC4899, #F97316) !important;
-  background-image: linear-gradient(135deg, #A855F7, #EC4899, #F97316) !important;
-}
-
-.bg-primary:hover,
-button.bg-primary:hover,
-[class*="bg-primary"]:not([class*="text-primary"]):not([class*="border-primary"]):hover {
-  background: linear-gradient(135deg, #9333EA, #DB2777, #EA580C) !important;
-  background-image: linear-gradient(135deg, #9333EA, #DB2777, #EA580C) !important;
-  opacity: 0.95;
-}
-
-/* Ensure shadcn button variants get the gradient */
-[data-variant="primary"],
-button[data-variant="primary"],
-button[data-variant="default"] {
-  background: linear-gradient(135deg, #A855F7, #EC4899, #F97316) !important;
-}
-
-/* Apply gradient to text-primary - works for text, icons use the color from gradient */
-.text-primary,
-[class*="text-primary"]:not([class*="bg-primary"]) {
-  background: linear-gradient(135deg, #A855F7, #EC4899, #F97316);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  color: transparent;
-}
-
-/* For SVG icons with text-primary, use the pink color from gradient */
-.text-primary svg,
-[class*="text-primary"] svg,
-svg.text-primary {
-  color: #EC4899;
-  fill: #EC4899;
-  stroke: #EC4899;
-}
-
-/* Override inline styles that set primary color */
-[style*="--primary"],
-[style*="color: hsl(var(--primary))"] {
-  background: linear-gradient(135deg, #A855F7, #EC4899, #F97316);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
 
 /* Dark mode specific overrides for better contrast and elevation */
 .dark .question-card {
@@ -278,21 +228,21 @@ button.ui-btn {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem !important;
-  background: linear-gradient(135deg, #A855F7, #EC4899, #F97316) !important;
+  background: linear-gradient(135deg, #E67E22, #F97316) !important;
   color: white !important;
   font-weight: 600;
   font-size: 0.95rem;
   border-radius: 999px !important;
   cursor: pointer !important;
   transition: all 150ms ease;
-  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3) !important;
+  box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3) !important;
   border: none !important;
 }
 
 button.ui-btn:hover,
 button.ui-btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(168, 85, 247, 0.4) !important;
+  box-shadow: 0 8px 20px rgba(230, 126, 34, 0.4) !important;
 }
 
 button.ui-btn-secondary {
@@ -404,9 +354,9 @@ button.ui-btn-ghost {
 }
 
 .ui-btn-primary {
-  background: linear-gradient(135deg, #A855F7, #EC4899, #F97316);
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
   color: #fff;
-  box-shadow: 0 18px 35px -18px rgba(168, 85, 247, 0.4);
+  box-shadow: 0 18px 35px -18px rgba(230, 126, 34, 0.6);
 }
 
 .ui-btn-secondary {
@@ -704,7 +654,7 @@ h6 {
   background: var(--accent);
   color: #fff;
   border-color: transparent;
-  box-shadow: 0 12px 30px -14px rgba(168, 85, 247, 0.5);
+  box-shadow: 0 12px 30px -14px rgba(230, 126, 34, 0.65);
 }
 
 .nav-link:disabled {
@@ -824,7 +774,7 @@ h6 {
   background: hsl(var(--primary));
   color: hsl(var(--primary-foreground));
   border-color: transparent;
-  box-shadow: 0 12px 30px -14px rgba(168, 85, 247, 0.4);
+  box-shadow: 0 12px 30px -14px rgba(230, 126, 34, 0.4);
 }
 
 .nav-link:disabled {
@@ -1595,19 +1545,19 @@ textarea {
 }
 
 button.primary {
-  background: linear-gradient(135deg, #A855F7 0%, #EC4899 50%, #F97316 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
   color: white;
-  border: 1px solid #A855F7;
+  border: 1px solid var(--accent);
   padding: 0.65rem 1.1rem;
   border-radius: 12px;
   cursor: pointer;
-  box-shadow: 0 18px 40px -18px rgba(168, 85, 247, 0.4);
+  box-shadow: 0 18px 40px -18px rgba(230, 126, 34, 0.6);
   transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
 button.primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 18px 48px -18px rgba(168, 85, 247, 0.5);
+  box-shadow: 0 18px 48px -18px rgba(230, 126, 34, 0.65);
 }
 
 button.secondary {
@@ -3515,7 +3465,7 @@ label {
 
 .copilot-input button {
   border: none;
-  background: linear-gradient(135deg, #A855F7, #EC4899, #F97316);
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
   color: #fff;
   padding: 0.6rem 0.85rem;
   border-radius: 10px;
