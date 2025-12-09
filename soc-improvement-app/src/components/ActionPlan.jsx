@@ -129,7 +129,6 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
               <button
                 onClick={onOpenApiModal}
                 className="text-primary hover:underline font-medium"
-                style={{ color: 'hsl(var(--primary))' }}
               >
                 AI API Key Management
               </button>
@@ -158,7 +157,6 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
               <button
                 onClick={onOpenApiModal}
                 className="text-primary hover:underline font-medium"
-                style={{ color: 'hsl(var(--primary))' }}
               >
                 AI API Key Management
               </button>{' '}
