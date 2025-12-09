@@ -8,9 +8,6 @@ import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from '@/components/ui/card-shadcn';
 import {
   AlertDialog,
@@ -103,8 +100,6 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
 
   return (
     <Card ref={ref} id="action-plan" className="action-plan-card">
-      <CardHeader>
-      </CardHeader>
       <CardContent className="space-y-6">
         {/* API Key Section */}
         {!apiKey ? (
