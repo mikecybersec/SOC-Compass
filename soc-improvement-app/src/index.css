@@ -2994,7 +2994,7 @@ label {
 /* Toast container styles */
 #toast-container {
   position: fixed;
-  bottom: 1rem;
+  top: 1rem;
   right: 1rem;
   z-index: 9999;
   display: flex;

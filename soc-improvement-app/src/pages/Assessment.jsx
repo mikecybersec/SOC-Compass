@@ -13,6 +13,7 @@ import {
 import QuestionPanel from '../components/QuestionPanel';
 import { frameworks } from '../utils/frameworks';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
+import { toastSuccess } from '../utils/toast';
 
 const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateHome, onSwitchWorkspace, onOpenApiModal, onOpenPreferences, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
@@ -30,7 +31,6 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateH
   const setAdministrationCollapsed = useAssessmentStore((s) => s.setSidebarAdministrationCollapsed);
 
   const frameworkId = currentAssessment.frameworkId;
-  const [showSaveToast, setShowSaveToast] = useState(false);
   const hydratedRef = useRef(false);
 
   const currentFramework = frameworks[frameworkId];
@@ -64,9 +64,7 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateH
       return;
     }
 
-    setShowSaveToast(true);
-    const timeout = setTimeout(() => setShowSaveToast(false), 2000);
-    return () => clearTimeout(timeout);
+    toastSuccess('Changes saved to assessment', 2000);
   }, [lastSavedAt]);
 
   const activeAspect = activeAspectKey ? aspectLookup[activeAspectKey] : null;
@@ -132,7 +130,6 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateH
             onNextAspect={() => nextAspectKey && setActiveAspectKey(nextAspectKey)}
           />
         </div>
-        <div className={`toast ${showSaveToast ? 'toast-visible' : ''}`}>Changes saved to assessment</div>
       </SidebarInset>
     </SidebarProvider>
   );

@@ -6,7 +6,7 @@ const createToastContainer = () => {
   
   toastContainer = document.createElement('div');
   toastContainer.id = 'toast-container';
-  toastContainer.style.cssText = 'position: fixed; bottom: 1rem; right: 1rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none;';
+  toastContainer.style.cssText = 'position: fixed; top: 1rem; right: 1rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none;';
   document.body.appendChild(toastContainer);
   return toastContainer;
 };
@@ -28,7 +28,7 @@ export const toast = (message, type = 'default', duration = 3000) => {
     maxWidth: '400px',
     wordWrap: 'break-word',
     opacity: '0',
-    transform: 'translateY(12px)',
+    transform: 'translateY(-12px)',
     transition: 'opacity 0.2s ease, transform 0.2s ease',
     pointerEvents: 'auto',
   };
@@ -57,7 +57,7 @@ export const toast = (message, type = 'default', duration = 3000) => {
   // Remove after duration
   setTimeout(() => {
     toast.style.opacity = '0';
-    toast.style.transform = 'translateY(12px)';
+    toast.style.transform = 'translateY(-12px)';
     setTimeout(() => {
       if (toast.parentNode) {
         toast.parentNode.removeChild(toast);
