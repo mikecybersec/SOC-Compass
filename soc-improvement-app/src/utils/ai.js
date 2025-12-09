@@ -190,30 +190,63 @@ export const generateAspectRecommendations = async ({
     ? `${metadata.budgetCurrency || '$'}${metadata.budgetAmount}`
     : 'not specified';
 
-  // Get only answers for this aspect
-  const aspectAnswers = {};
+  // Get only answers for this aspect with question details
+  const aspectQuestionsAndAnswers = [];
   aspect.questions.forEach((q) => {
     if (q.isAnswerable && answers[q.code]) {
-      aspectAnswers[q.code] = answers[q.code];
+      aspectQuestionsAndAnswers.push({
+        questionCode: q.code,
+        questionText: q.text,
+        answer: answers[q.code],
+        answerOptions: q.answerOptions,
+      });
     }
   });
 
-  const prompt = `You are a SOC assessment advisor. An aspect "${aspect.aspect}" under domain "${aspect.domain}" has just been completed.
+  // Build a detailed question-answer summary
+  const questionAnswerSummary = aspectQuestionsAndAnswers.map((qa) => {
+    // Determine maturity level from answer
+    const answerIndex = qa.answerOptions.indexOf(qa.answer);
+    const totalOptions = qa.answerOptions.length;
+    const maturityLevel = answerIndex >= 0 && totalOptions > 0 
+      ? `Position ${answerIndex + 1} of ${totalOptions} (${qa.answer})`
+      : qa.answer;
+    
+    return `Q: ${qa.questionText}\nA: ${qa.answer}${totalOptions > 0 ? ` (maturity: ${maturityLevel})` : ''}`;
+  }).join('\n\n');
 
-**Context:**
-- Organization: ${metadata.name || 'Unknown'} (${metadata.size || 'size n/a'}) in sector ${metadata.sector || 'n/a'}
+  const prompt = `You are a SOC assessment advisor specializing in aspect-specific recommendations. A user has just completed answering ALL questions for the "${aspect.aspect}" aspect under the "${aspect.domain}" domain.
+
+**CRITICAL: Focus ONLY on this specific aspect. Do NOT reference other aspects or domains.**
+
+**Organization Context:**
+- Name: ${metadata.name || 'Unknown'}
+- Size: ${metadata.size || 'size n/a'}
+- Sector: ${metadata.sector || 'n/a'}
 - Budget: ${budget}
 - SOC Age: ${metadata.socAge || 'n/a'}
-- Objectives: ${(metadata.objectives || []).join(', ') || 'Not specified'}
-- Aspect Answers: ${JSON.stringify(aspectAnswers)}
+- Key Objectives: ${(metadata.objectives || []).join(', ') || 'Not specified'}
 
-Generate a SHORT and SNAPPY recommendation (2-3 sentences maximum) that:
-1. Summarizes a key insight or recommendation based on the aspect answers
-2. Ties to the organization's objectives, budget, and context
-3. Is actionable and specific
-4. Highlights important terms or concepts (like role names, policies, maturity levels, etc.)
+**Aspect: "${aspect.aspect}" (Domain: "${aspect.domain}")**
 
-Format your response as plain text only - no markdown, no bullets, just a flowing paragraph. Keep it concise and punchy.`;
+**Questions and Answers for THIS Aspect ONLY:**
+${questionAnswerSummary}
+
+**Your Task:**
+Generate ONE specific, actionable recommendation (2-3 sentences maximum) that:
+1. **Focuses EXCLUSIVELY on the "${aspect.aspect}" aspect** - do not mention other aspects or make general recommendations
+2. **Analyzes the specific answers provided above** - reference the actual maturity levels/answers given
+3. **Identifies a key gap, strength, or opportunity** within this aspect based on the answers
+4. **Provides a concrete, actionable next step** that directly addresses findings from this aspect's answers
+5. **Considers the organization's context** (budget, size, sector, objectives) when suggesting the recommendation
+6. **Uses specific details from the answers** - mention actual maturity levels, question topics, or answer patterns
+
+**Output Requirements:**
+- Plain text only - no markdown, no bullets, no formatting
+- 2-3 sentences maximum
+- Flowing paragraph style
+- Be specific and reference the actual answers provided
+- Focus ONLY on "${aspect.aspect}" - do not generalize to other aspects`;
 
   try {
     const response = await fetch(`${normalizedBase}/chat/completions`, {
@@ -225,11 +258,14 @@ Format your response as plain text only - no markdown, no bullets, just a flowin
       body: JSON.stringify({
         model,
         messages: [
-          { role: 'system', content: 'You are a concise SOC assessment advisor. Provide brief, actionable recommendations.' },
+          { 
+            role: 'system', 
+            content: 'You are a SOC assessment advisor specializing in aspect-specific recommendations. You analyze question-answer pairs for a single aspect and provide focused, actionable recommendations based ONLY on those specific answers. You never generalize to other aspects or domains.' 
+          },
           { role: 'user', content: prompt },
         ],
-        max_tokens: 200,
-        temperature: 0.7,
+        max_tokens: 250,
+        temperature: 0.6,
       }),
     });
 
