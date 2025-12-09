@@ -237,7 +237,6 @@ const AssessmentCopilot = ({ onOpenApiModal }) => {
             ))}
             {showSuggestions && suggestions.length > 0 && (
               <div className="copilot-suggestions">
-                <p className="copilot-suggestions-label">Suggested questions:</p>
                 {suggestions.map((suggestion, idx) => (
                   <button
                     key={idx}
