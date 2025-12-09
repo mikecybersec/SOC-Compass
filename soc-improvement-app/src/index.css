@@ -2778,9 +2778,29 @@ label {
   cursor: pointer;
 }
 
-.mode-card.disabled {
+.dark .mode-card {
+  background: hsl(var(--card)) !important;
+  border-color: hsl(var(--border)) !important;
+  color: hsl(var(--card-foreground)) !important;
+}
+
+.dark .mode-card.elevated {
+  background: hsl(var(--card)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+.dark .mode-card.disabled {
+  background: hsl(var(--muted) / 0.3) !important;
   opacity: 0.65;
   cursor: not-allowed;
+}
+
+.dark .mode-card-title {
+  color: hsl(var(--card-foreground)) !important;
+}
+
+.dark .mode-card-description {
+  color: hsl(var(--muted-foreground)) !important;
 }
 
 .mode-subtitle {
