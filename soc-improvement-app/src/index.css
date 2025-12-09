@@ -3825,10 +3825,44 @@ label {
 .action-plan-content .markdown-body ol {
   margin-left: 1.5em;
   margin-bottom: 1em;
+  padding-left: 0;
 }
 
 .action-plan-content .markdown-body li {
   margin-bottom: 0.5em;
+}
+
+/* Ensure consistent indentation across all tabs */
+.action-plan-scroll-container .markdown-body {
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+  padding-right: 0;
+  margin-right: 0;
+}
+
+.action-plan-scroll-container .markdown-body > *:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+/* Reset any prose padding that might cause indentation issues */
+.action-plan-scroll-container .prose {
+  padding-left: 0;
+  margin-left: 0;
+}
+
+/* Ensure consistent list indentation - override prose defaults */
+.action-plan-scroll-container .prose ul,
+.action-plan-scroll-container .prose ol {
+  padding-left: 1.5em;
+  margin-left: 0;
+}
+
+/* Ensure paragraphs and other elements align consistently */
+.action-plan-scroll-container .prose p,
+.action-plan-scroll-container .prose > * {
+  padding-left: 0;
+  margin-left: 0;
 }
 
 .action-plan-content .markdown-body code {
@@ -3932,6 +3966,42 @@ label {
 /* Override prose max-width for action plan content to use full width */
 .action-plan-content .prose {
   max-width: 100%;
+}
+
+/* Scrollable container for action plan content */
+.action-plan-scroll-container {
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 0.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) transparent;
+}
+
+.action-plan-scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.action-plan-scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
+}
+
+.action-plan-scroll-container::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--border));
+  border-radius: 4px;
+}
+
+.action-plan-scroll-container::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--muted-foreground) / 0.5);
+}
+
+.dark .action-plan-scroll-container::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--border));
+}
+
+.dark .action-plan-scroll-container::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--muted-foreground) / 0.6);
 }
 
 .prose p {

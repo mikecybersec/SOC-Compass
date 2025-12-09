@@ -270,33 +270,41 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
                     <TabsTrigger value="action-plan">Action Plan</TabsTrigger>
                   </TabsList>
                   <TabsContent value="intro" className="mt-4">
-                    <div
-                      className="markdown-body prose prose-sm max-w-none dark:prose-invert"
-                      style={{ lineHeight: 1.7 }}
-                      dangerouslySetInnerHTML={{ __html: renderMarkdown(parsedPlan.bluf || 'No summary available.') }}
-                    />
+                    <div className="action-plan-scroll-container">
+                      <div
+                        className="markdown-body prose prose-sm max-w-none dark:prose-invert"
+                        style={{ lineHeight: 1.7 }}
+                        dangerouslySetInnerHTML={{ __html: renderMarkdown(parsedPlan.bluf || 'No summary available.') }}
+                      />
+                    </div>
                   </TabsContent>
                   <TabsContent value="quick-wins" className="mt-4">
-                    <div
-                      className="markdown-body prose prose-sm max-w-none dark:prose-invert"
-                      style={{ lineHeight: 1.7 }}
-                      dangerouslySetInnerHTML={{ __html: renderMarkdown(parsedPlan.lowHangingFruit || 'No quick wins identified.') }}
-                    />
+                    <div className="action-plan-scroll-container">
+                      <div
+                        className="markdown-body prose prose-sm max-w-none dark:prose-invert"
+                        style={{ lineHeight: 1.7 }}
+                        dangerouslySetInnerHTML={{ __html: renderMarkdown(parsedPlan.lowHangingFruit || 'No quick wins identified.') }}
+                      />
+                    </div>
                   </TabsContent>
                   <TabsContent value="action-plan" className="mt-4">
-                    <div
-                      className="markdown-body prose prose-sm max-w-none dark:prose-invert"
-                      style={{ lineHeight: 1.7 }}
-                      dangerouslySetInnerHTML={{ __html: renderMarkdown(parsedPlan.actionPlan || actionPlan.raw) }}
-                    />
+                    <div className="action-plan-scroll-container">
+                      <div
+                        className="markdown-body prose prose-sm max-w-none dark:prose-invert"
+                        style={{ lineHeight: 1.7 }}
+                        dangerouslySetInnerHTML={{ __html: renderMarkdown(parsedPlan.actionPlan || actionPlan.raw) }}
+                      />
+                    </div>
                   </TabsContent>
                 </Tabs>
               ) : (
-                <div
-                  className="markdown-body prose prose-sm max-w-none dark:prose-invert"
-                  style={{ lineHeight: 1.7 }}
-                  dangerouslySetInnerHTML={{ __html: renderMarkdown(actionPlan.raw) }}
-                />
+                <div className="action-plan-scroll-container">
+                  <div
+                    className="markdown-body prose prose-sm max-w-none dark:prose-invert"
+                    style={{ lineHeight: 1.7 }}
+                    dangerouslySetInnerHTML={{ __html: renderMarkdown(actionPlan.raw) }}
+                  />
+                </div>
               )}
             </div>
           ) : actionPlan.steps?.length ? (
