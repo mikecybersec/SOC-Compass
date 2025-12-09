@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card-shadcn';
 import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
-import { ThumbsUp, ThumbsDown, X, Sparkles } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, Sparkles } from 'lucide-react';
 
 const CompassRecommends = ({ recommendation, onDismiss, onRate }) => {
   const [rating, setRating] = useState(null);
@@ -27,94 +27,77 @@ const CompassRecommends = ({ recommendation, onDismiss, onRate }) => {
   const highlightTerms = recommendation.highlights || [];
   let displayText = recommendation.text || '';
 
-  // Create highlighted version of text
+  // Create highlighted version of text - simple word-by-word approach
   const renderHighlightedText = () => {
     if (highlightTerms.length === 0) {
       return <span>{displayText}</span>;
     }
 
-    const parts = [];
-    let lastIndex = 0;
-    let currentIndex = 0;
-
-    // Sort highlights by position in text (reverse to avoid index shifting)
-    const sortedHighlights = highlightTerms
-      .map((h) => ({
-        ...h,
-        index: displayText.toLowerCase().indexOf(h.term.toLowerCase()),
-      }))
-      .filter((h) => h.index !== -1)
-      .sort((a, b) => b.index - a.index); // Sort descending
-
-    sortedHighlights.forEach((highlight) => {
-      if (highlight.index >= lastIndex) {
-        // Add text before highlight
-        if (highlight.index > lastIndex) {
-          parts.unshift({ type: 'text', content: displayText.substring(lastIndex, highlight.index) });
-        }
-        // Add highlighted text
-        parts.unshift({
-          type: 'highlight',
-          content: displayText.substring(highlight.index, highlight.index + highlight.term.length),
-          highlightType: highlight.type || 'concept',
-        });
-        lastIndex = highlight.index + highlight.term.length;
-      }
+    // Create a simple map of terms to highlight types
+    const termMap = new Map();
+    highlightTerms.forEach((h) => {
+      termMap.set(h.term.toLowerCase(), h.type || 'concept');
     });
 
-    // Add remaining text
-    if (lastIndex < displayText.length) {
-      parts.push({ type: 'text', content: displayText.substring(lastIndex) });
-    }
-
+    // Split text into words and check each
+    const words = displayText.split(/(\s+)/);
     return (
       <>
-        {parts.map((part, idx) => {
-          if (part.type === 'highlight') {
+        {words.map((word, idx) => {
+          const cleanWord = word.trim().toLowerCase();
+          const highlightType = termMap.get(cleanWord);
+          
+          if (highlightType) {
             const colorClass =
-              part.highlightType === 'role'
-                ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
-                : part.highlightType === 'policy'
-                ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
-                : 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400';
+              highlightType === 'role'
+                ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-300 dark:border-green-700'
+                : highlightType === 'policy'
+                ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-300 dark:border-blue-700'
+                : 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 border-purple-300 dark:border-purple-700';
 
             return (
               <span
                 key={idx}
-                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium ${colorClass}`}
+                className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-xs font-medium border ${colorClass}`}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-current opacity-60" />
-                {part.content}
+                <span className="w-1.5 h-1.5 rounded-full bg-current opacity-70" />
+                {word}
               </span>
             );
           }
-          return <span key={idx}>{part.content}</span>;
+          return <span key={idx}>{word}</span>;
         })}
       </>
     );
   };
 
   return (
-    <Card
-      className="compass-recommends-card"
+    <div
+      className="compass-recommends-card-wrapper"
       style={{
-        border: '1px solid',
-        borderImage: 'linear-gradient(135deg, #EC4899, #A855F7) 1',
+        position: 'relative',
         borderRadius: '12px',
         marginBottom: '1rem',
-        background: 'hsl(var(--card))',
+        padding: '1px',
+        background: 'linear-gradient(135deg, #EC4899, #A855F7)',
       }}
     >
-      <CardContent className="p-4">
-        <div className="flex items-start gap-3">
-          {/* Recommendation Badge */}
+      <div
+        className="compass-recommends-card"
+        style={{
+          borderRadius: '11px',
+          background: 'hsl(var(--card))',
+          padding: '1rem',
+        }}
+      >
+        {/* Recommendation Badge */}
+        <div className="flex items-start gap-3 mb-3">
           <div className="flex-shrink-0">
             <div
               className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
               style={{
                 background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(168, 85, 247, 0.1))',
-                border: '1px solid',
-                borderImage: 'linear-gradient(135deg, #EC4899, #A855F7) 1',
+                border: '1px solid rgba(236, 72, 153, 0.3)',
                 color: '#EC4899',
               }}
             >
@@ -122,30 +105,18 @@ const CompassRecommends = ({ recommendation, onDismiss, onRate }) => {
               COMPASS RECOMMENDS
             </div>
           </div>
+        </div>
 
-          {/* Recommendation Text */}
-          <div className="flex-1 min-w-0">
-            <p className="text-sm leading-relaxed" style={{ color: 'hsl(var(--foreground))' }}>
-              {renderHighlightedText()}
-            </p>
-          </div>
-
-          {/* Dismiss Button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleDismiss}
-            className="flex-shrink-0"
-            style={{ padding: '0.25rem', minWidth: 'auto', height: 'auto' }}
-            aria-label="Dismiss recommendation"
-          >
-            <X className="size-4" />
-          </Button>
+        {/* Recommendation Text */}
+        <div className="mb-4">
+          <p className="text-sm leading-relaxed" style={{ color: 'hsl(var(--foreground))' }}>
+            {renderHighlightedText()}
+          </p>
         </div>
 
         {/* Footer with Rating and Actions */}
         <div
-          className="flex items-center justify-between gap-4 mt-4 pt-3"
+          className="flex items-center justify-between gap-4 pt-3"
           style={{ borderTop: '1px solid hsl(var(--border))' }}
         >
           <div className="flex items-center gap-3">
@@ -181,23 +152,20 @@ const CompassRecommends = ({ recommendation, onDismiss, onRate }) => {
               onClick={handleDismiss}
               className="text-xs"
             >
-              Dismiss
+              Deny all
             </Button>
             <Button
               variant="primary"
               size="sm"
-              onClick={() => {
-                // Handle approve action
-                handleDismiss();
-              }}
+              onClick={handleDismiss}
               className="text-xs"
             >
-              Apply
+              Approve all
             </Button>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 

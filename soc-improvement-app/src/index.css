@@ -4261,3 +4261,16 @@ label {
 .workspace-card:hover .workspace-delete-button {
   opacity: 1;
 }
+
+/* Compass Recommends Card Styling */
+.compass-recommends-card-wrapper {
+  position: relative;
+  border-radius: 12px;
+  padding: 1px;
+  background: linear-gradient(135deg, #EC4899, #A855F7);
+}
+
+.compass-recommends-card {
+  background: hsl(var(--card));
+  border-radius: 11px;
+}
