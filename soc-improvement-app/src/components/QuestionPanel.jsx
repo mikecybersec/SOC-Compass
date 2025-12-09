@@ -28,6 +28,7 @@ const QuestionPanel = ({ aspect, nextAspect, onNextAspect, onGenerateRecommendat
   const totalQuestions = answerableQuestions.length;
   const answered = answerableQuestions.filter((q) => answers[q.code]).length;
   const completion = totalQuestions === 0 ? 0 : Math.round((answered / totalQuestions) * 100);
+  const isAspectCompleted = totalQuestions > 0 && answered === totalQuestions;
 
   return (
     <div className="card">
@@ -40,13 +41,13 @@ const QuestionPanel = ({ aspect, nextAspect, onNextAspect, onGenerateRecommendat
               e.preventDefault();
               e.stopPropagation();
               console.log('Compass Recommendations button clicked');
-              if (onGenerateRecommendations) {
+              if (onGenerateRecommendations && isAspectCompleted) {
                 onGenerateRecommendations();
               } else {
-                console.error('onGenerateRecommendations handler is not defined');
+                console.error('onGenerateRecommendations handler is not defined or aspect not completed');
               }
             }}
-            disabled={isLoadingRecommendations}
+            disabled={isLoadingRecommendations || !isAspectCompleted}
             type="button"
           >
             <div className="compass-recommendations-button-content">
@@ -58,12 +59,14 @@ const QuestionPanel = ({ aspect, nextAspect, onNextAspect, onGenerateRecommendat
               <span className="compass-recommendations-button-text">
                 {isLoadingRecommendations 
                   ? 'Loading recommendations...' 
-                  : hasRecommendation 
-                    ? 'Regenerate Recommendations' 
-                    : 'Compass Recommendations'}
+                  : !isAspectCompleted
+                    ? `Complete all questions (${answered}/${totalQuestions})`
+                    : hasRecommendation 
+                      ? 'Regenerate Recommendations' 
+                      : 'Compass Recommendations'}
               </span>
             </div>
-            {!hasRecommendation && !isLoadingRecommendations && (
+            {!hasRecommendation && !isLoadingRecommendations && isAspectCompleted && (
               <div className="compass-recommendations-button-pulse" />
             )}
           </button>

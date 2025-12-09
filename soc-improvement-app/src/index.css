@@ -4315,8 +4315,17 @@ label {
 }
 
 .compass-recommendations-button:disabled {
-  opacity: 0.7;
+  opacity: 0.5;
   cursor: not-allowed;
+  background: hsl(var(--muted) / 0.3);
+}
+
+.compass-recommendations-button:disabled .compass-recommendations-button-icon {
+  color: hsl(var(--muted-foreground));
+}
+
+.compass-recommendations-button:disabled .compass-recommendations-button-text {
+  color: hsl(var(--muted-foreground));
 }
 
 .compass-recommendations-button-content {
