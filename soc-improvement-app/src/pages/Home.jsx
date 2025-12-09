@@ -925,11 +925,21 @@ const Home = ({
           Hey there, thank you for trying SOC Compass. We&apos;d love to see more people using this, help us out with some
           feedback or provide a testimonial by emailing
           {' '}
-          <a href="mailto:michael@vanguardcybersecurity.co.uk">michael@vanguardcybersecurity.co.uk</a>
+          <a 
+            href="mailto:michael@vanguardcybersecurity.co.uk"
+            style={{ color: 'hsl(var(--primary))', textDecoration: 'underline', textUnderlineOffset: '2px' }}
+          >
+            michael@vanguardcybersecurity.co.uk
+          </a>
           {' '}
           or DM&apos;ing
           {' '}
-          <a href="https://x.com/mikecybersec" target="_blank" rel="noreferrer noopener">
+          <a 
+            href="https://x.com/mikecybersec" 
+            target="_blank" 
+            rel="noreferrer noopener"
+            style={{ color: 'hsl(var(--primary))', textDecoration: 'underline', textUnderlineOffset: '2px' }}
+          >
             @mikecybersec
           </a>
           {' '}

@@ -543,6 +543,17 @@ button.ui-btn-ghost {
   padding: 1rem 1rem 0.9rem;
 }
 
+.ui-dialog-card a {
+  color: hsl(var(--primary)) !important;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.2s ease;
+}
+
+.ui-dialog-card a:hover {
+  color: hsl(var(--primary) / 0.8) !important;
+}
+
 .ui-dialog-header {
   margin-bottom: 0.35rem;
 }
