@@ -216,7 +216,7 @@ const ActionPlan = forwardRef(({ onOpenApiModal }, ref) => {
           ) : actionPlan.raw ? (
             <div className="bg-muted/30 dark:bg-muted/20 rounded-lg border p-6">
               {parsedPlan.hasSections ? (
-                <Tabs defaultValue="intro" className="w-full">
+                <Tabs defaultValue="intro" className="w-full action-plan-tabs">
                   <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="intro">Summary</TabsTrigger>
                     <TabsTrigger value="quick-wins">Quick Wins</TabsTrigger>

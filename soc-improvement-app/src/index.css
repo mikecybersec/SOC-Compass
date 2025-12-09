@@ -4415,14 +4415,40 @@ label {
 }
 
 /* Action Plan Tabs Styling */
-.action-plan-tab-trigger {
-  position: relative;
-  border-bottom: 2px solid transparent;
-  transition: border-color 0.2s ease;
+.action-plan-tabs [data-radix-tabs-list] {
+  background: transparent !important;
+  border-bottom: 1px solid hsl(var(--border));
+  padding: 0 !important;
+  gap: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-radius: 0;
 }
 
-.action-plan-tab-trigger[data-state=active] {
-  color: hsl(var(--foreground));
-  font-weight: 600;
-  border-bottom-color: #F97316;
+.action-plan-tab-trigger {
+  position: relative;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.2s ease;
+  background: transparent !important;
+  border-radius: 0;
+  box-shadow: none !important;
+}
+
+.action-plan-tab-trigger[data-state="active"] {
+  color: hsl(var(--foreground)) !important;
+  font-weight: 600 !important;
+  border-bottom-color: #F97316 !important;
+  background: transparent !important;
+}
+
+.action-plan-tab-trigger[data-state="inactive"],
+.action-plan-tab-trigger:not([data-state="active"]) {
+  color: hsl(var(--muted-foreground)) !important;
+  font-weight: 500;
+}
+
+.action-plan-tab-trigger:hover:not([data-state="active"]) {
+  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--muted) / 0.3) !important;
 }
