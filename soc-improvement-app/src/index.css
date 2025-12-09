@@ -4438,6 +4438,19 @@ label {
   color: white !important;
   font-weight: 600 !important;
   background: linear-gradient(135deg, #F97316, #E67E22) !important;
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3) !important;
+}
+
+/* Dark mode active tab - ensure orange background is always visible */
+.dark .action-plan-tab-trigger[data-state="active"],
+html.dark .action-plan-tab-trigger[data-state="active"],
+body.dark .action-plan-tab-trigger[data-state="active"],
+[data-theme="dark"] .action-plan-tab-trigger[data-state="active"] {
+  color: white !important;
+  font-weight: 600 !important;
+  background: linear-gradient(135deg, #F97316, #E67E22) !important;
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3) !important;
+  opacity: 1 !important;
 }
 
 .action-plan-tab-trigger[data-state="inactive"],
@@ -4447,7 +4460,19 @@ label {
   background: transparent !important;
 }
 
+.dark .action-plan-tab-trigger[data-state="inactive"],
+.dark .action-plan-tab-trigger:not([data-state="active"]) {
+  color: hsl(var(--muted-foreground)) !important;
+  font-weight: 500;
+  background: transparent !important;
+}
+
 .action-plan-tab-trigger:hover:not([data-state="active"]) {
+  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--muted) / 0.3) !important;
+}
+
+.dark .action-plan-tab-trigger:hover:not([data-state="active"]) {
   color: hsl(var(--foreground)) !important;
   background: hsl(var(--muted) / 0.3) !important;
 }
