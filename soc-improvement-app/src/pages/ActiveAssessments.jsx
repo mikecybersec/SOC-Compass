@@ -7,18 +7,31 @@ import {
   CardDescription,
   CardContent,
 } from '../components/ui/card-shadcn';
-import { Pencil, Check, X } from 'lucide-react';
+import { Pencil, Check, X, Trash2, AlertTriangle } from 'lucide-react';
 import { Input } from '../components/ui/Input';
 import { ButtonShadcn as Button } from '../components/ui/button-shadcn';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 const Workspaces = ({
   workspaces = [],
   onLoadWorkspace,
   onUpdateWorkspace,
   onNewWorkspace,
+  onDeleteWorkspace,
 }) => {
   const [editingId, setEditingId] = useState(null);
   const [editValue, setEditValue] = useState('');
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [workspaceToDelete, setWorkspaceToDelete] = useState(null);
 
   const handleStartEdit = (e, workspace) => {
     e.stopPropagation();
@@ -52,6 +65,20 @@ const Workspaces = ({
       e.preventDefault();
       handleCancelEdit(e);
     }
+  };
+
+  const handleDeleteClick = (e, workspace) => {
+    e.stopPropagation();
+    setWorkspaceToDelete(workspace);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (workspaceToDelete && onDeleteWorkspace) {
+      onDeleteWorkspace(workspaceToDelete.id);
+    }
+    setDeleteDialogOpen(false);
+    setWorkspaceToDelete(null);
   };
   return (
     <div className="app-main">
@@ -109,15 +136,23 @@ const Workspaces = ({
                   role="button"
                   aria-label={`Open workspace ${workspace.name}`}
                   onMouseEnter={(e) => {
-                    const btn = e.currentTarget.querySelector('.workspace-edit-button');
-                    if (btn && editingId !== workspace.id) {
-                      btn.style.opacity = '1';
+                    const editBtn = e.currentTarget.querySelector('.workspace-edit-button');
+                    const deleteBtn = e.currentTarget.querySelector('.workspace-delete-button');
+                    if (editBtn && editingId !== workspace.id) {
+                      editBtn.style.opacity = '1';
+                    }
+                    if (deleteBtn && editingId !== workspace.id) {
+                      deleteBtn.style.opacity = '1';
                     }
                   }}
                   onMouseLeave={(e) => {
-                    const btn = e.currentTarget.querySelector('.workspace-edit-button');
-                    if (btn && editingId !== workspace.id) {
-                      btn.style.opacity = '0';
+                    const editBtn = e.currentTarget.querySelector('.workspace-edit-button');
+                    const deleteBtn = e.currentTarget.querySelector('.workspace-delete-button');
+                    if (editBtn && editingId !== workspace.id) {
+                      editBtn.style.opacity = '0';
+                    }
+                    if (deleteBtn && editingId !== workspace.id) {
+                      deleteBtn.style.opacity = '0';
                     }
                   }}
                 >
@@ -155,22 +190,41 @@ const Workspaces = ({
                       ) : (
                         <>
                           <CardTitle style={{ flex: 1, margin: 0 }}>{workspace.name}</CardTitle>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={(e) => handleStartEdit(e, workspace)}
-                            style={{ 
-                              padding: '0.25rem', 
-                              minWidth: 'auto', 
-                              height: 'auto',
-                              opacity: 0,
-                              transition: 'opacity 0.2s ease'
-                            }}
-                            className="workspace-edit-button"
-                            aria-label={`Edit workspace ${workspace.name}`}
-                          >
-                            <Pencil className="size-4" />
-                          </Button>
+                          <div style={{ display: 'flex', gap: '0.25rem' }}>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={(e) => handleStartEdit(e, workspace)}
+                              style={{ 
+                                padding: '0.25rem', 
+                                minWidth: 'auto', 
+                                height: 'auto',
+                                opacity: 0,
+                                transition: 'opacity 0.2s ease'
+                              }}
+                              className="workspace-edit-button"
+                              aria-label={`Edit workspace ${workspace.name}`}
+                            >
+                              <Pencil className="size-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={(e) => handleDeleteClick(e, workspace)}
+                              style={{ 
+                                padding: '0.25rem', 
+                                minWidth: 'auto', 
+                                height: 'auto',
+                                opacity: 0,
+                                transition: 'opacity 0.2s ease',
+                                color: 'hsl(var(--destructive))'
+                              }}
+                              className="workspace-delete-button"
+                              aria-label={`Delete workspace ${workspace.name}`}
+                            >
+                              <Trash2 className="size-4" />
+                            </Button>
+                          </div>
                         </>
                       )}
                     </div>
@@ -202,6 +256,54 @@ const Workspaces = ({
           </div>
         )}
       </div>
+
+      {/* Delete Workspace Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-destructive/10 dark:bg-destructive/20">
+                <AlertTriangle className="h-5 w-5 text-destructive" />
+              </div>
+              <AlertDialogTitle>Delete Workspace</AlertDialogTitle>
+            </div>
+            <AlertDialogDescription className="text-left pt-2">
+              {workspaceToDelete && (workspaceToDelete.assessments || []).length > 0 ? (
+                <>
+                  <p className="mb-3 font-semibold text-destructive">
+                    Warning: This workspace contains {workspaceToDelete.assessments.length} assessment{(workspaceToDelete.assessments.length !== 1 ? 's' : '')}.
+                  </p>
+                  <p className="mb-3">
+                    Deleting this workspace will permanently remove <strong>all assessments</strong> within it, including:
+                  </p>
+                  <ul className="list-disc list-inside mb-3 space-y-1 text-sm">
+                    <li>All assessment answers and progress</li>
+                    <li>All notes and observations</li>
+                    <li>All generated action plans and reports</li>
+                    <li>All saved metadata and configurations</li>
+                  </ul>
+                  <p>
+                    This action cannot be undone. Are you sure you want to delete <strong>"{workspaceToDelete.name}"</strong> and all its assessments?
+                  </p>
+                </>
+              ) : (
+                <p>
+                  Are you sure you want to delete <strong>"{workspaceToDelete?.name}"</strong>? This action cannot be undone.
+                </p>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setWorkspaceToDelete(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete Workspace
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

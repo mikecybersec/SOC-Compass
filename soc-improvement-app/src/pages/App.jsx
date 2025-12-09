@@ -336,6 +336,7 @@ const App = () => {
   const currentWorkspace = workspaces.find((w) => w.id === currentWorkspaceId);
   const workspaceAssessments = currentWorkspace?.assessments || [];
   const updateWorkspace = useAssessmentStore((s) => s.updateWorkspace);
+  const deleteWorkspace = useAssessmentStore((s) => s.deleteWorkspace);
 
   return (
     <>
@@ -381,6 +382,13 @@ const App = () => {
               workspaces={workspaces}
               onLoadWorkspace={handleLoadWorkspace}
               onUpdateWorkspace={updateWorkspace}
+              onDeleteWorkspace={(workspaceId) => {
+                deleteWorkspace(workspaceId);
+                // If we deleted the current workspace, navigate to home
+                if (workspaceId === currentWorkspaceId) {
+                  setView('home');
+                }
+              }}
               onNewWorkspace={() => {
                 setModeModalOpen(true);
               }}
