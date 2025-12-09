@@ -4004,6 +4004,48 @@ label {
   background-color: hsl(var(--muted-foreground) / 0.6);
 }
 
+/* Enhanced Table Styling for Answer Details */
+.answer-details-table {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.answer-details-table table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.answer-details-table thead th {
+  background: hsl(var(--muted) / 0.5);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.answer-details-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.answer-details-table tbody tr:hover {
+  background: hsl(var(--muted) / 0.3);
+}
+
+.answer-details-table tbody td {
+  border-bottom: 1px solid hsl(var(--border) / 0.5);
+}
+
+.dark .answer-details-table thead th {
+  background: hsl(var(--muted) / 0.3);
+  border-bottom-color: hsl(var(--border));
+}
+
+.dark .answer-details-table tbody tr:hover {
+  background: hsl(var(--muted) / 0.2);
+}
+
 .prose p {
   margin-top: 1.25em;
   margin-bottom: 1.25em;

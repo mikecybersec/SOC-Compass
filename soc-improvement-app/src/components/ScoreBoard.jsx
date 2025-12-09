@@ -9,9 +9,17 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card-shadcn';
-import { BarChart3, Radar as RadarIcon, Table, ChevronDown } from 'lucide-react';
+import { BarChart3, Radar as RadarIcon, Table as TableIcon, ChevronDown } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 const ScoreBoard = forwardRef((_, ref) => {
   const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
@@ -131,33 +139,39 @@ const ScoreBoard = forwardRef((_, ref) => {
             <CollapsibleTrigger asChild>
               <CardHeader className="pb-3 cursor-pointer hover:bg-muted/50 transition-colors rounded-t-lg group">
                 <CardTitle className="text-base flex items-center gap-2">
-                  <Table className="h-4 w-4" />
+                  <TableIcon className="h-4 w-4" />
                   Answer Details
                   <ChevronDown className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
                 </CardTitle>
               </CardHeader>
             </CollapsibleTrigger>
             <CollapsibleContent>
-              <CardContent>
-                <div className="rounded-md border">
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b bg-muted/50">
-                          <th className="h-10 px-4 text-left align-middle font-medium text-sm">Code</th>
-                          <th className="h-10 px-4 text-left align-middle font-medium text-sm">Answer</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {Object.entries(answers).map(([code, val]) => (
-                          <tr key={code} className="border-b transition-colors hover:bg-muted/50">
-                            <td className="p-4 align-middle text-sm font-mono">{code}</td>
-                            <td className="p-4 align-middle text-sm">{val}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+              <CardContent className="pt-0">
+                <div className="rounded-md border answer-details-table">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="hover:bg-transparent">
+                        <TableHead className="h-11">Code</TableHead>
+                        <TableHead className="h-11">Answer</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {Object.entries(answers).length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={2} className="h-24 text-center text-muted-foreground">
+                            No answers recorded yet
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        Object.entries(answers).map(([code, val]) => (
+                          <TableRow key={code}>
+                            <TableCell className="font-mono text-xs text-muted-foreground">{code}</TableCell>
+                            <TableCell className="font-medium">{val}</TableCell>
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
                 </div>
               </CardContent>
             </CollapsibleContent>
