@@ -258,15 +258,18 @@ const AssessmentCopilot = ({ onOpenApiModal }) => {
 
           {apiKey && apiKeyValidated && (
             <form className="copilot-input" onSubmit={handleSend}>
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask about this assessment…"
-              />
-              <button type="submit" disabled={!input.trim() || loading}>
-                Send
-              </button>
+              <div className="input-with-hint">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Ask about this assessment…"
+                  disabled={loading}
+                />
+                <span className="enter-hint" aria-hidden="true">
+                  Enter ↵
+                </span>
+              </div>
             </form>
           )}
 

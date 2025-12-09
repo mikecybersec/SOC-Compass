@@ -3436,11 +3436,17 @@ label {
   padding: 0.85rem 1rem 1rem;
 }
 
-.copilot-input input {
+.copilot-input .input-with-hint {
   flex: 1;
+  position: relative;
+}
+
+.copilot-input input {
+  width: 100%;
   border-radius: 10px;
   border: 1px solid hsl(var(--border));
   padding: 0.6rem 0.75rem;
+  padding-right: 80px;
   font-size: 0.95rem;
   background: rgba(255, 255, 255, 0.96);
   color: hsl(var(--foreground));
@@ -3463,20 +3469,29 @@ label {
   border-color: hsl(var(--primary));
 }
 
-.copilot-input button {
-  border: none;
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-  color: #fff;
-  padding: 0.6rem 0.85rem;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 700;
-  min-width: 72px;
+.copilot-input input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-.copilot-input button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.copilot-input .enter-hint {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--muted) / 0.5);
+  padding: 2px 6px;
+  border-radius: 6px;
+  border: 1px dashed hsl(var(--border));
+  pointer-events: none;
+}
+
+.dark .copilot-input .enter-hint {
+  background: hsl(var(--muted) / 0.4);
+  color: hsl(var(--muted-foreground));
+  border-color: hsl(var(--border));
 }
 
 .copilot-error {
