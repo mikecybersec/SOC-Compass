@@ -3784,6 +3784,10 @@ label {
 
 .action-plan-content .markdown-body {
   color: hsl(var(--foreground));
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  width: 100%;
 }
 
 .action-plan-content .markdown-body h1,
@@ -3791,7 +3795,7 @@ label {
 .action-plan-content .markdown-body h3 {
   color: hsl(var(--foreground));
   font-weight: 600;
-  margin-top: 1.5em;
+  margin-top: 1.25em;
   margin-bottom: 0.5em;
 }
 
@@ -3808,8 +3812,13 @@ label {
 }
 
 .action-plan-content .markdown-body p {
-  margin-bottom: 1em;
-  line-height: 1.7;
+  margin-bottom: 0.75em;
+  margin-top: 0;
+  line-height: 1.6;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  max-width: 100%;
 }
 
 .action-plan-content .markdown-body ul,
@@ -3918,6 +3927,11 @@ label {
 /* Prose styles for better markdown rendering */
 .prose {
   max-width: 65ch;
+}
+
+/* Override prose max-width for action plan content to use full width */
+.action-plan-content .prose {
+  max-width: 100%;
 }
 
 .prose p {
