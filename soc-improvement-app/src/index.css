@@ -2155,8 +2155,6 @@ label {
   flex-direction: column;
   gap: 0.75rem;
   padding: 1rem;
-  max-height: 280px;
-  overflow-y: auto;
 }
 
 .copilot-message {
@@ -2253,22 +2251,6 @@ label {
   font-size: 0.8125rem;
 }
 
-.copilot-preview-messages::-webkit-scrollbar {
-  width: 6px;
-}
-
-.copilot-preview-messages::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.copilot-preview-messages::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground) / 0.3);
-  border-radius: 3px;
-}
-
-.copilot-preview-messages::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.5);
-}
 
 .assessment-frameworks-section {
   display: flex;
