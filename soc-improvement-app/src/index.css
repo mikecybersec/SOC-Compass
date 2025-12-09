@@ -255,6 +255,22 @@ button.ui-btn-ghost {
   box-shadow: none !important;
 }
 
+.dark button.ui-btn-ghost {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark button.ui-btn-secondary {
+  background: hsl(var(--secondary)) !important;
+  color: hsl(var(--secondary-foreground)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+.dark button.ui-btn-outline {
+  background: transparent !important;
+  color: hsl(var(--foreground)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
 @layer components {
   /* Shadcn Card overrides for better integration */
   .rounded-xl {
