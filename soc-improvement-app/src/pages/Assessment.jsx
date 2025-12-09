@@ -11,9 +11,11 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import QuestionPanel from '../components/QuestionPanel';
+import CompassRecommends from '../components/CompassRecommends';
 import { frameworks } from '../utils/frameworks';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { toastSuccess } from '../utils/toast';
+import { generateAspectRecommendations } from '../utils/ai';
 
 const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateHome, onSwitchWorkspace, onOpenApiModal, onOpenPreferences, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
@@ -34,6 +36,15 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateH
   const hydratedRef = useRef(false);
   const lastSavedAtRef = useRef(null);
   const toastTimeoutRef = useRef(null);
+  const completedAspectsRef = useRef(new Set());
+  const generatingRef = useRef(false);
+
+  const apiKey = useAssessmentStore((s) => s.apiKey);
+  const apiBase = useAssessmentStore((s) => s.apiBase);
+  const model = useAssessmentStore((s) => s.model);
+  const metadata = useAssessmentStore((s) => s.currentAssessment.metadata);
+  const aspectRecommendations = useAssessmentStore((s) => s.currentAssessment.aspectRecommendations || {});
+  const setAspectRecommendation = useAssessmentStore((s) => s.setAspectRecommendation);
 
   const currentFramework = frameworks[frameworkId];
   const aspectKeys = useMemo(
@@ -95,6 +106,62 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateH
   const nextAspectKey = currentIndex >= 0 && currentIndex < aspectKeys.length - 1 ? aspectKeys[currentIndex + 1] : null;
   const nextAspect = nextAspectKey ? aspectLookup[nextAspectKey] : null;
 
+  // Check if current aspect is completed (100% of questions answered)
+  const isAspectCompleted = useMemo(() => {
+    if (!activeAspect || !activeAspectKey) return false;
+    const answerableQuestions = activeAspect.questions.filter((q) => q.isAnswerable);
+    if (answerableQuestions.length === 0) return false;
+    const answered = answerableQuestions.filter((q) => answers[q.code]).length;
+    return answered === answerableQuestions.length;
+  }, [activeAspect, activeAspectKey, answers]);
+
+  // Detect aspect completion and generate recommendations
+  useEffect(() => {
+    if (!activeAspectKey || !activeAspect || !isAspectCompleted) return;
+    if (generatingRef.current) return;
+    
+    // Check if we've already generated recommendations for this aspect
+    if (aspectRecommendations[activeAspectKey]) return;
+    if (completedAspectsRef.current.has(activeAspectKey)) return;
+
+    // Check if API key is available
+    if (!apiKey) return;
+
+    // Mark as generating and completed
+    generatingRef.current = true;
+    completedAspectsRef.current.add(activeAspectKey);
+
+    // Generate recommendations
+    generateAspectRecommendations({
+      apiKey,
+      apiBase,
+      model,
+      aspectKey: activeAspectKey,
+      aspect: activeAspect,
+      answers,
+      metadata,
+    })
+      .then((recommendation) => {
+        if (recommendation && recommendation.text) {
+          setAspectRecommendation(activeAspectKey, recommendation);
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to generate aspect recommendations:', error);
+      })
+      .finally(() => {
+        generatingRef.current = false;
+      });
+  }, [activeAspectKey, activeAspect, isAspectCompleted, answers, metadata, apiKey, apiBase, model, aspectRecommendations, setAspectRecommendation]);
+
+  // Reset completed aspects when framework changes
+  useEffect(() => {
+    completedAspectsRef.current.clear();
+    generatingRef.current = false;
+  }, [frameworkId]);
+
+  const currentRecommendation = activeAspectKey ? aspectRecommendations[activeAspectKey] : null;
+
   return (
     <SidebarProvider open={!sidebarCollapsed} onOpenChange={(open) => setSidebarCollapsed(!open)}>
       <AppSidebar
@@ -147,6 +214,17 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateH
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          {currentRecommendation && isAspectCompleted && (
+            <CompassRecommends
+              recommendation={currentRecommendation}
+              onDismiss={() => {
+                // Optionally handle dismiss
+              }}
+              onRate={(rating) => {
+                // Optionally handle rating
+              }}
+            />
+          )}
           <QuestionPanel
             aspect={activeAspect}
             nextAspect={nextAspect}

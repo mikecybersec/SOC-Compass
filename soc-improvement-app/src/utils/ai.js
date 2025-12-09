@@ -156,3 +156,117 @@ export const generateActionPlan = async ({
 };
 
 export const buildPromptPreview = (state) => buildPrompt(state);
+
+/**
+ * Generate aspect-specific recommendations when an aspect is completed
+ * @param {Object} params
+ * @param {string} params.apiKey - API key
+ * @param {string} params.apiBase - API base URL
+ * @param {string} params.model - Model name
+ * @param {string} params.aspectKey - Aspect key (domain::aspect)
+ * @param {Object} params.aspect - Aspect object
+ * @param {Object} params.answers - All answers for the aspect
+ * @param {Object} params.metadata - Assessment metadata
+ * @returns {Promise<{text: string, highlights: Array<{term: string, type: string}>}>}
+ */
+export const generateAspectRecommendations = async ({
+  apiKey,
+  apiBase = 'https://api.x.ai/v1/',
+  model = 'grok-4-latest',
+  aspectKey,
+  aspect,
+  answers,
+  metadata,
+}) => {
+  if (!apiKey) {
+    return {
+      text: 'Provide an API key to generate recommendations.',
+      highlights: [],
+    };
+  }
+
+  const normalizedBase = (apiBase?.trim() || 'https://api.x.ai/v1/').replace(/\/+$/, '') || 'https://api.x.ai/v1';
+  const budget = metadata.budgetAmount
+    ? `${metadata.budgetCurrency || '$'}${metadata.budgetAmount}`
+    : 'not specified';
+
+  // Get only answers for this aspect
+  const aspectAnswers = {};
+  aspect.questions.forEach((q) => {
+    if (q.isAnswerable && answers[q.code]) {
+      aspectAnswers[q.code] = answers[q.code];
+    }
+  });
+
+  const prompt = `You are a SOC assessment advisor. An aspect "${aspect.aspect}" under domain "${aspect.domain}" has just been completed.
+
+**Context:**
+- Organization: ${metadata.name || 'Unknown'} (${metadata.size || 'size n/a'}) in sector ${metadata.sector || 'n/a'}
+- Budget: ${budget}
+- SOC Age: ${metadata.socAge || 'n/a'}
+- Objectives: ${(metadata.objectives || []).join(', ') || 'Not specified'}
+- Aspect Answers: ${JSON.stringify(aspectAnswers)}
+
+Generate a SHORT and SNAPPY recommendation (2-3 sentences maximum) that:
+1. Summarizes a key insight or recommendation based on the aspect answers
+2. Ties to the organization's objectives, budget, and context
+3. Is actionable and specific
+4. Highlights important terms or concepts (like role names, policies, maturity levels, etc.)
+
+Format your response as plain text only - no markdown, no bullets, just a flowing paragraph. Keep it concise and punchy.`;
+
+  try {
+    const response = await fetch(`${normalizedBase}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model,
+        messages: [
+          { role: 'system', content: 'You are a concise SOC assessment advisor. Provide brief, actionable recommendations.' },
+          { role: 'user', content: prompt },
+        ],
+        max_tokens: 200,
+        temperature: 0.7,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to generate recommendations');
+    }
+
+    const payload = await response.json();
+    const text = (payload.choices?.[0]?.message?.content || '').trim();
+
+    // Extract potential highlight terms (role names, policy names, maturity levels, etc.)
+    const highlights = [];
+    const highlightPatterns = [
+      /(Level \d+|Initial|Managed|Defined|Quantitatively Managed|Optimizing)/gi,
+      /(Admin|Administrator|Engineer|Analyst|Manager|Director|CISO)/gi,
+      /(Policy|Procedure|Process|Framework|Standard)/gi,
+      /(Access|Security|SOC|SIEM|SOAR|Incident Response)/gi,
+    ];
+
+    highlightPatterns.forEach((pattern) => {
+      const matches = text.matchAll(pattern);
+      for (const match of matches) {
+        if (match[0] && !highlights.find((h) => h.term.toLowerCase() === match[0].toLowerCase())) {
+          highlights.push({
+            term: match[0],
+            type: match[1] ? 'maturity' : match[2] ? 'role' : match[3] ? 'policy' : 'concept',
+          });
+        }
+      }
+    });
+
+    return { text, highlights: highlights.slice(0, 5) }; // Limit to 5 highlights
+  } catch (error) {
+    return {
+      text: 'Unable to generate recommendations at this time.',
+      highlights: [],
+      error: error.message,
+    };
+  }
+};

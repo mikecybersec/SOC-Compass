@@ -71,6 +71,7 @@ const buildAssessment = ({ frameworkId = defaultFrameworkId, metadata } = {}) =>
   notes: {},
   metadata: { ...defaultMetadata(), ...metadata },
   actionPlan: { steps: [], raw: '' },
+  aspectRecommendations: {}, // Store recommendations per aspect key
   savedAt: new Date().toISOString(),
 });
 
@@ -95,6 +96,7 @@ const hydrateAssessment = (assessment, fallbackMetadata) => {
     answers: assessment.answers || {},
     notes: assessment.notes || {},
     actionPlan: { steps: [], raw: '', ...(assessment.actionPlan || {}) },
+    aspectRecommendations: assessment.aspectRecommendations || {},
   };
 };
 
@@ -313,6 +315,16 @@ export const useAssessmentStore = create(
     setModel: (model) => set({ model }),
     setActionPlan: (actionPlan) =>
       set((state) => ({ currentAssessment: { ...state.currentAssessment, actionPlan } })),
+    setAspectRecommendation: (aspectKey, recommendation) =>
+      set((state) => ({
+        currentAssessment: {
+          ...state.currentAssessment,
+          aspectRecommendations: {
+            ...(state.currentAssessment.aspectRecommendations || {}),
+            [aspectKey]: recommendation,
+          },
+        },
+      })),
     setActiveAspectKey: (activeAspectKey) => set({ activeAspectKey }),
     autoSaveAssessment: () =>
       set((state) => {
