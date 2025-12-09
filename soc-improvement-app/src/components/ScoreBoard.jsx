@@ -58,9 +58,9 @@ const ScoreBoard = forwardRef((_, ref) => {
               Live maturity calculation for {frameworks[frameworkId]?.name || 'selected'} framework
             </CardDescription>
           </div>
-          <Badge variant="default" className="text-base px-3 py-1.5 font-semibold">
+          <div className="maturity-score-pill">
             {scores.maturity?.toFixed(2) || '0.00'}
-          </Badge>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
