@@ -42,7 +42,7 @@ const trustedRoles = [
   'SMBs',
 ];
 
-const ModeSelectionModal = ({ open, onClose, onSelectSolo }) => {
+export const ModeSelectionModal = ({ open, onClose, onSelectSolo }) => {
   if (!open) return null;
 
   return (
@@ -853,7 +853,6 @@ const Home = ({
       </section>
 
 
-      <ModeSelectionModal open={modeModalOpen} onClose={onCloseModeModal} onSelectSolo={onSelectSoloMode} />
       <StartAssessmentModal
         open={startModalOpen}
         onClose={onCloseStartModal}

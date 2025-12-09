@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Home from './Home';
+import { ModeSelectionModal } from './Home';
 import Assessment from './Assessment';
 import AssessmentInfo from './AssessmentInfo';
 import Reporting from './Reporting';
@@ -380,7 +381,6 @@ const App = () => {
               onLoadWorkspace={handleLoadWorkspace}
               onUpdateWorkspace={updateWorkspace}
               onNewWorkspace={() => {
-                setView('home');
                 setModeModalOpen(true);
               }}
             />
@@ -441,6 +441,15 @@ const App = () => {
       {(view === 'assessment' || view === 'assessmentInfo' || view === 'reporting') && (
         <AssessmentCopilot onOpenApiModal={() => setApiModalOpen(true)} />
       )}
+      <ModeSelectionModal
+        open={modeModalOpen}
+        onClose={() => setModeModalOpen(false)}
+        onSelectSolo={() => {
+          setStartMode('solo');
+          setStartModalOpen(true);
+          setModeModalOpen(false);
+        }}
+      />
       <ApiKeyModal
         open={apiModalOpen}
         onClose={() => setApiModalOpen(false)}
