@@ -20,6 +20,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 const Workspaces = ({
   workspaces = [],
@@ -97,7 +103,8 @@ const Workspaces = ({
   };
 
   return (
-    <div className="app-main">
+    <TooltipProvider>
+      <div className="app-main">
       <div className="container" style={{ maxWidth: '1600px', margin: '0 auto', padding: '1.5rem 1rem' }}>
         <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
@@ -252,20 +259,28 @@ const Workspaces = ({
                               />
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>
-                              <div style={{ 
-                                display: 'inline-flex', 
-                                alignItems: 'center', 
-                                gap: '0.25rem',
-                                padding: '0.125rem 0.5rem',
-                                borderRadius: '12px',
-                                background: assessmentCount > 0 ? 'hsl(var(--primary) / 0.1)' : 'hsl(var(--muted) / 0.5)',
-                                fontSize: '0.75rem',
-                                fontWeight: '500',
-                                color: assessmentCount > 0 ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground))'
-                              }}>
-                                <FileText className="size-3" />
-                                {assessmentCount}
-                              </div>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <div style={{ 
+                                    display: 'inline-flex', 
+                                    alignItems: 'center', 
+                                    gap: '0.25rem',
+                                    padding: '0.125rem 0.5rem',
+                                    borderRadius: '12px',
+                                    background: assessmentCount > 0 ? 'hsl(var(--primary) / 0.1)' : 'hsl(var(--muted) / 0.5)',
+                                    fontSize: '0.75rem',
+                                    fontWeight: '500',
+                                    color: assessmentCount > 0 ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground))',
+                                    cursor: 'default'
+                                  }}>
+                                    <FileText className="size-3" />
+                                    {assessmentCount}
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Total Assessments</p>
+                                </TooltipContent>
+                              </Tooltip>
                               <div style={{ 
                                 display: 'flex', 
                                 gap: '0.25rem',
@@ -398,7 +413,8 @@ const Workspaces = ({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+      </div>
+    </TooltipProvider>
   );
 };
 
