@@ -1,7 +1,3 @@
-Managing Workspaces
-===============
-
-
 -----------------
 How to manage your workspaces
 -----------------
