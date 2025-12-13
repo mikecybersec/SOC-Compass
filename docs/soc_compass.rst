@@ -50,7 +50,7 @@ The application is designed to run entirely in the browser, providing a fast and
 
 **Data Storage**
 
-Currently, SOC Compass utilizes browser-based storage:
+Currently, SOC Compass utilises browser-based storage:
 
 - **localStorage API** - All assessment data, workspaces, and user preferences are stored locally in your browser
 - **Storage Limit** - 5MB per browser, which is sufficient for multiple assessments and workspaces
@@ -72,6 +72,6 @@ SOC Compass leverages artificial intelligence to provide intelligent recommendat
 The following features are planned for future releases:
 
 - **PostgreSQL Database** - Enterprise-grade database support for enhanced data persistence, backup, and multi-device synchronization
-- **Docker Deployment** - Containerized deployment option for easier installation and deployment in enterprise environments
+- **Docker Deployment** - Containerised deployment option for easier installation and deployment in enterprise environments
 - **Cloud Storage Integration** - Optional cloud-based storage for data backup and cross-device access
 - **Multi-User Support** - Team collaboration features with role-based access control
