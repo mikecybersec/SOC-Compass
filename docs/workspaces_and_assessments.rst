@@ -23,4 +23,4 @@ Once your workspace and assessment are created, you will be redirected to the as
 .. toctree::
    :hidden:
 
-   creating_assessment
+   managing_assessments
