@@ -43,5 +43,5 @@ Assessment Modes
 Compass offers 3 different experiences for completing and delivering your assessment:
 
 - Solo - Compass will not assist you with analysing SOPs, documentation and initial evidence as you create the assessment.
-- Assisted (Coming Soon) - Compass will initially take a submission of files as evidence. Utilising underlying functionality and AI, Compass will analyse the files and data to complete relevant assessment aspects for you, speeding up the process.
+- Guided (Coming Soon) - Compass will initially take a submission of files as evidence. Utilising underlying functionality and AI, Compass will analyse the files and data to complete relevant assessment aspects for you, speeding up the process.
 - Continous (Coming Soon) - Compass will connect directly into your SOC documentation platform, such as Confluence. Compass will fetch the evidence it sees fit for the assessment and complete relevant assessment aspects for you. This is ideal for tracking changes in your SOC operating model.
