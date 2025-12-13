@@ -8,4 +8,5 @@ SOC Compass Documentation
    soc_compass
    getting_started
    workspaces_and_assessments
+   compass_ai
    
