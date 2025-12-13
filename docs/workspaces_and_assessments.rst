@@ -10,11 +10,11 @@ To create your first workspace, click on "Platform" in the navigation bar, then 
 
 This will open a modal with a form to enter a name for the workspace. Once you have entered a name, you will be guided through the key inputs to creating your first assessment too. The following inputs will be captured by the creation wizard:
 
-| SOC Budget
-| SOC Age
-| Industry/Sector
-| Strategic Objectives
-| Type of Assessment e.g. SOC-CMM, SIM3, MITRE Inform
+- SOC Budget
+- SOC Age
+- Industry/Sector
+- Strategic Objectives
+- Type of Assessment e.g. SOC-CMM, SIM3, MITRE Inform
 
 By capturing this context, Compass Copilot and Compass Recommendations (AI) will provide specific and grounded recommendations that fit your; budget, maturity, objectives and typical industry trends.
 

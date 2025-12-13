@@ -9,9 +9,12 @@ The app currently runs via npm, so you will need to have Node.js installed. You 
 Installing & Running SOC Compass
 -----------------
 
-| ``git clone https://github.com/soc-compass/soc-compass.git``
-| ``cd soc-compass``
-| ``npm install``
-| ``npm run dev``
-| Visit ``http://localhost:3000`` to see the app.
+Clone the repository and install dependencies::
+
+    git clone https://github.com/soc-compass/soc-compass.git
+    cd soc-compass
+    npm install
+    npm run dev
+
+Visit http://localhost:3000 to see the app.
 
