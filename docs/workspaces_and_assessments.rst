@@ -35,3 +35,13 @@ From the homepage of the app, click on "Platform" and then hover your cursor ove
 It is important to note that if you delete a workspace, all assessments will also be deleted.
 
 To delete a workspace, from the homepage of the app click on "Platform" and then hover your cursor over the tile for the workspace you intend to delete. A settings cog icon will appear, click this and you will see a delete workspace button. You must enter the workspace name and tick a box to confirm you're sure that you would like to delete the workspace and acknowledge you will lose all assessment progress as part of that assessment.
+
+-----------------
+Assessment Modes
+-----------------
+
+Compass offers 3 different experiences for completing and delivering your assessment:
+
+- Solo - Compass will not assist you with analysing SOPs, documentation and initial evidence as you create the assessment.
+- Assisted (Coming Soon) - Compass will initially take a submission of files as evidence. Utilising underlying functionality and AI, Compass will analyse the files and data to complete relevant assessment aspects for you, speeding up the process.
+- Continous (Coming Soon) - Compass will connect directly into your SOC documentation platform, such as Confluence. Compass will fetch the evidence it sees fit for the assessment and complete relevant assessment aspects for you. This is ideal for tracking changes in your SOC operating model.
