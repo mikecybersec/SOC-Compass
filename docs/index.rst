@@ -6,3 +6,4 @@ SOC Compass Documentation
    :caption: Contents:
 
    getting_started
+   workspaces_and_assessments
