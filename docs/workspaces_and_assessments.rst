@@ -18,4 +18,9 @@ This will open a modal with a form to enter a name for the workspace. Once you h
 
 By capturing this context, Compass Copilot and Compass Recommendations (AI) will provide specific and grounded recommendations that fit your; budget, maturity, objectives and typical industry trends.
 
- Once your workspace and assessment are created, you will be redirected to the assessment page to begin.
+Once your workspace and assessment are created, you will be redirected to the assessment page to begin.
+
+.. toctree::
+   :hidden:
+
+   creating_assessment
