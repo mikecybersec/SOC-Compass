@@ -10,6 +10,7 @@ SOC Compass is the new way of delivering Security Operation Center (SOC) assessm
 Whilst the frameworks exist, they tend to fall short by not providing specific actions, timelines and recommendations that a SOC manager can follow through with.
 
 Compass integrates with:
+
 - SOC-CMM
 - SIM3
 - MITRE Inform
