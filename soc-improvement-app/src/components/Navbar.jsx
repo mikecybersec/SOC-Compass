@@ -58,9 +58,11 @@ const Navbar = ({
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => window.open('https://github.com/mikecybersec', '_blank', 'noreferrer')}
+          onClick={() =>
+            window.open('https://soc-compass.readthedocs.io/en/latest/', '_blank', 'noreferrer')
+          }
         >
-          Resources
+          Documentation
         </Button>
       </nav>
     </header>
