@@ -42,6 +42,7 @@ const Workspaces = ({
   const [settingsMenuOpenId, setSettingsMenuOpenId] = useState(null);
   const [deleteNameInput, setDeleteNameInput] = useState('');
   const [workspaceToOpen, setWorkspaceToOpen] = useState(null);
+  const [assessmentPage, setAssessmentPage] = useState(0);
 
   // Update storage info periodically and when workspaces change
   useEffect(() => {
@@ -138,6 +139,7 @@ const Workspaces = ({
     if (!workspace) return;
     onLoadWorkspace?.(workspace.id, assessmentId);
     setWorkspaceToOpen(null);
+    setAssessmentPage(0);
   };
 
   const getSortedAssessments = (workspace) => {
@@ -606,7 +608,15 @@ const Workspaces = ({
       </AlertDialog>
 
       {/* Select assessment before entering workspace */}
-      <AlertDialog open={!!workspaceToOpen} onOpenChange={(value) => !value && setWorkspaceToOpen(null)}>
+      <AlertDialog
+        open={!!workspaceToOpen}
+        onOpenChange={(value) => {
+          if (!value) {
+            setWorkspaceToOpen(null);
+            setAssessmentPage(0);
+          }
+        }}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
@@ -621,6 +631,13 @@ const Workspaces = ({
             const assessments = getSortedAssessments(workspaceToOpen);
             const hasAssessments = assessments.length > 0;
             const primaryLabel = hasAssessments ? 'Open most recent' : 'Enter workspace';
+            const pageSize = 4;
+            const totalPages = hasAssessments ? Math.ceil(assessments.length / pageSize) : 1;
+            const currentPage = Math.min(assessmentPage, totalPages - 1);
+            const startIndex = currentPage * pageSize;
+            const endIndex = startIndex + pageSize;
+            const pageItems = assessments.slice(startIndex, endIndex);
+
             return (
               <div className="space-y-4">
                 <div className="flex items-center justify-between gap-2">
@@ -639,34 +656,50 @@ const Workspaces = ({
                 </div>
 
                 {hasAssessments && (
-                  <div className="space-y-2">
-                    {assessments.slice(0, 5).map((assessment) => (
-                      <div
-                        key={assessment.id}
-                        className="flex items-center justify-between rounded-lg border border-border bg-card px-3 py-2.5"
-                      >
-                        <div className="min-w-0">
-                          <p className="text-sm font-semibold text-foreground truncate">
-                            {assessment.metadata?.assessmentTitle || 'Untitled Assessment'}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            Updated {formatRelativeTime(assessment.savedAt || assessment.updatedAt)}
-                          </p>
-                        </div>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleOpenAssessment(workspaceToOpen, assessment.id)}
-                          className="shrink-0"
+                  <div className="space-y-3">
+                    <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+                      {pageItems.map((assessment) => (
+                        <div
+                          key={assessment.id}
+                          className="flex items-center justify-between rounded-lg border border-border bg-card px-3 py-2.5"
                         >
-                          Open
-                        </Button>
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-foreground truncate">
+                              {assessment.metadata?.assessmentTitle || 'Untitled Assessment'}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              Updated {formatRelativeTime(assessment.savedAt || assessment.updatedAt)}
+                            </p>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => handleOpenAssessment(workspaceToOpen, assessment.id)}
+                            className="shrink-0"
+                          >
+                            Open
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+
+                    {totalPages > 1 && (
+                      <div className="flex items-center justify-center gap-1 pt-1">
+                        {Array.from({ length: totalPages }).map((_, index) => (
+                          <button
+                            key={index}
+                            type="button"
+                            onClick={() => setAssessmentPage(index)}
+                            className={`h-7 min-w-7 px-2 rounded-md text-xs font-medium border transition-colors ${
+                              index === currentPage
+                                ? 'bg-primary text-primary-foreground border-primary'
+                                : 'bg-background text-muted-foreground border-border hover:bg-muted'
+                            }`}
+                          >
+                            {index + 1}
+                          </button>
+                        ))}
                       </div>
-                    ))}
-                    {assessments.length > 5 && (
-                      <p className="text-xs text-muted-foreground">
-                        Showing latest 5. Open workspace to see all.
-                      </p>
                     )}
                   </div>
                 )}
