@@ -1,6 +1,6 @@
 import React from 'react';
 import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
-import { ChevronDown, SquareArrowOutUpRight } from 'lucide-react';
+import { ChevronDown, ExternalLink } from 'lucide-react';
 
 const Navbar = ({
   onGoHome,
@@ -64,7 +64,7 @@ const Navbar = ({
         >
           <span className="inline-flex items-center gap-1">
             <span>Documentation</span>
-            <SquareArrowOutUpRight className="h-3 w-3 text-muted-foreground opacity-70" />
+            <ExternalLink className="h-3 w-3 text-muted-foreground opacity-70" />
           </span>
         </Button>
       </nav>
