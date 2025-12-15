@@ -20,6 +20,11 @@ const handleResponse = async (response) => {
       errorData
     );
   }
+
+  // No-content responses (e.g. DELETE 204)
+  if (response.status === 204 || response.status === 205) {
+    return null;
+  }
   
   return response.json();
 };
