@@ -16,14 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card-shadcn';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from '@/components/ui/dialog';
+import Dialog from '@/components/ui/Dialog';
 import ActionPlan from '../components/ActionPlan';
 import ScoreBoard from '../components/ScoreBoard';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
