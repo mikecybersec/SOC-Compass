@@ -1,5 +1,5 @@
 import * as React from "react"
-import { ChevronRight, Settings, Key, Lock, Plug, Zap } from "lucide-react"
+import { ChevronRight, Settings, Key, Lock, Plug, Zap, BookOpen } from "lucide-react"
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import {
@@ -60,6 +60,20 @@ export function NavAdministration({
                 <SidebarMenuSubButton disabled>
                   <Zap />
                   <span>Automation (Coming Soon)</span>
+                </SidebarMenuSubButton>
+              </SidebarMenuSubItem>
+              <SidebarMenuSubItem>
+                <SidebarMenuSubButton
+                  onClick={() =>
+                    window.open(
+                      "https://soc-compass.readthedocs.io/en/latest/",
+                      "_blank",
+                      "noreferrer"
+                    )
+                  }
+                >
+                  <BookOpen />
+                  <span>Documentation</span>
                 </SidebarMenuSubButton>
               </SidebarMenuSubItem>
             </SidebarMenuSub>
