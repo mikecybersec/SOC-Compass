@@ -22,7 +22,7 @@ import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { frameworks } from '../utils/frameworks';
 import { exportAssessment } from '../utils/storage';
 import { exportPdf } from '../utils/pdf';
-import { FileDown, Download, FileJson, TrendingUp, Target, Calendar, DollarSign, Building2, Columns3, AlertCircle } from 'lucide-react';
+import { FileDown, Download, FileJson, TrendingUp, Target, Calendar, DollarSign, Building2, AlertCircle } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 
 const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessmentInfo, onOpenReporting, onNavigateHome, onSwitchWorkspace, onOpenApiModal, onOpenPreferences, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
@@ -232,7 +232,7 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <Columns3 className="h-4 w-4 text-muted-foreground" />
+                  <Target className="h-4 w-4 text-muted-foreground" />
                   <h2 className="text-2xl font-semibold tracking-tight">Action Tracker</h2>
                 </div>
                 <p className="text-sm text-muted-foreground">
