@@ -22,6 +22,8 @@ import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { frameworks } from '../utils/frameworks';
 import { exportAssessment } from '../utils/storage';
 import { exportPdf } from '../utils/pdf';
+import { generateStructuredActions } from '../utils/ai';
+import { toastSuccess, toastError } from '../utils/toast';
 import { FileDown, Download, FileJson, TrendingUp, Target, Calendar, DollarSign, Building2, AlertCircle } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 
@@ -42,6 +44,11 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
   const setDomainCollapsed = useAssessmentStore((s) => s.setSidebarDomainCollapsed);
   const administrationCollapsed = useAssessmentStore((s) => s.sidebarAdministrationCollapsed);
   const setAdministrationCollapsed = useAssessmentStore((s) => s.setSidebarAdministrationCollapsed);
+  const apiKey = useAssessmentStore((s) => s.apiKey);
+  const apiBase = useAssessmentStore((s) => s.apiBase);
+  const model = useAssessmentStore((s) => s.model);
+  const createActionsForAssessment = useAssessmentStore((s) => s.createActionsForAssessment);
+  const [isGeneratingActions, setIsGeneratingActions] = useState(false);
 
   const aspects = frameworks[frameworkId]?.aspects || [];
 
@@ -243,11 +250,77 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
                 <Button
                   variant="outline"
                   size="sm"
-                  disabled={false}
+                  disabled={isGeneratingActions || !apiKey || !currentAssessmentId}
                   className="gap-2"
+                  onClick={async () => {
+                    if (!apiKey) {
+                      toastError('Configure a Grok API key before generating actions.');
+                      return;
+                    }
+                    if (!currentAssessmentId) {
+                      toastError('No active assessment selected.');
+                      return;
+                    }
+
+                    try {
+                      setIsGeneratingActions(true);
+                      const { actions, error } = await generateStructuredActions({
+                        apiKey,
+                        apiBase,
+                        model,
+                        frameworkName,
+                        answers,
+                        scores,
+                        metadata,
+                      });
+
+                      if (error) {
+                        toastError(error);
+                        return;
+                      }
+
+                      if (!actions || actions.length === 0) {
+                        toastError('AI did not return any actionable items.');
+                        return;
+                      }
+
+                      // Convert dueDays to concrete dueDate ISO strings
+                      const now = new Date();
+                      const payload = actions.map((a) => ({
+                        title: a.title,
+                        description: a.description,
+                        status: 'todo',
+                        priority: a.priority,
+                        category: a.category,
+                        owner: a.owner,
+                        dueDate: a.dueDays
+                          ? new Date(now.getTime() + a.dueDays * 24 * 60 * 60 * 1000).toISOString()
+                          : null,
+                        source: 'ai',
+                      }));
+
+                      await createActionsForAssessment(currentAssessmentId, payload);
+                      await fetchActionsForAssessment(currentAssessmentId);
+                      toastSuccess(`Added ${payload.length} AI-suggested actions.`);
+                    } catch (err) {
+                      console.error('Failed to generate actions from AI:', err);
+                      toastError('Failed to generate actions from AI. Please try again.');
+                    } finally {
+                      setIsGeneratingActions(false);
+                    }
+                  }}
                 >
-                  <Download className="h-4 w-4" />
-                  Generate actions from AI
+                  {isGeneratingActions ? (
+                    <>
+                      <Calendar className="h-4 w-4 animate-spin" />
+                      Generating…
+                    </>
+                  ) : (
+                    <>
+                      <Download className="h-4 w-4" />
+                      Generate actions from AI
+                    </>
+                  )}
                 </Button>
               </div>
             </div>
