@@ -26,12 +26,14 @@ export function AppSidebar({
   onSelect,
   onNavigateHome,
   onOpenAssessmentInfo,
+  onOpenAssessmentScoring,
   onOpenReporting,
   onOpenContinuousImprovement,
   onSwitchWorkspace,
   onOpenApiModal,
   onOpenPreferences,
   assessmentInfoActive = false,
+  assessmentScoringActive = false,
   reportingActive = false,
   continuousImprovementActive = false,
   assessmentCollapsed,
@@ -108,10 +110,20 @@ export function AppSidebar({
           </>
         )}
         
-        {/* Reporting & Continuous Improvement */}
+        {/* Assessment Scoring, Reporting & Continuous Improvement */}
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  onClick={onOpenAssessmentScoring}
+                  isActive={assessmentScoringActive}
+                  tooltip="Assessment Scoring"
+                >
+                  <TrendingUp />
+                  <span>Assessment Scoring</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton 
                   onClick={onOpenReporting}

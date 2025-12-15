@@ -28,6 +28,7 @@ const ContinuousImprovement = ({
   onBack,
   onNavigateHome,
   onOpenAssessmentInfo,
+  onOpenAssessmentScoring,
   onOpenReporting,
   onOpenContinuousImprovement,
   onSwitchWorkspace,
@@ -103,6 +104,7 @@ const ContinuousImprovement = ({
         onSelect={handleSelectAspect}
         onNavigateHome={onNavigateHome || onBack}
         onOpenAssessmentInfo={onOpenAssessmentInfo}
+        onOpenAssessmentScoring={onOpenAssessmentScoring}
         onOpenReporting={onOpenReporting}
         onOpenContinuousImprovement={onOpenContinuousImprovement}
         onSwitchWorkspace={onSwitchWorkspace}
