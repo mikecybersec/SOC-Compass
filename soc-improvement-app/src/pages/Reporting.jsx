@@ -360,18 +360,23 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
 
             <div className="grid gap-4 md:grid-cols-3">
               {/* To Do */}
-              <Card className="flex flex-col min-h-[260px]">
-                <CardHeader className="pb-2">
+              <Card className="flex flex-col min-h-[260px] border-dashed bg-muted/20">
+                <CardHeader className="pb-2 border-b border-border/60 bg-muted/40">
                   <div className="flex items-center justify-between gap-2">
-                    <CardTitle className="text-sm font-semibold">To Do</CardTitle>
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 w-2 rounded-full bg-amber-500" />
+                      <CardTitle className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">
+                        To Do
+                      </CardTitle>
+                    </div>
                     <Badge variant="secondary">{todoActions.length}</Badge>
                   </div>
                 </CardHeader>
-                <CardContent className="pt-0 space-y-2 overflow-y-auto max-h-[320px]">
+                <CardContent className="pt-3 space-y-2 overflow-y-auto max-h-[320px]">
                   {todoActions.length === 0 ? (
-                    <p className="text-xs text-muted-foreground italic">
+                    <div className="rounded-md border border-dashed border-muted-foreground/30 bg-background/40 px-3 py-2 text-xs text-muted-foreground">
                       No actions in this column yet.
-                    </p>
+                    </div>
                   ) : (
                     todoActions.map((action) => (
                     <button
@@ -381,18 +386,33 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
                         setSelectedAction(action);
                         setIsActionDialogOpen(true);
                       }}
-                      className="w-full text-left rounded-md border bg-card px-3 py-2.5 space-y-1 hover:bg-accent hover:border-accent-foreground/20 transition-colors"
+                      className="w-full text-left rounded-lg border bg-card/80 px-3 py-2.5 space-y-1 hover:bg-accent hover:border-accent-foreground/20 transition-colors shadow-sm"
                     >
                         <div className="flex items-start justify-between gap-2">
                           <p className="text-sm font-medium leading-snug line-clamp-2">
                             {action.title}
                           </p>
                         </div>
-                        {action.category && (
-                          <p className="text-[11px] text-muted-foreground">
-                            {action.category}
-                          </p>
-                        )}
+                        <div className="flex items-center justify-between gap-2">
+                          {action.category && (
+                            <p className="text-[11px] text-muted-foreground truncate">
+                              {action.category}
+                            </p>
+                          )}
+                          {action.priority && (
+                            <span
+                              className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${
+                                action.priority === 'high'
+                                  ? 'bg-red-500/10 text-red-500'
+                                  : action.priority === 'low'
+                                  ? 'bg-emerald-500/10 text-emerald-500'
+                                  : 'bg-amber-500/10 text-amber-500'
+                              }`}
+                            >
+                              {action.priority}
+                            </span>
+                          )}
+                        </div>
                     </button>
                     ))
                   )}
@@ -400,18 +420,23 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
               </Card>
 
               {/* Doing */}
-              <Card className="flex flex-col min-h-[260px]">
-                <CardHeader className="pb-2">
+              <Card className="flex flex-col min-h-[260px] border-dashed bg-muted/20">
+                <CardHeader className="pb-2 border-b border-border/60 bg-muted/40">
                   <div className="flex items-center justify-between gap-2">
-                    <CardTitle className="text-sm font-semibold">Doing</CardTitle>
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 w-2 rounded-full bg-sky-500" />
+                      <CardTitle className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">
+                        Doing
+                      </CardTitle>
+                    </div>
                     <Badge variant="secondary">{doingActions.length}</Badge>
                   </div>
                 </CardHeader>
-                <CardContent className="pt-0 space-y-2 overflow-y-auto max-h-[320px]">
+                <CardContent className="pt-3 space-y-2 overflow-y-auto max-h-[320px]">
                   {doingActions.length === 0 ? (
-                    <p className="text-xs text-muted-foreground italic">
+                    <div className="rounded-md border border-dashed border-muted-foreground/30 bg-background/40 px-3 py-2 text-xs text-muted-foreground">
                       No actions in this column yet.
-                    </p>
+                    </div>
                   ) : (
                     doingActions.map((action) => (
                     <button
@@ -421,18 +446,33 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
                         setSelectedAction(action);
                         setIsActionDialogOpen(true);
                       }}
-                      className="w-full text-left rounded-md border bg-card px-3 py-2.5 space-y-1 hover:bg-accent hover:border-accent-foreground/20 transition-colors"
+                      className="w-full text-left rounded-lg border bg-card/80 px-3 py-2.5 space-y-1 hover:bg-accent hover:border-accent-foreground/20 transition-colors shadow-sm"
                     >
                         <div className="flex items-start justify-between gap-2">
                           <p className="text-sm font-medium leading-snug line-clamp-2">
                             {action.title}
                           </p>
                         </div>
-                        {action.category && (
-                          <p className="text-[11px] text-muted-foreground">
-                            {action.category}
-                          </p>
-                        )}
+                        <div className="flex items-center justify-between gap-2">
+                          {action.category && (
+                            <p className="text-[11px] text-muted-foreground truncate">
+                              {action.category}
+                            </p>
+                          )}
+                          {action.priority && (
+                            <span
+                              className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${
+                                action.priority === 'high'
+                                  ? 'bg-red-500/10 text-red-500'
+                                  : action.priority === 'low'
+                                  ? 'bg-emerald-500/10 text-emerald-500'
+                                  : 'bg-amber-500/10 text-amber-500'
+                              }`}
+                            >
+                              {action.priority}
+                            </span>
+                          )}
+                        </div>
                     </button>
                     ))
                   )}
@@ -440,18 +480,23 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
               </Card>
 
               {/* Done */}
-              <Card className="flex flex-col min-h-[260px]">
-                <CardHeader className="pb-2">
+              <Card className="flex flex-col min-h-[260px] border-dashed bg-muted/20">
+                <CardHeader className="pb-2 border-b border-border/60 bg-muted/40">
                   <div className="flex items-center justify-between gap-2">
-                    <CardTitle className="text-sm font-semibold">Done</CardTitle>
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 w-2 rounded-full bg-emerald-500" />
+                      <CardTitle className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">
+                        Done
+                      </CardTitle>
+                    </div>
                     <Badge variant="secondary">{doneActions.length}</Badge>
                   </div>
                 </CardHeader>
-                <CardContent className="pt-0 space-y-2 overflow-y-auto max-h-[320px]">
+                <CardContent className="pt-3 space-y-2 overflow-y-auto max-h-[320px]">
                   {doneActions.length === 0 ? (
-                    <p className="text-xs text-muted-foreground italic">
+                    <div className="rounded-md border border-dashed border-muted-foreground/30 bg-background/40 px-3 py-2 text-xs text-muted-foreground">
                       No completed actions yet.
-                    </p>
+                    </div>
                   ) : (
                     doneActions.map((action) => (
                     <button
@@ -461,18 +506,33 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
                         setSelectedAction(action);
                         setIsActionDialogOpen(true);
                       }}
-                      className="w-full text-left rounded-md border bg-card px-3 py-2.5 space-y-1 hover:bg-accent hover:border-accent-foreground/20 transition-colors"
+                      className="w-full text-left rounded-lg border bg-card/80 px-3 py-2.5 space-y-1 hover:bg-accent hover:border-accent-foreground/20 transition-colors shadow-sm"
                     >
                         <div className="flex items-start justify-between gap-2">
                           <p className="text-sm font-medium leading-snug line-clamp-2">
                             {action.title}
                           </p>
                         </div>
-                        {action.category && (
-                          <p className="text-[11px] text-muted-foreground">
-                            {action.category}
-                          </p>
-                        )}
+                        <div className="flex items-center justify-between gap-2">
+                          {action.category && (
+                            <p className="text-[11px] text-muted-foreground truncate">
+                              {action.category}
+                            </p>
+                          )}
+                          {action.priority && (
+                            <span
+                              className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${
+                                action.priority === 'high'
+                                  ? 'bg-red-500/10 text-red-500'
+                                  : action.priority === 'low'
+                                  ? 'bg-emerald-500/10 text-emerald-500'
+                                  : 'bg-amber-500/10 text-amber-500'
+                              }`}
+                            >
+                              {action.priority}
+                            </span>
+                          )}
+                        </div>
                     </button>
                     ))
                   )}
