@@ -105,6 +105,7 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
                 </Button>
               </div>
             </div>
+          </div>
 
           {/* Action Plan Section */}
           <div className="space-y-4">
