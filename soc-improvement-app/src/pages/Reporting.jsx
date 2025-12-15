@@ -23,6 +23,7 @@ import { frameworks } from '../utils/frameworks';
 import { exportAssessment } from '../utils/storage';
 import { exportPdf } from '../utils/pdf';
 import { generateStructuredActions } from '../utils/ai';
+import { parseActionPlan } from '../utils/parseActionPlan';
 import { toastSuccess, toastError } from '../utils/toast';
 import { FileDown, Download, FileJson, TrendingUp, Target, Calendar, DollarSign, Building2, AlertCircle } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
@@ -48,6 +49,7 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
   const apiBase = useAssessmentStore((s) => s.apiBase);
   const model = useAssessmentStore((s) => s.model);
   const createActionsForAssessment = useAssessmentStore((s) => s.createActionsForAssessment);
+  const actionPlan = useAssessmentStore((s) => s.currentAssessment.actionPlan);
   const [isGeneratingActions, setIsGeneratingActions] = useState(false);
 
   const aspects = frameworks[frameworkId]?.aspects || [];
@@ -71,6 +73,19 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
 
   const maturityScore = scores.maturity || 0;
   const maturityPercentage = (maturityScore / 5) * 100;
+
+  // Derive the markdown used in the Action Plan tab so AI only parses existing actions
+  const actionPlanText = useMemo(() => {
+    const raw = actionPlan?.raw || '';
+    if (!raw) return '';
+
+    try {
+      const parsed = parseActionPlan(raw);
+      return parsed.actionPlan || raw;
+    } catch {
+      return raw;
+    }
+  }, [actionPlan]);
 
   const currentActions = actionsByAssessmentId[currentAssessmentId] || [];
   const todoActions = currentActions.filter((a) => a.status === 'todo');
@@ -264,14 +279,17 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
 
                     try {
                       setIsGeneratingActions(true);
+
+                      if (!actionPlanText) {
+                        toastError('No Action Plan content found to parse into actions.');
+                        return;
+                      }
+
                       const { actions, error } = await generateStructuredActions({
                         apiKey,
                         apiBase,
                         model,
-                        frameworkName,
-                        answers,
-                        scores,
-                        metadata,
+                        actionPlanText,
                       });
 
                       if (error) {

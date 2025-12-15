@@ -166,38 +166,34 @@ export const generateStructuredActions = async ({
   apiKey,
   apiBase = 'https://api.x.ai/v1/',
   model = 'grok-4-latest',
-  frameworkName,
-  answers,
-  scores,
-  metadata,
+  actionPlanText,
 }) => {
   if (!apiKey) {
     return { actions: [], error: 'API key is required' };
+  }
+
+  if (!actionPlanText || !actionPlanText.trim()) {
+    return { actions: [], error: 'No action plan content available to parse.' };
   }
 
   const normalizedBase =
     (apiBase?.trim() || 'https://api.x.ai/v1/').replace(/\/+$/, '') ||
     'https://api.x.ai/v1';
 
-  const orgName = metadata.name || 'Unknown organization';
-  const objectives = (metadata.objectives || []).join(', ') || 'Not specified';
-
   const systemMessage =
     'You are a SOC transformation advisor who outputs ONLY valid JSON (no markdown, no commentary).';
 
-  const userMessage = `Using the following assessment context, generate a small set of actionable remediation items as structured JSON.
-
-Context:
-- Framework: ${frameworkName}
-- Organization: ${orgName}
-- Objectives: ${objectives}
-- Maturity scores: ${JSON.stringify(scores)}
-- Key answers: ${JSON.stringify(answers)}
+  const userMessage = `You are given the Action Plan section from an already-completed SOC maturity report.
+The text is written in markdown and already contains the organization's agreed actions and recommendations.
 
 Your task:
-- Generate between 5 and 10 concrete actions.
-- Each action should address a specific maturity gap or improvement opportunity.
+- Do NOT invent new actions.
+- ONLY extract and normalize the actions that are explicitly present in the provided text.
+- Treat each distinct bullet point or numbered item that describes a concrete piece of work as a separate action.
 - Focus on clarity and executability (one clear outcome per action).
+
+Action plan markdown:
+${actionPlanText}
 
 JSON schema:
 {
