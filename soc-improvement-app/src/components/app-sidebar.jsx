@@ -18,7 +18,7 @@ import {
   SidebarHeader,
   SidebarSeparator,
 } from "@/components/ui/sidebar"
-import { Info, FileText } from "lucide-react"
+import { Info, FileText, Target } from "lucide-react"
 
 export function AppSidebar({
   aspects,
@@ -27,11 +27,13 @@ export function AppSidebar({
   onNavigateHome,
   onOpenAssessmentInfo,
   onOpenReporting,
+  onOpenContinuousImprovement,
   onSwitchWorkspace,
   onOpenApiModal,
   onOpenPreferences,
   assessmentInfoActive = false,
   reportingActive = false,
+  continuousImprovementActive = false,
   assessmentCollapsed,
   setAssessmentCollapsed,
   domainCollapsed,
@@ -106,7 +108,7 @@ export function AppSidebar({
           </>
         )}
         
-        {/* Reporting */}
+        {/* Reporting & Continuous Improvement */}
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -118,6 +120,16 @@ export function AppSidebar({
                 >
                   <FileText />
                   <span>Reporting</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  onClick={onOpenContinuousImprovement}
+                  isActive={continuousImprovementActive}
+                  tooltip="Continuous Improvement"
+                >
+                  <Target />
+                  <span>Continuous Improvement</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

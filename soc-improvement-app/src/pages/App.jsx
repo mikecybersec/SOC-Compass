@@ -4,6 +4,7 @@ import { ModeSelectionModal, StartAssessmentModal } from './Home';
 import Assessment from './Assessment';
 import AssessmentInfo from './AssessmentInfo';
 import Reporting from './Reporting';
+import ContinuousImprovement from './ContinuousImprovement';
 import ActiveAssessments from './ActiveAssessments';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import Navbar from '../components/Navbar';
@@ -321,6 +322,10 @@ const App = () => {
     setView('reporting');
   };
 
+  const handleViewContinuousImprovement = () => {
+    setView('continuous-improvement');
+  };
+
   const handleStart = async (payload) => {
     if (hasActiveAssessment) {
       saveAssessmentToHistory('Previous assessment snapshot');
@@ -432,6 +437,7 @@ const App = () => {
               onNavigateHome={() => setView('home')}
               onOpenAssessmentInfo={handleViewAssessmentInfo}
               onOpenReporting={handleViewReporting}
+              onOpenContinuousImprovement={handleViewContinuousImprovement}
               onSwitchWorkspace={handleSwitchWorkspace}
               onOpenApiModal={() => setApiModalOpen(true)}
               onOpenPreferences={() => setPreferencesModalOpen(true)}
@@ -446,6 +452,7 @@ const App = () => {
               onBack={() => setView('assessment')}
               onNavigateHome={() => setView('home')}
               onOpenReporting={handleViewReporting}
+              onOpenContinuousImprovement={handleViewContinuousImprovement}
               onSwitchWorkspace={handleSwitchWorkspace}
               onOpenApiModal={() => setApiModalOpen(true)}
               onOpenPreferences={() => setPreferencesModalOpen(true)}
@@ -470,6 +477,23 @@ const App = () => {
               metaRef={metaRef}
               onOpenAssessmentInfo={handleViewAssessmentInfo}
               onOpenReporting={handleViewReporting}
+              onOpenContinuousImprovement={handleViewContinuousImprovement}
+              workspace={currentWorkspace}
+              assessments={workspaceAssessments}
+              currentAssessmentId={currentAssessmentId}
+              onSwitchAssessment={switchAssessment}
+            />
+          )}
+          {view === 'continuous-improvement' && (
+            <ContinuousImprovement
+              onBack={() => setView('assessment')}
+              onNavigateHome={() => setView('home')}
+              onSwitchWorkspace={handleSwitchWorkspace}
+              onOpenApiModal={() => setApiModalOpen(true)}
+              onOpenPreferences={() => setPreferencesModalOpen(true)}
+              onOpenAssessmentInfo={handleViewAssessmentInfo}
+              onOpenReporting={handleViewReporting}
+              onOpenContinuousImprovement={handleViewContinuousImprovement}
               workspace={currentWorkspace}
               assessments={workspaceAssessments}
               currentAssessmentId={currentAssessmentId}
@@ -479,7 +503,7 @@ const App = () => {
         </main>
         <Footer />
       </div>
-      {(view === 'assessment' || view === 'assessmentInfo' || view === 'reporting') && (
+      {(view === 'assessment' || view === 'assessmentInfo' || view === 'reporting' || view === 'continuous-improvement') && (
         <AssessmentCopilot onOpenApiModal={() => setApiModalOpen(true)} />
       )}
       <ModeSelectionModal

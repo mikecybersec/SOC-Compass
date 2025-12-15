@@ -17,7 +17,7 @@ import { frameworks } from '../utils/frameworks';
 import Dialog from '../components/ui/Dialog';
 import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
 
-const AssessmentInfo = ({ onBack, onOpenReporting, metaRef, scoresRef, actionPlanRef, onDeleteAssessment, onNavigateHome, onSwitchWorkspace, onOpenApiModal, onOpenPreferences, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
+const AssessmentInfo = ({ onBack, onOpenReporting, onOpenContinuousImprovement, metaRef, scoresRef, actionPlanRef, onDeleteAssessment, onNavigateHome, onSwitchWorkspace, onOpenApiModal, onOpenPreferences, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
   const metadata = useAssessmentStore((s) => s.currentAssessment.metadata);
   const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
   const lastSavedAt = useAssessmentStore((s) => s.lastSavedAt);
@@ -65,6 +65,7 @@ const AssessmentInfo = ({ onBack, onOpenReporting, metaRef, scoresRef, actionPla
         onNavigateHome={onNavigateHome || onBack}
         assessmentInfoActive
         onOpenReporting={onOpenReporting}
+        onOpenContinuousImprovement={onOpenContinuousImprovement}
         onSwitchWorkspace={onSwitchWorkspace}
         onOpenApiModal={onOpenApiModal}
         onOpenPreferences={onOpenPreferences}

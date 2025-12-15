@@ -17,7 +17,7 @@ import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { toastSuccess } from '../utils/toast';
 import { generateAspectRecommendations } from '../utils/ai';
 
-const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateHome, onSwitchWorkspace, onOpenApiModal, onOpenPreferences, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
+const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onOpenContinuousImprovement, onNavigateHome, onSwitchWorkspace, onOpenApiModal, onOpenPreferences, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
   const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
   const setActiveAspectKey = useAssessmentStore((s) => s.setActiveAspectKey);
@@ -154,6 +154,7 @@ const Assessment = ({ onBack, onOpenAssessmentInfo, onOpenReporting, onNavigateH
         onNavigateHome={onNavigateHome || onBack}
         onOpenAssessmentInfo={onOpenAssessmentInfo}
         onOpenReporting={onOpenReporting}
+        onOpenContinuousImprovement={onOpenContinuousImprovement}
         onSwitchWorkspace={onSwitchWorkspace}
         onOpenApiModal={onOpenApiModal}
         onOpenPreferences={onOpenPreferences}
