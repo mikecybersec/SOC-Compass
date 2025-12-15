@@ -11,6 +11,7 @@ import Footer from '../components/Footer';
 import AssessmentCopilot from '../components/AssessmentCopilot';
 import Dialog from '../components/ui/Dialog';
 import DisclaimerDialog, { hasAcceptedDisclaimer } from '../components/DisclaimerDialog';
+import MigrationModal from '../components/MigrationModal';
 import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
 import { Input } from '../components/ui/Input';
 import {
@@ -22,6 +23,7 @@ import {
 } from '@/components/ui/select';
 import { validateApiKey } from '../utils/ai';
 import { toastSuccess, toastError } from '../utils/toast';
+import { migrationAPI } from '../api/migration';
 import { Key, CheckCircle2, AlertCircle } from 'lucide-react';
 
 const ApiKeyModal = ({ open, onClose, apiKey, setApiKey, apiBase, setApiBase, model, setModel }) => {
@@ -227,6 +229,7 @@ const App = () => {
   const [apiModalOpen, setApiModalOpen] = useState(false);
   const [preferencesModalOpen, setPreferencesModalOpen] = useState(false);
   const [disclaimerOpen, setDisclaimerOpen] = useState(false);
+  const [migrationModalOpen, setMigrationModalOpen] = useState(false);
   const [pendingWorkspaceId, setPendingWorkspaceId] = useState(null);
   const scoresRef = useRef();
   const actionPlanRef = useRef();
@@ -241,6 +244,7 @@ const App = () => {
   const loadWorkspace = useAssessmentStore((s) => s.loadWorkspace);
   const switchAssessment = useAssessmentStore((s) => s.switchAssessment);
   const saveAssessmentToHistory = useAssessmentStore((s) => s.saveAssessmentToHistory);
+  const fetchWorkspaces = useAssessmentStore((s) => s.fetchWorkspaces);
   const apiKey = useAssessmentStore((s) => s.apiKey);
   const setApiKey = useAssessmentStore((s) => s.setApiKey);
   const apiBase = useAssessmentStore((s) => s.apiBase);
@@ -251,6 +255,26 @@ const App = () => {
   const language = upcomingMetadata.language;
   const setLanguage = useAssessmentStore((s) => s.setLanguage);
   const setTheme = useAssessmentStore((s) => s.setTheme);
+  
+  // Check for migration on mount
+  useEffect(() => {
+    const checkMigration = async () => {
+      try {
+        const status = await migrationAPI.getStatus();
+        const hasLocalStorage = typeof window !== 'undefined' && 
+          localStorage.getItem('soc-improvement-app-state');
+        
+        // Show migration modal if DB is empty but localStorage has data
+        if (!status.hasData && hasLocalStorage) {
+          setMigrationModalOpen(true);
+        }
+      } catch (error) {
+        console.error('Failed to check migration status:', error);
+      }
+    };
+    
+    checkMigration();
+  }, []);
 
   useEffect(() => {
     if (!theme) return; // Safety check
@@ -494,6 +518,14 @@ const App = () => {
       <DisclaimerDialog
         open={disclaimerOpen}
         onAccept={handleDisclaimerAccept}
+      />
+      <MigrationModal
+        open={migrationModalOpen}
+        onClose={() => setMigrationModalOpen(false)}
+        onMigrationComplete={() => {
+          fetchWorkspaces();
+          setMigrationModalOpen(false);
+        }}
       />
     </>
   );

@@ -2,7 +2,8 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { frameworks, defaultFrameworkId } from '../utils/frameworks';
 import { computeScores } from '../utils/scoring';
-import { loadState, saveState } from '../utils/storage';
+import { workspacesAPI } from '../api/workspaces';
+import { assessmentsAPI } from '../api/assessments';
 
 const defaultApiBase = 'https://api.x.ai/v1/';
 const defaultModel = 'grok-4-latest';
@@ -226,13 +227,76 @@ const hydrateState = (saved) => {
 };
 
 const buildInitialState = () => {
-  const saved = typeof window !== 'undefined' ? loadState() : null;
-  return hydrateState(saved);
+  // Initial state without backend data - will be populated via fetchWorkspaces
+  return {
+    apiKey: '',
+    apiKeyValidated: false,
+    apiBase: defaultApiBase,
+    model: defaultModel,
+    theme: 'system',
+    currentAssessment: buildAssessment(),
+    upcomingMetadata: defaultMetadata(),
+    workspaces: [],
+    currentWorkspaceId: null,
+    currentAssessmentId: null,
+    lastSavedAt: timestampNow(),
+    activeAspectKey: null,
+    sidebarCollapsed: false,
+    sidebarAssessmentCollapsed: true,
+    sidebarDomainCollapsed: {},
+    sidebarAdministrationCollapsed: true,
+    skipNextAutoSave: false,
+    isLoading: false,
+    isSyncing: false,
+  };
 };
 
 export const useAssessmentStore = create(
   devtools((set, get) => ({
     ...buildInitialState(),
+    
+    // Fetch all workspaces from backend
+    fetchWorkspaces: async () => {
+      set({ isLoading: true });
+      try {
+        const workspaces = await workspacesAPI.getAll();
+        const hydrated = workspaces.map((w) => ({
+          ...w,
+          assessments: (w.assessments || []).map((entry) => hydrateAssessment(entry, entry.metadata)),
+        }));
+        
+        // Set current workspace to first one if none selected
+        const currentWorkspaceId = get().currentWorkspaceId || hydrated[0]?.id;
+        const currentWorkspace = hydrated.find((w) => w.id === currentWorkspaceId) || hydrated[0];
+        const assessments = currentWorkspace?.assessments || [];
+        const lastAssessment = assessments.length > 0
+          ? assessments.sort((a, b) => new Date(b.savedAt || 0) - new Date(a.savedAt || 0))[0]
+          : buildAssessment();
+        
+        set({
+          workspaces: hydrated,
+          currentWorkspaceId: currentWorkspace?.id || null,
+          currentAssessmentId: lastAssessment.id || null,
+          currentAssessment: lastAssessment,
+          isLoading: false,
+        });
+      } catch (error) {
+        console.error('Failed to fetch workspaces:', error);
+        // Create default workspace if fetch fails
+        const defaultWorkspace = buildWorkspace('My Workspace');
+        try {
+          await workspacesAPI.create(defaultWorkspace.name);
+          set({
+            workspaces: [defaultWorkspace],
+            currentWorkspaceId: defaultWorkspace.id,
+            isLoading: false,
+          });
+        } catch (createError) {
+          console.error('Failed to create default workspace:', createError);
+          set({ isLoading: false });
+        }
+      }
+    },
     setFramework: (frameworkId) =>
       set((state) => ({
         currentAssessment: {
@@ -491,12 +555,16 @@ export const useAssessmentStore = create(
           currentAssessmentId: id,
         };
       }),
-    deleteCurrentAssessment: () =>
-      set((state) => {
-        const currentId = state.currentAssessment?.id;
-        const currentWorkspaceId = state.currentWorkspaceId;
-        if (!currentWorkspaceId) return state;
+    deleteCurrentAssessment: async () => {
+      const state = get();
+      const currentId = state.currentAssessment?.id;
+      const currentWorkspaceId = state.currentWorkspaceId;
+      if (!currentWorkspaceId || !currentId) return;
 
+      const assessmentToDelete = state.currentAssessment;
+      
+      // Optimistic update
+      set((state) => {
         const workspaces = state.workspaces || [];
         const workspaceIndex = workspaces.findIndex((w) => w.id === currentWorkspaceId);
         if (workspaceIndex === -1) return state;
@@ -511,7 +579,6 @@ export const useAssessmentStore = create(
           updatedAt: new Date().toISOString(),
         };
 
-        // Load the last assessment or create a new one
         const lastAssessment = remainingAssessments.length > 0
           ? remainingAssessments.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt))[0]
           : null;
@@ -526,7 +593,26 @@ export const useAssessmentStore = create(
           lastSavedAt: timestampNow(),
           skipNextAutoSave: true,
         };
-      }),
+      });
+      
+      try {
+        await assessmentsAPI.delete(currentId);
+      } catch (error) {
+        console.error('Failed to delete assessment:', error);
+        // Rollback
+        const state = get();
+        const workspaceIndex = state.workspaces.findIndex((w) => w.id === currentWorkspaceId);
+        if (workspaceIndex !== -1) {
+          const updatedWorkspaces = [...state.workspaces];
+          updatedWorkspaces[workspaceIndex] = {
+            ...updatedWorkspaces[workspaceIndex],
+            assessments: [assessmentToDelete, ...(updatedWorkspaces[workspaceIndex].assessments || [])],
+          };
+          set({ workspaces: updatedWorkspaces });
+        }
+        throw error;
+      }
+    },
     removeAssessmentFromHistory: (id) =>
       set((state) => {
         const currentWorkspaceId = state.currentWorkspaceId;
@@ -546,16 +632,39 @@ export const useAssessmentStore = create(
 
         return { workspaces: updatedWorkspaces };
       }),
-    createWorkspace: (name) =>
-      set((state) => {
-        const newWorkspace = buildWorkspace(name || 'New Workspace');
-        return {
-          workspaces: [...(state.workspaces || []), newWorkspace],
-          currentWorkspaceId: newWorkspace.id,
-          currentAssessmentId: null,
-          currentAssessment: buildAssessment(),
-        };
-      }),
+    createWorkspace: async (name) => {
+      const tempId = `workspace-${Date.now()}`;
+      const tempWorkspace = buildWorkspace(name || 'New Workspace');
+      tempWorkspace.id = tempId;
+      
+      // Optimistic update
+      set((state) => ({
+        workspaces: [...(state.workspaces || []), tempWorkspace],
+        currentWorkspaceId: tempWorkspace.id,
+        currentAssessmentId: null,
+        currentAssessment: buildAssessment(),
+      }));
+      
+      try {
+        const created = await workspacesAPI.create(name || 'New Workspace');
+        
+        // Replace temp workspace with real one
+        set((state) => ({
+          workspaces: state.workspaces.map((w) => w.id === tempId ? { ...created, assessments: [] } : w),
+          currentWorkspaceId: created.id,
+        }));
+        
+        return created;
+      } catch (error) {
+        console.error('Failed to create workspace:', error);
+        // Rollback
+        set((state) => ({
+          workspaces: state.workspaces.filter((w) => w.id !== tempId),
+          currentWorkspaceId: state.workspaces.find((w) => w.id !== tempId)?.id || null,
+        }));
+        throw error;
+      }
+    },
     loadWorkspace: (workspaceId, assessmentId = null) =>
       set((state) => {
         const workspace = (state.workspaces || []).find((w) => w.id === workspaceId);
@@ -596,7 +705,8 @@ export const useAssessmentStore = create(
           activeAspectKey: null,
         };
       }),
-    updateWorkspace: (workspaceId, updates) =>
+    updateWorkspace: async (workspaceId, updates) => {
+      // Optimistic update
       set((state) => {
         const workspaces = state.workspaces || [];
         const workspaceIndex = workspaces.findIndex((w) => w.id === workspaceId);
@@ -610,12 +720,35 @@ export const useAssessmentStore = create(
         };
 
         return { workspaces: updatedWorkspaces };
-      }),
-    deleteWorkspace: (workspaceId) =>
+      });
+      
+      try {
+        await workspacesAPI.update(workspaceId, updates);
+      } catch (error) {
+        console.error('Failed to update workspace:', error);
+        // Re-fetch to sync state
+        get().fetchWorkspaces();
+        throw error;
+      }
+    },
+    deleteWorkspace: async (workspaceId) => {
+      const state = get();
+      const workspaceToDelete = state.workspaces.find((w) => w.id === workspaceId);
+      
+      // Optimistic update
       set((state) => {
         const workspaces = (state.workspaces || []).filter((w) => w.id !== workspaceId);
-        const remainingWorkspaces = workspaces.length > 0 ? workspaces : [buildWorkspace('My Workspace')];
+        const remainingWorkspaces = workspaces.length > 0 ? workspaces : [];
         const newCurrentWorkspace = remainingWorkspaces[0];
+
+        if (!newCurrentWorkspace) {
+          return {
+            workspaces: remainingWorkspaces,
+            currentWorkspaceId: null,
+            currentAssessmentId: null,
+            currentAssessment: buildAssessment(),
+          };
+        }
 
         const assessments = newCurrentWorkspace.assessments || [];
         const lastAssessment = assessments.length > 0
@@ -628,7 +761,21 @@ export const useAssessmentStore = create(
           currentAssessmentId: lastAssessment.id,
           currentAssessment: { ...lastAssessment },
         };
-      }),
+      });
+      
+      try {
+        await workspacesAPI.delete(workspaceId);
+      } catch (error) {
+        console.error('Failed to delete workspace:', error);
+        // Rollback
+        if (workspaceToDelete) {
+          set((state) => ({
+            workspaces: [...state.workspaces, workspaceToDelete],
+          }));
+        }
+        throw error;
+      }
+    },
     reset: () => set(buildInitialState()),
     scores: () => {
       const activeAssessment = get().currentAssessment;
@@ -638,11 +785,7 @@ export const useAssessmentStore = create(
   }))
 );
 
-// autosave subscription
-const unsub = useAssessmentStore.subscribe((state) => {
-  saveState(state);
-});
-
+// Initialize workspaces on app load
 if (typeof window !== 'undefined') {
-  window.addEventListener('beforeunload', () => unsub());
+  useAssessmentStore.getState().fetchWorkspaces();
 }
