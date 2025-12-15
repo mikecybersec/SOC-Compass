@@ -16,6 +16,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card-shadcn';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import ActionPlan from '../components/ActionPlan';
 import ScoreBoard from '../components/ScoreBoard';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
@@ -49,6 +57,9 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
   const apiBase = useAssessmentStore((s) => s.apiBase);
   const model = useAssessmentStore((s) => s.model);
   const createActionsForAssessment = useAssessmentStore((s) => s.createActionsForAssessment);
+  const deleteAction = useAssessmentStore((s) => s.deleteAction);
+  const [selectedAction, setSelectedAction] = useState(null);
+  const [isActionDialogOpen, setIsActionDialogOpen] = useState(false);
   const actionPlan = useAssessmentStore((s) => s.currentAssessment.actionPlan);
   const [isGeneratingActions, setIsGeneratingActions] = useState(false);
 
@@ -370,10 +381,15 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
                     </p>
                   ) : (
                     todoActions.map((action) => (
-                      <div
-                        key={action.id}
-                        className="rounded-md border bg-card px-3 py-2.5 space-y-1"
-                      >
+                    <button
+                      key={action.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedAction(action);
+                        setIsActionDialogOpen(true);
+                      }}
+                      className="w-full text-left rounded-md border bg-card px-3 py-2.5 space-y-1 hover:bg-accent hover:border-accent-foreground/20 transition-colors"
+                    >
                         <div className="flex items-start justify-between gap-2">
                           <p className="text-sm font-medium leading-snug line-clamp-2">
                             {action.title}
@@ -384,7 +400,7 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
                             {action.category}
                           </p>
                         )}
-                      </div>
+                    </button>
                     ))
                   )}
                 </CardContent>
@@ -405,10 +421,15 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
                     </p>
                   ) : (
                     doingActions.map((action) => (
-                      <div
-                        key={action.id}
-                        className="rounded-md border bg-card px-3 py-2.5 space-y-1"
-                      >
+                    <button
+                      key={action.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedAction(action);
+                        setIsActionDialogOpen(true);
+                      }}
+                      className="w-full text-left rounded-md border bg-card px-3 py-2.5 space-y-1 hover:bg-accent hover:border-accent-foreground/20 transition-colors"
+                    >
                         <div className="flex items-start justify-between gap-2">
                           <p className="text-sm font-medium leading-snug line-clamp-2">
                             {action.title}
@@ -419,7 +440,7 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
                             {action.category}
                           </p>
                         )}
-                      </div>
+                    </button>
                     ))
                   )}
                 </CardContent>
@@ -440,10 +461,15 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
                     </p>
                   ) : (
                     doneActions.map((action) => (
-                      <div
-                        key={action.id}
-                        className="rounded-md border bg-card px-3 py-2.5 space-y-1"
-                      >
+                    <button
+                      key={action.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedAction(action);
+                        setIsActionDialogOpen(true);
+                      }}
+                      className="w-full text-left rounded-md border bg-card px-3 py-2.5 space-y-1 hover:bg-accent hover:border-accent-foreground/20 transition-colors"
+                    >
                         <div className="flex items-start justify-between gap-2">
                           <p className="text-sm font-medium leading-snug line-clamp-2">
                             {action.title}
@@ -454,7 +480,7 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
                             {action.category}
                           </p>
                         )}
-                      </div>
+                    </button>
                     ))
                   )}
                 </CardContent>
@@ -462,6 +488,93 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
             </div>
           </div>
         </div>
+
+        {/* Action detail dialog (JIRA-style) */}
+        <Dialog
+          open={isActionDialogOpen && !!selectedAction}
+          onOpenChange={(open) => {
+            setIsActionDialogOpen(open);
+            if (!open) {
+              setSelectedAction(null);
+            }
+          }}
+        >
+          <DialogContent className="sm:max-w-lg">
+            {selectedAction && (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="flex items-center justify-between gap-3">
+                    <span className="truncate">{selectedAction.title}</span>
+                    <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium capitalize text-muted-foreground">
+                      {selectedAction.status || 'todo'}
+                    </span>
+                  </DialogTitle>
+                  <DialogDescription>
+                    View details for this remediation task. Deleting will remove it from this
+                    assessment&apos;s action tracker.
+                  </DialogDescription>
+                </DialogHeader>
+
+                <div className="space-y-4 mt-2">
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-muted-foreground">Description</p>
+                    <p className="rounded-md border bg-muted/40 px-3 py-2 text-sm text-foreground whitespace-pre-line">
+                      {selectedAction.description || 'No description provided.'}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium text-muted-foreground">Status</p>
+                      <p className="rounded-md border bg-muted/40 px-2 py-1 text-xs capitalize inline-block">
+                        {selectedAction.status || 'todo'}
+                      </p>
+                    </div>
+                    {selectedAction.category && (
+                      <div className="space-y-1">
+                        <p className="text-xs font-medium text-muted-foreground">Category</p>
+                        <p className="rounded-md border bg-muted/40 px-2 py-1 text-xs">
+                          {selectedAction.category}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <DialogFooter className="mt-4 flex items-center justify-between gap-3">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => {
+                      setIsActionDialogOpen(false);
+                      setSelectedAction(null);
+                    }}
+                  >
+                    Close
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={async () => {
+                      if (!selectedAction?.id) return;
+                      try {
+                        await deleteAction(selectedAction.id);
+                        setIsActionDialogOpen(false);
+                        setSelectedAction(null);
+                        toastSuccess('Action deleted from this assessment.');
+                      } catch (err) {
+                        console.error('Failed to delete action:', err);
+                        toastError('Failed to delete action. Please try again.');
+                      }
+                    }}
+                  >
+                    Delete action
+                  </Button>
+                </DialogFooter>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
       </SidebarInset>
     </SidebarProvider>
   );
