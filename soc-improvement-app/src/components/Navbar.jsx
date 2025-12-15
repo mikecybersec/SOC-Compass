@@ -1,6 +1,6 @@
 import React from 'react';
 import { ButtonShadcn as Button } from '@/components/ui/button-shadcn';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, SquareArrowOutUpRight } from 'lucide-react';
 
 const Navbar = ({
   onGoHome,
@@ -62,7 +62,10 @@ const Navbar = ({
             window.open('https://soc-compass.readthedocs.io/en/latest/', '_blank', 'noreferrer')
           }
         >
-          Documentation
+          <span className="inline-flex items-center gap-1">
+            <span>Documentation</span>
+            <SquareArrowOutUpRight className="h-3 w-3 text-muted-foreground opacity-70" />
+          </span>
         </Button>
       </nav>
     </header>
