@@ -22,7 +22,7 @@ import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { frameworks } from '../utils/frameworks';
 import { exportAssessment } from '../utils/storage';
 import { exportPdf } from '../utils/pdf';
-import { FileDown, FileJson, TrendingUp, DollarSign, Building2 } from 'lucide-react';
+import { FileDown, FileJson, TrendingUp, DollarSign, Building2, Target } from 'lucide-react';
 
 const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessmentInfo, onOpenReporting, onOpenContinuousImprovement, onNavigateHome, onSwitchWorkspace, onOpenApiModal, onOpenPreferences, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
   const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
