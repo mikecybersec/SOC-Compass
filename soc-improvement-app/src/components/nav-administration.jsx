@@ -1,5 +1,5 @@
 import * as React from "react"
-import { ChevronRight, Settings, Key, Lock, Plug, Zap, BookOpen } from "lucide-react"
+import { ChevronRight, Settings, Key, Lock, Plug, Zap, BookOpen, ExternalLink } from "lucide-react"
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import {
@@ -73,7 +73,10 @@ export function NavAdministration({
                   }
                 >
                   <BookOpen />
-                  <span>Documentation</span>
+                  <span className="flex items-center gap-1">
+                    <span>Documentation</span>
+                    <ExternalLink className="h-3 w-3 text-muted-foreground" />
+                  </span>
                 </SidebarMenuSubButton>
               </SidebarMenuSubItem>
             </SidebarMenuSub>
