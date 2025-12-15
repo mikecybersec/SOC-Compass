@@ -41,6 +41,7 @@ const Workspaces = ({
   const [storageInfo, setStorageInfo] = useState(() => getLocalStorageSize());
   const [settingsMenuOpenId, setSettingsMenuOpenId] = useState(null);
   const [deleteNameInput, setDeleteNameInput] = useState('');
+  const [workspaceToOpen, setWorkspaceToOpen] = useState(null);
 
   // Update storage info periodically and when workspaces change
   useEffect(() => {
@@ -131,6 +132,19 @@ const Workspaces = ({
     setDeleteNameInput('');
     setSettingsMenuOpenId(null);
     setDeleteDialogOpen(true);
+  };
+
+  const handleOpenAssessment = (workspace, assessmentId) => {
+    if (!workspace) return;
+    onLoadWorkspace?.(workspace.id, assessmentId);
+    setWorkspaceToOpen(null);
+  };
+
+  const getSortedAssessments = (workspace) => {
+    if (!workspace) return [];
+    return [...(workspace.assessments || [])].sort(
+      (a, b) => new Date(b.savedAt || b.updatedAt || 0) - new Date(a.savedAt || a.updatedAt || 0)
+    );
   };
 
   const handleConfirmDelete = () => {
@@ -309,13 +323,13 @@ const Workspaces = ({
                   }}
                   onClick={() => {
                     if (editingId !== workspace.id) {
-                      onLoadWorkspace(workspace.id);
+                      setWorkspaceToOpen(workspace);
                     }
                   }}
                   onKeyDown={(event) => {
                     if (editingId !== workspace.id && (event.key === 'Enter' || event.key === ' ')) {
                       event.preventDefault();
-                      onLoadWorkspace(workspace.id);
+                      setWorkspaceToOpen(workspace);
                     }
                   }}
                   tabIndex={0}
@@ -587,6 +601,81 @@ const Workspaces = ({
             >
               Delete Workspace
             </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Select assessment before entering workspace */}
+      <AlertDialog open={!!workspaceToOpen} onOpenChange={(value) => !value && setWorkspaceToOpen(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {workspaceToOpen ? `Open "${workspaceToOpen.name}"` : 'Open workspace'}
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-left">
+              Choose which assessment to jump into. We’ll remember your pick for this workspace session.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          {(() => {
+            const assessments = getSortedAssessments(workspaceToOpen);
+            const hasAssessments = assessments.length > 0;
+            const primaryLabel = hasAssessments ? 'Open most recent' : 'Enter workspace';
+            return (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="text-sm text-muted-foreground">
+                    {hasAssessments
+                      ? `${assessments.length} assessment${assessments.length === 1 ? '' : 's'}`
+                      : 'No assessments yet'}
+                  </div>
+                  <Button
+                    variant="primary"
+                    className="shrink-0"
+                    onClick={() => handleOpenAssessment(workspaceToOpen, assessments[0]?.id)}
+                  >
+                    {primaryLabel}
+                  </Button>
+                </div>
+
+                {hasAssessments && (
+                  <div className="space-y-2">
+                    {assessments.slice(0, 5).map((assessment) => (
+                      <div
+                        key={assessment.id}
+                        className="flex items-center justify-between rounded-lg border border-border bg-card px-3 py-2.5"
+                      >
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-foreground truncate">
+                            {assessment.metadata?.assessmentTitle || 'Untitled Assessment'}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Updated {formatRelativeTime(assessment.savedAt || assessment.updatedAt)}
+                          </p>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleOpenAssessment(workspaceToOpen, assessment.id)}
+                          className="shrink-0"
+                        >
+                          Open
+                        </Button>
+                      </div>
+                    ))}
+                    {assessments.length > 5 && (
+                      <p className="text-xs text-muted-foreground">
+                        Showing latest 5. Open workspace to see all.
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setWorkspaceToOpen(null)}>Cancel</AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

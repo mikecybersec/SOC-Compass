@@ -307,7 +307,7 @@ const App = () => {
     setStartMode(null);
   };
 
-  const handleLoadWorkspace = (workspaceId) => {
+  const handleLoadWorkspace = (workspaceId, assessmentId) => {
     // Check if disclaimer has been accepted
     if (!hasAcceptedDisclaimer()) {
       setPendingWorkspaceId(workspaceId);
@@ -317,6 +317,9 @@ const App = () => {
     
     // If accepted, proceed normally
     loadWorkspace(workspaceId);
+    if (assessmentId) {
+      switchAssessment(assessmentId);
+    }
     setView('assessmentInfo');
   };
 
