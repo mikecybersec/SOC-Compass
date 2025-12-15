@@ -189,7 +189,7 @@ const Workspaces = ({
             {onNewWorkspace && (
               <Button variant="primary" onClick={onNewWorkspace} className="gap-2">
                 <FolderOpen className="size-4" />
-                New Workspace
+                New Assessment
               </Button>
             )}
           </div>
@@ -295,7 +295,7 @@ const Workspaces = ({
                 </p>
                 {onNewWorkspace && (
                   <Button variant="primary" onClick={onNewWorkspace}>
-                    Create Workspace
+                    New Assessment
                   </Button>
                 )}
               </div>
