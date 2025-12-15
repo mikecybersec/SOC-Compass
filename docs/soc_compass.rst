@@ -67,11 +67,17 @@ SOC Compass leverages artificial intelligence to provide intelligent recommendat
 - **AI Features** - Powers Compass Copilot, Compass Recommends, and Compass Reporter functionality
 - **Context-Aware** - AI recommendations are tailored based on your SOC budget, age, industry, and strategic objectives
 
+**Recent Improvements**
+
+The following improvements have recently been made to the project:
+
+- **PostgreSQL Database** - Moving the project away from localStorage to a PostgreSQL database for enhanced data persistence, backup, and multi-device synchronization
+- **Docker Deployment** - Containerised deployment option for easier installation and deployment in enterprise environments
+
 **Planned Enhancements**
 
-The following features are planned for future releases:
+The following are ideas for future releases:
 
-- **PostgreSQL Database** - Enterprise-grade database support for enhanced data persistence, backup, and multi-device synchronization
-- **Docker Deployment** - Containerised deployment option for easier installation and deployment in enterprise environments
-- **Cloud Storage Integration** - Optional cloud-based storage for data backup and cross-device access
-- **Multi-User Support** - Team collaboration features with role-based access control
+- **Change tracker** - Utilising AI integration, tell Compass what has changed recently. Compass will infer what elements of the assessment require a review or evidence re-assessing.
+- **Actions tracker** - As part of improving the reporting element, we can utilise AI to track the actions taken and the progress made towards objectives, actions and initiatives in a kanban board style view.
+- **Expiry dates on evidence** - Soon, elements of evidence will have an expiry date, which will be used to trigger a review or evidence re-assessing.
