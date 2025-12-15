@@ -556,21 +556,26 @@ export const useAssessmentStore = create(
           currentAssessment: buildAssessment(),
         };
       }),
-    loadWorkspace: (workspaceId) =>
+    loadWorkspace: (workspaceId, assessmentId = null) =>
       set((state) => {
         const workspace = (state.workspaces || []).find((w) => w.id === workspaceId);
         if (!workspace) return state;
 
         const assessments = workspace.assessments || [];
-        // Load the last saved assessment, or create a new one if none exist
+        // Prefer a specific assessment if provided and found
+        const explicitAssessment = assessmentId
+          ? assessments.find((a) => a.id === assessmentId)
+          : null;
+        // Otherwise load the last saved assessment, or create a new one if none exist
         const lastAssessment = assessments.length > 0
           ? assessments.sort((a, b) => new Date(b.savedAt || 0) - new Date(a.savedAt || 0))[0]
           : buildAssessment();
+        const targetAssessment = explicitAssessment || lastAssessment;
 
         return {
           currentWorkspaceId: workspaceId,
-          currentAssessmentId: lastAssessment.id || null,
-          currentAssessment: { ...lastAssessment },
+          currentAssessmentId: targetAssessment.id || null,
+          currentAssessment: { ...targetAssessment },
           activeAspectKey: null,
         };
       }),
