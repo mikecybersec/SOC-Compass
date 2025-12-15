@@ -1,8 +1,8 @@
-# SOC Compass - PostgreSQL Backend Version
+# SOC Compass
 
 SOC Compass is a comprehensive Security Operations Center (SOC) assessment platform that helps SOC leaders and consultants deliver capability maturity assessments with AI-powered insights.
 
-## 🚀 Quick Start with Docker
+## Quick Start with Docker
 
 ### Prerequisites
 
