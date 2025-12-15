@@ -143,6 +143,7 @@ export const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, 
 
   useEffect(() => {
     if (!open) return;
+    // Initialize once per open to avoid flipping back to "existing" while typing
     setForm(buildInitialForm());
     setSelectedObjectives(initialMetadata.objectives || []);
     setCustomObjective('');
@@ -153,7 +154,7 @@ export const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, 
     setIsTestingKey(false);
     setIsKeyValid(null);
     setApiKeyError('');
-  }, [open, initialMetadata, currentFrameworkId, workspaces]);
+  }, [open, initialMetadata, currentFrameworkId]);
 
   const handleTestKey = async () => {
     if (!apiKeyInput || !apiKeyInput.trim()) {
