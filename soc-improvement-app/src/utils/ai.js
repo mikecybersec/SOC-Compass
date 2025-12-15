@@ -158,6 +158,132 @@ export const generateActionPlan = async ({
 export const buildPromptPreview = (state) => buildPrompt(state);
 
 /**
+ * Generate structured action items suitable for Kanban cards.
+ * Returns an array of actions with shape:
+ * { title, description, status, priority, category, owner, dueDays }
+ */
+export const generateStructuredActions = async ({
+  apiKey,
+  apiBase = 'https://api.x.ai/v1/',
+  model = 'grok-4-latest',
+  frameworkName,
+  answers,
+  scores,
+  metadata,
+}) => {
+  if (!apiKey) {
+    return { actions: [], error: 'API key is required' };
+  }
+
+  const normalizedBase =
+    (apiBase?.trim() || 'https://api.x.ai/v1/').replace(/\/+$/, '') ||
+    'https://api.x.ai/v1';
+
+  const orgName = metadata.name || 'Unknown organization';
+  const objectives = (metadata.objectives || []).join(', ') || 'Not specified';
+
+  const systemMessage =
+    'You are a SOC transformation advisor who outputs ONLY valid JSON (no markdown, no commentary).';
+
+  const userMessage = `Using the following assessment context, generate a small set of actionable remediation items as structured JSON.
+
+Context:
+- Framework: ${frameworkName}
+- Organization: ${orgName}
+- Objectives: ${objectives}
+- Maturity scores: ${JSON.stringify(scores)}
+- Key answers: ${JSON.stringify(answers)}
+
+Your task:
+- Generate between 5 and 10 concrete actions.
+- Each action should address a specific maturity gap or improvement opportunity.
+- Focus on clarity and executability (one clear outcome per action).
+
+JSON schema:
+{
+  "actions": [
+    {
+      "title": "Short, imperative action title",
+      "description": "2-4 sentence description with enough detail to execute the action.",
+      "status": "todo",
+      "priority": "high | medium | low",
+      "category": "Domain::Aspect or other tag",
+      "owner": "Role primarily responsible (e.g. SOC Manager)",
+      "dueDays": 30 | 60 | 90 | 180
+    }
+  ]
+}
+
+Constraints:
+- status MUST be exactly "todo" for all actions.
+- priority MUST be one of: "high", "medium", "low".
+- dueDays MUST be one of: 30, 60, 90, 180.
+- Respond with ONLY valid JSON matching the schema above. Do not wrap in markdown fences, do not add commentary.`;
+
+  try {
+    const response = await fetch(`${normalizedBase}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model,
+        messages: [
+          { role: 'system', content: systemMessage },
+          { role: 'user', content: userMessage },
+        ],
+        temperature: 0.4,
+      }),
+    });
+
+    if (!response.ok) {
+      const text = await response.text().catch(() => '');
+      throw new Error(
+        `Failed to generate structured actions (status ${response.status}): ${text}`
+      );
+    }
+
+    const payload = await response.json();
+    const content = (payload.choices?.[0]?.message?.content || '').trim();
+
+    let parsed;
+    try {
+      parsed = JSON.parse(content);
+    } catch (err) {
+      console.error('Failed to parse structured actions JSON:', content);
+      throw new Error('AI did not return valid JSON for actions.');
+    }
+
+    const actions = Array.isArray(parsed.actions) ? parsed.actions : [];
+
+    // Basic validation / normalization
+    const normalized = actions
+      .map((a) => ({
+        title: (a.title || '').toString().trim(),
+        description: (a.description || '').toString().trim(),
+        status: 'todo',
+        priority: ['high', 'medium', 'low'].includes((a.priority || '').toLowerCase())
+          ? a.priority.toLowerCase()
+          : 'medium',
+        category: a.category || null,
+        owner: a.owner || null,
+        dueDays: [30, 60, 90, 180].includes(a.dueDays) ? a.dueDays : 90,
+        source: 'ai',
+      }))
+      .filter((a) => a.title);
+
+    return { actions: normalized };
+  } catch (error) {
+    console.error('generateStructuredActions error:', error);
+    return {
+      actions: [],
+      error: error.message || 'Failed to generate structured actions.',
+    };
+  }
+};
+
+/**
  * Generate aspect-specific recommendations when an aspect is completed
  * @param {Object} params
  * @param {string} params.apiKey - API key

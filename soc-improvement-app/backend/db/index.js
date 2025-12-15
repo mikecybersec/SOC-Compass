@@ -1,28 +1,18 @@
 import pg from 'pg';
 const { Pool } = pg;
 
-let pool = null;
+export const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});
 
-export const getPool = () => {
-  if (!pool) {
-    pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-      max: 20,
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 2000,
-    });
-
-    pool.on('error', (err) => {
-      console.error('Unexpected error on idle client', err);
-    });
-
-    console.log('PostgreSQL connection pool created');
-  }
-  return pool;
-};
+pool.on('error', (err) => {
+  console.error('Unexpected error on idle client', err);
+});
 
 export const query = async (text, params) => {
-  const pool = getPool();
   const start = Date.now();
   try {
     const res = await pool.query(text, params);
@@ -36,7 +26,7 @@ export const query = async (text, params) => {
 };
 
 export const getClient = async () => {
-  const pool = getPool();
   return await pool.connect();
 };
+
 

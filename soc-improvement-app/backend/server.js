@@ -8,6 +8,7 @@ import workspacesRouter from './routes/workspaces.js';
 import assessmentsRouter from './routes/assessments.js';
 import filesRouter from './routes/files.js';
 import migrationRouter from './routes/migration.js';
+import actionsRouter from './routes/actions.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,6 +38,7 @@ app.use('/api/v1/workspaces', workspacesRouter);
 app.use('/api/v1/assessments', assessmentsRouter);
 app.use('/api/v1/files', filesRouter);
 app.use('/api/v1/migration', migrationRouter);
+app.use('/api/v1', actionsRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

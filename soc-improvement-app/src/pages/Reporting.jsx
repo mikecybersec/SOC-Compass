@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import { AppSidebar } from '@/components/app-sidebar';
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
@@ -22,7 +22,7 @@ import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import { frameworks } from '../utils/frameworks';
 import { exportAssessment } from '../utils/storage';
 import { exportPdf } from '../utils/pdf';
-import { FileDown, Download, FileJson, TrendingUp, Target, Calendar, DollarSign, Building2 } from 'lucide-react';
+import { FileDown, Download, FileJson, TrendingUp, Target, Calendar, DollarSign, Building2, Columns3, AlertCircle } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 
 const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessmentInfo, onOpenReporting, onNavigateHome, onSwitchWorkspace, onOpenApiModal, onOpenPreferences, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
@@ -32,6 +32,8 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
   const metadata = useAssessmentStore((s) => s.currentAssessment.metadata);
   const answers = useAssessmentStore((s) => s.currentAssessment.answers);
   const state = useAssessmentStore();
+  const actionsByAssessmentId = useAssessmentStore((s) => s.actionsByAssessmentId || {});
+  const fetchActionsForAssessment = useAssessmentStore((s) => s.fetchActionsForAssessment);
   const sidebarCollapsed = useAssessmentStore((s) => s.sidebarCollapsed);
   const setSidebarCollapsed = useAssessmentStore((s) => s.setSidebarCollapsed);
   const assessmentCollapsed = useAssessmentStore((s) => s.sidebarAssessmentCollapsed);
@@ -62,6 +64,17 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
 
   const maturityScore = scores.maturity || 0;
   const maturityPercentage = (maturityScore / 5) * 100;
+
+  const currentActions = actionsByAssessmentId[currentAssessmentId] || [];
+  const todoActions = currentActions.filter((a) => a.status === 'todo');
+  const doingActions = currentActions.filter((a) => a.status === 'doing');
+  const doneActions = currentActions.filter((a) => a.status === 'done');
+
+  useEffect(() => {
+    if (currentAssessmentId) {
+      fetchActionsForAssessment(currentAssessmentId);
+    }
+  }, [currentAssessmentId, fetchActionsForAssessment]);
 
   return (
     <SidebarProvider open={!sidebarCollapsed} onOpenChange={(open) => setSidebarCollapsed(!open)}>
@@ -212,6 +225,150 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
               </div>
             </div>
             <ActionPlan ref={actionPlanRef} onOpenApiModal={onOpenApiModal} />
+          </div>
+
+          {/* Kanban Action Tracker */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <Columns3 className="h-4 w-4 text-muted-foreground" />
+                  <h2 className="text-2xl font-semibold tracking-tight">Action Tracker</h2>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Track and execute your remediation plan across To Do, Doing, and Done.
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={false}
+                  className="gap-2"
+                >
+                  <Download className="h-4 w-4" />
+                  Generate actions from AI
+                </Button>
+              </div>
+            </div>
+
+            {currentActions.length === 0 && (
+              <div className="flex items-start gap-2 rounded-lg border border-dashed border-muted-foreground/30 bg-muted/30 px-3 py-2.5 text-sm text-muted-foreground">
+                <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+                <p>
+                  No actions have been created yet for this assessment. Use{' '}
+                  <span className="font-medium">\"Generate actions from AI\"</span> or add cards
+                  manually (coming soon).
+                </p>
+              </div>
+            )}
+
+            <div className="grid gap-4 md:grid-cols-3">
+              {/* To Do */}
+              <Card className="flex flex-col min-h-[260px]">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <CardTitle className="text-sm font-semibold">To Do</CardTitle>
+                    <Badge variant="secondary">{todoActions.length}</Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0 space-y-2 overflow-y-auto max-h-[320px]">
+                  {todoActions.length === 0 ? (
+                    <p className="text-xs text-muted-foreground italic">
+                      No actions in this column yet.
+                    </p>
+                  ) : (
+                    todoActions.map((action) => (
+                      <div
+                        key={action.id}
+                        className="rounded-md border bg-card px-3 py-2.5 space-y-1"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <p className="text-sm font-medium leading-snug line-clamp-2">
+                            {action.title}
+                          </p>
+                        </div>
+                        {action.category && (
+                          <p className="text-[11px] text-muted-foreground">
+                            {action.category}
+                          </p>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Doing */}
+              <Card className="flex flex-col min-h-[260px]">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <CardTitle className="text-sm font-semibold">Doing</CardTitle>
+                    <Badge variant="secondary">{doingActions.length}</Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0 space-y-2 overflow-y-auto max-h-[320px]">
+                  {doingActions.length === 0 ? (
+                    <p className="text-xs text-muted-foreground italic">
+                      No actions in this column yet.
+                    </p>
+                  ) : (
+                    doingActions.map((action) => (
+                      <div
+                        key={action.id}
+                        className="rounded-md border bg-card px-3 py-2.5 space-y-1"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <p className="text-sm font-medium leading-snug line-clamp-2">
+                            {action.title}
+                          </p>
+                        </div>
+                        {action.category && (
+                          <p className="text-[11px] text-muted-foreground">
+                            {action.category}
+                          </p>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Done */}
+              <Card className="flex flex-col min-h-[260px]">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <CardTitle className="text-sm font-semibold">Done</CardTitle>
+                    <Badge variant="secondary">{doneActions.length}</Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0 space-y-2 overflow-y-auto max-h-[320px]">
+                  {doneActions.length === 0 ? (
+                    <p className="text-xs text-muted-foreground italic">
+                      No completed actions yet.
+                    </p>
+                  ) : (
+                    doneActions.map((action) => (
+                      <div
+                        key={action.id}
+                        className="rounded-md border bg-card px-3 py-2.5 space-y-1"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <p className="text-sm font-medium leading-snug line-clamp-2">
+                            {action.title}
+                          </p>
+                        </div>
+                        {action.category && (
+                          <p className="text-[11px] text-muted-foreground">
+                            {action.category}
+                          </p>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </SidebarInset>

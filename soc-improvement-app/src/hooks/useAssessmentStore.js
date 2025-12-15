@@ -4,6 +4,13 @@ import { frameworks, defaultFrameworkId } from '../utils/frameworks';
 import { computeScores } from '../utils/scoring';
 import { workspacesAPI } from '../api/workspaces';
 import { assessmentsAPI } from '../api/assessments';
+import {
+  getActionsForAssessment,
+  createActionsForAssessment,
+  createAction as apiCreateAction,
+  updateAction as apiUpdateAction,
+  deleteAction as apiDeleteAction,
+} from '../api/actions';
 
 const defaultApiBase = 'https://api.x.ai/v1/';
 const defaultModel = 'grok-4-latest';
@@ -248,6 +255,7 @@ const buildInitialState = () => {
     skipNextAutoSave: false,
     isLoading: false,
     isSyncing: false,
+    actionsByAssessmentId: {},
   };
 };
 
@@ -296,6 +304,82 @@ export const useAssessmentStore = create(
           set({ isLoading: false });
         }
       }
+    },
+
+    // ===== Actions (Kanban) =====
+    fetchActionsForAssessment: async (assessmentId) => {
+      if (!assessmentId) return;
+      try {
+        const actions = await getActionsForAssessment(assessmentId);
+        set((state) => ({
+          actionsByAssessmentId: {
+            ...(state.actionsByAssessmentId || {}),
+            [assessmentId]: actions,
+          },
+        }));
+      } catch (error) {
+        console.error('Failed to fetch actions:', error);
+      }
+    },
+
+    createActionsForAssessment: async (assessmentId, actions) => {
+      if (!assessmentId || !Array.isArray(actions) || actions.length === 0) return;
+      try {
+        const res = await createActionsForAssessment(assessmentId, actions);
+        const created = res.actions || [];
+        set((state) => {
+          const existing = state.actionsByAssessmentId?.[assessmentId] || [];
+          return {
+            actionsByAssessmentId: {
+              ...(state.actionsByAssessmentId || {}),
+              [assessmentId]: [...existing, ...created],
+            },
+          };
+        });
+      } catch (error) {
+        console.error('Failed to create actions:', error);
+        throw error;
+      }
+    },
+
+    createAction: async (payload) => {
+      const created = await apiCreateAction(payload);
+      if (!created || !created.assessmentId) return created;
+      set((state) => {
+        const existing = state.actionsByAssessmentId?.[created.assessmentId] || [];
+        return {
+          actionsByAssessmentId: {
+            ...(state.actionsByAssessmentId || {}),
+            [created.assessmentId]: [...existing, created],
+          },
+        };
+      });
+      return created;
+    },
+
+    updateAction: async (id, updates) => {
+      const updated = await apiUpdateAction(id, updates);
+      set((state) => {
+        const map = { ...(state.actionsByAssessmentId || {}) };
+        Object.keys(map).forEach((assessmentId) => {
+          map[assessmentId] = (map[assessmentId] || []).map((a) =>
+            a.id === id ? { ...a, ...updated } : a
+          );
+        });
+        return { actionsByAssessmentId: map };
+      });
+      return updated;
+    },
+
+    deleteAction: async (id) => {
+      await apiDeleteAction(id);
+      set((state) => {
+        const map = { ...(state.actionsByAssessmentId || {}) };
+        Object.keys(map).forEach((assessmentId) => {
+          map[assessmentId] = (map[assessmentId] || []).filter((a) => a.id !== id);
+        });
+        return { actionsByAssessmentId: map };
+      });
     },
     setFramework: (frameworkId) =>
       set((state) => ({
