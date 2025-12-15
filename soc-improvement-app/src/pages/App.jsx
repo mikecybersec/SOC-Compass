@@ -321,14 +321,19 @@ const App = () => {
     setView('reporting');
   };
 
-  const handleStart = (payload) => {
+  const handleStart = async (payload) => {
     if (hasActiveAssessment) {
       saveAssessmentToHistory('Previous assessment snapshot');
     }
-    startAssessment(payload);
-    setView('assessment');
-    setStartModalOpen(false);
-    setStartMode(null);
+    try {
+      await startAssessment(payload);
+      setView('assessment');
+      setStartModalOpen(false);
+      setStartMode(null);
+    } catch (error) {
+      console.error('Failed to start assessment from App:', error);
+      // Optional: surface a toast here if you want user feedback
+    }
   };
 
   const handleLoadWorkspace = (workspaceId, assessmentId) => {

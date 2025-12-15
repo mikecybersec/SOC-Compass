@@ -545,55 +545,57 @@ export const useAssessmentStore = create(
         };
       }),
     importState: (state) => set(() => hydrateState(state)),
-    startAssessment: ({ frameworkId, metadata, workspaceName, workspaceId }) =>
-      set((state) => {
-        const startingMetadata = { ...defaultMetadata(), ...state.upcomingMetadata, ...metadata, status: 'Not Started' };
-        const newAssessment = buildAssessment({ frameworkId: frameworkId || defaultFrameworkId, metadata: startingMetadata });
-        const existingWorkspaces = state.workspaces || [];
 
-        // If an existing workspace is targeted and found, add the assessment there
-        if (workspaceId) {
-          const workspaceIndex = existingWorkspaces.findIndex((w) => w.id === workspaceId);
-          if (workspaceIndex !== -1) {
-            const workspace = existingWorkspaces[workspaceIndex];
-            const updatedWorkspace = {
-              ...workspace,
-              assessments: [newAssessment, ...(workspace.assessments || [])],
-              updatedAt: new Date().toISOString(),
-            };
+    // Start a new assessment, ensuring workspace and assessment are created in the backend
+    startAssessment: async ({ frameworkId, metadata, workspaceName, workspaceId }) => {
+      const state = get();
+      const startingMetadata = {
+        ...defaultMetadata(),
+        ...state.upcomingMetadata,
+        ...metadata,
+        status: 'Not Started',
+      };
+      const effectiveFrameworkId = frameworkId || defaultFrameworkId;
 
-            const updatedWorkspaces = [...existingWorkspaces];
-            updatedWorkspaces[workspaceIndex] = updatedWorkspace;
+      try {
+        let targetWorkspaceId = workspaceId;
 
-            return {
-              ...state,
-              currentAssessment: newAssessment,
-              currentAssessmentId: newAssessment.id,
-              currentWorkspaceId: updatedWorkspace.id,
-              workspaces: updatedWorkspaces,
-              upcomingMetadata: startingMetadata,
-              activeAspectKey: null,
-            };
-          }
+        // 1) Ensure we have a workspace in the backend
+        if (!targetWorkspaceId) {
+          const name =
+            (workspaceName || 'My Workspace').trim().slice(0, 20) || 'My Workspace';
+          const createdWorkspace = await workspacesAPI.create(name);
+          targetWorkspaceId = createdWorkspace.id;
         }
 
-        // Otherwise create a new workspace
-        const finalWorkspaceName = (workspaceName || 'My Workspace').trim().slice(0, 20) || 'My Workspace';
-        const newWorkspace = buildWorkspace(finalWorkspaceName);
+        // 2) Create assessment in backend
+        const createdAssessment = await assessmentsAPI.create({
+          workspaceId: targetWorkspaceId,
+          frameworkId: effectiveFrameworkId,
+          answers: {},
+          notes: {},
+          metadata: startingMetadata,
+          actionPlan: { steps: [], raw: '' },
+          aspectRecommendations: {},
+          savedAt: new Date().toISOString(),
+        });
 
-        newWorkspace.assessments = [newAssessment];
-        newWorkspace.updatedAt = new Date().toISOString();
+        // 3) Refresh workspaces from backend so state matches DB
+        await get().fetchWorkspaces();
 
-        return {
-          ...state,
-          currentAssessment: newAssessment,
-          currentAssessmentId: newAssessment.id,
-          currentWorkspaceId: newWorkspace.id,
-          workspaces: [newWorkspace, ...existingWorkspaces],
+        // 4) Set current workspace/assessment in state
+        set({
+          currentWorkspaceId: targetWorkspaceId,
+          currentAssessmentId: createdAssessment.id,
+          currentAssessment: createdAssessment,
           upcomingMetadata: startingMetadata,
           activeAspectKey: null,
-        };
-      }),
+        });
+      } catch (error) {
+        console.error('Failed to start assessment:', error);
+        throw error;
+      }
+    },
     saveAssessmentToHistory: (label) =>
       set((state) => {
         const currentWorkspaceId = state.currentWorkspaceId;
