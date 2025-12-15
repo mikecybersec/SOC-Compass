@@ -1,6 +1,6 @@
 # SOC Compass
 
-![SOC Compass](./platform.png)
+![SOC Compass](./steps.png)
 
 ## Documentation & Getting Started
 
