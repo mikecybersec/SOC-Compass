@@ -67,6 +67,10 @@ SOC Compass leverages artificial intelligence to provide intelligent recommendat
 - **AI Features** - Powers Compass Copilot, Compass Recommends, and Compass Reporter functionality
 - **Context-Aware** - AI recommendations are tailored based on your SOC budget, age, industry, and strategic objectives
 
+-----------------
+Upcoming & Recent Improvements
+-----------------
+
 **Recent Improvements**
 
 The following improvements have recently been made to the project:
