@@ -91,7 +91,10 @@ export const ModeSelectionModal = ({ open, onClose, onSelectSolo }) => {
 };
 
 export const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, currentFrameworkId, startMode }) => {
+  const workspaces = useAssessmentStore((s) => s.workspaces || []);
   const buildInitialForm = () => ({
+    workspaceMode: workspaces.length > 0 ? 'existing' : 'new',
+    workspaceId: workspaces[0]?.id || '',
     workspaceName: '',
     assessmentTitle: '',
     name: '',
@@ -150,7 +153,7 @@ export const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, 
     setIsTestingKey(false);
     setIsKeyValid(null);
     setApiKeyError('');
-  }, [open, initialMetadata, currentFrameworkId]);
+  }, [open, initialMetadata, currentFrameworkId, workspaces]);
 
   const handleTestKey = async () => {
     if (!apiKeyInput || !apiKeyInput.trim()) {
@@ -194,40 +197,88 @@ export const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, 
 
   const steps = [
     {
-      id: 'workspaceName',
+      id: 'workspaceSelection',
       title: '',
       description: '',
       render: () => (
-        <div className="wizard-field">
-          <label className="wizard-label">Workspace name</label>
-          <div className="input-with-hint">
-            <Input
-              autoFocus
-              className="form-control"
-              value={form.workspaceName}
-              placeholder="e.g. ACME Security Team"
-              maxLength={20}
-              onChange={(e) => {
-                const value = e.target.value.slice(0, 20);
-                setForm({ ...form, workspaceName: value });
-              }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  handleNext();
-                }
-              }}
-            />
-            <span className="enter-hint" aria-hidden="true">
-              Enter ↵
-            </span>
+        <div className="wizard-field space-y-4">
+          <label className="wizard-label">Where should this assessment live?</label>
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant={form.workspaceMode === 'existing' ? 'primary' : 'outline'}
+              onClick={() => setForm({ ...form, workspaceMode: 'existing', workspaceId: workspaces[0]?.id || '' })}
+              disabled={workspaces.length === 0}
+            >
+              Add to existing
+            </Button>
+            <Button
+              type="button"
+              variant={form.workspaceMode === 'new' ? 'primary' : 'outline'}
+              onClick={() => setForm({ ...form, workspaceMode: 'new' })}
+            >
+              Create new
+            </Button>
           </div>
-          <p className="wizard-helper">
-            {form.workspaceName.length}/20 characters
-          </p>
+
+          {form.workspaceMode === 'existing' ? (
+            <div className="wizard-field">
+              <label className="wizard-label">Select a workspace</label>
+              <Select
+                value={form.workspaceId}
+                onValueChange={(val) => setForm({ ...form, workspaceId: val })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose a workspace" />
+                </SelectTrigger>
+                <SelectContent>
+                  {workspaces.map((ws) => (
+                    <SelectItem key={ws.id} value={ws.id}>
+                      {ws.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          ) : (
+            <div className="wizard-field">
+              <label className="wizard-label">Workspace name</label>
+              <div className="input-with-hint">
+                <Input
+                  autoFocus
+                  className="form-control"
+                  value={form.workspaceName}
+                  placeholder="e.g. ACME Security Team"
+                  maxLength={20}
+                  onChange={(e) => {
+                    const value = e.target.value.slice(0, 20);
+                    setForm({ ...form, workspaceName: value });
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleNext();
+                    }
+                  }}
+                />
+                <span className="enter-hint" aria-hidden="true">
+                  Enter ↵
+                </span>
+              </div>
+              <p className="wizard-helper">
+                {form.workspaceName.length}/20 characters
+              </p>
+            </div>
+          )}
         </div>
       ),
       validate: () => {
+        if (form.workspaceMode === 'existing') {
+          if (!form.workspaceId) {
+            return 'Please select an existing workspace.';
+          }
+          return true;
+        }
         const trimmed = form.workspaceName.trim();
         if (trimmed.length === 0) {
           return 'Workspace name must have at least one character.';
@@ -575,12 +626,17 @@ export const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, 
   const handleSubmit = () => {
     setStepError('');
     const frameworkId = getInitialFrameworkId(form.frameworkId);
-    const { workspaceName, ...metadataFields } = form;
+    const { workspaceName, workspaceMode, workspaceId, ...metadataFields } = form;
+    const selectedWorkspaceName =
+      workspaceMode === 'existing'
+        ? workspaces.find((ws) => ws.id === workspaceId)?.name
+        : workspaceName;
     setShowLoading(true);
     setTimeout(() => {
       onStart({
         frameworkId,
-        workspaceName: workspaceName.trim() || 'My Workspace',
+        workspaceId: workspaceMode === 'existing' ? workspaceId : null,
+        workspaceName: (selectedWorkspaceName || 'My Workspace').trim(),
         metadata: { ...metadataFields, objectives: selectedObjectives },
       });
     }, 10000);

@@ -397,19 +397,42 @@ export const useAssessmentStore = create(
         };
       }),
     importState: (state) => set(() => hydrateState(state)),
-    startAssessment: ({ frameworkId, metadata, workspaceName }) =>
+    startAssessment: ({ frameworkId, metadata, workspaceName, workspaceId }) =>
       set((state) => {
         const startingMetadata = { ...defaultMetadata(), ...state.upcomingMetadata, ...metadata, status: 'Not Started' };
         const newAssessment = buildAssessment({ frameworkId: frameworkId || defaultFrameworkId, metadata: startingMetadata });
-        
-        // Always create a NEW workspace when starting a new assessment
-        // Use provided workspace name or default, ensuring max 20 characters
-        const finalWorkspaceName = (workspaceName || 'My Workspace').trim().slice(0, 20) || 'My Workspace';
-        
-        const newWorkspace = buildWorkspace(finalWorkspaceName);
         const existingWorkspaces = state.workspaces || [];
-        
-        // Add the new assessment to the new workspace
+
+        // If an existing workspace is targeted and found, add the assessment there
+        if (workspaceId) {
+          const workspaceIndex = existingWorkspaces.findIndex((w) => w.id === workspaceId);
+          if (workspaceIndex !== -1) {
+            const workspace = existingWorkspaces[workspaceIndex];
+            const updatedWorkspace = {
+              ...workspace,
+              assessments: [newAssessment, ...(workspace.assessments || [])],
+              updatedAt: new Date().toISOString(),
+            };
+
+            const updatedWorkspaces = [...existingWorkspaces];
+            updatedWorkspaces[workspaceIndex] = updatedWorkspace;
+
+            return {
+              ...state,
+              currentAssessment: newAssessment,
+              currentAssessmentId: newAssessment.id,
+              currentWorkspaceId: updatedWorkspace.id,
+              workspaces: updatedWorkspaces,
+              upcomingMetadata: startingMetadata,
+              activeAspectKey: null,
+            };
+          }
+        }
+
+        // Otherwise create a new workspace
+        const finalWorkspaceName = (workspaceName || 'My Workspace').trim().slice(0, 20) || 'My Workspace';
+        const newWorkspace = buildWorkspace(finalWorkspaceName);
+
         newWorkspace.assessments = [newAssessment];
         newWorkspace.updatedAt = new Date().toISOString();
 
