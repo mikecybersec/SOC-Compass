@@ -18,7 +18,7 @@ import {
   SidebarHeader,
   SidebarSeparator,
 } from "@/components/ui/sidebar"
-import { Info, FileText, Target } from "lucide-react"
+import { Info, FileText, Target, TrendingUp } from "lucide-react"
 
 export function AppSidebar({
   aspects,
