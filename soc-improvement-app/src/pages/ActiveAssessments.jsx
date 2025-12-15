@@ -30,9 +30,12 @@ import {
 const Workspaces = ({
   workspaces = [],
   onLoadWorkspace,
+  onUpdateWorkspace,
   onNewWorkspace,
   onDeleteWorkspace,
 }) => {
+  const [editingId, setEditingId] = useState(null);
+  const [editValue, setEditValue] = useState('');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [workspaceToDelete, setWorkspaceToDelete] = useState(null);
   const [storageInfo, setStorageInfo] = useState(() => getLocalStorageSize());
@@ -88,6 +91,39 @@ const Workspaces = ({
     if (percentage >= 75) return { level: 'warning', color: 'hsl(var(--primary))' };
     return { level: 'normal', color: 'hsl(var(--muted-foreground))' };
   }, [storageInfo]);
+
+  const handleStartEdit = (e, workspace) => {
+    e.stopPropagation();
+    setEditingId(workspace.id);
+    setEditValue(workspace.name);
+    setSettingsMenuOpenId(null);
+  };
+
+  const handleCancelEdit = (e) => {
+    e?.stopPropagation?.();
+    setEditingId(null);
+    setEditValue('');
+  };
+
+  const handleSaveEdit = (e, workspaceId) => {
+    e.stopPropagation();
+    const trimmedValue = editValue.trim().slice(0, 20);
+    if (trimmedValue && trimmedValue !== workspaces.find((w) => w.id === workspaceId)?.name) {
+      onUpdateWorkspace?.(workspaceId, { name: trimmedValue });
+    }
+    setEditingId(null);
+    setEditValue('');
+  };
+
+  const handleKeyDown = (e, workspaceId) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSaveEdit(e, workspaceId);
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      handleCancelEdit(e);
+    }
+  };
 
   const handleDeleteClick = (e, workspace) => {
     e.stopPropagation();
@@ -272,10 +308,12 @@ const Workspaces = ({
                     flexDirection: 'column'
                   }}
                   onClick={() => {
-                    onLoadWorkspace(workspace.id);
+                    if (editingId !== workspace.id) {
+                      onLoadWorkspace(workspace.id);
+                    }
                   }}
                   onKeyDown={(event) => {
-                    if (event.key === 'Enter' || event.key === ' ') {
+                    if (editingId !== workspace.id && (event.key === 'Enter' || event.key === ' ')) {
                       event.preventDefault();
                       onLoadWorkspace(workspace.id);
                     }
@@ -288,7 +326,7 @@ const Workspaces = ({
                     e.currentTarget.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.1)';
                     const settingsBtn = e.currentTarget.querySelector('.workspace-settings-button');
                     const arrow = e.currentTarget.querySelector('.workspace-arrow');
-                    if (settingsBtn) settingsBtn.style.opacity = '1';
+                      if (settingsBtn && editingId !== workspace.id) settingsBtn.style.opacity = '1';
                     if (arrow) arrow.style.opacity = '1';
                   }}
                   onMouseLeave={(e) => {
@@ -316,128 +354,160 @@ const Workspaces = ({
                         <FolderOpen className="size-5" style={{ color: 'hsl(var(--primary))' }} />
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' }}>
-                          <CardTitle style={{ margin: 0, fontSize: '1rem', fontWeight: '600', lineHeight: '1.3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                            {workspace.name}
-                          </CardTitle>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', position: 'relative' }}>
-                            <ChevronRight 
-                              className="size-4 workspace-arrow" 
-                              style={{ 
-                                color: 'hsl(var(--muted-foreground))',
-                                opacity: 0,
-                                transition: 'opacity 0.2s ease',
-                                flexShrink: 0
-                              }} 
+                        {editingId === workspace.id ? (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <Input
+                              value={editValue}
+                              onChange={(e) => setEditValue(e.target.value.slice(0, 20))}
+                              onKeyDown={(e) => handleKeyDown(e, workspace.id)}
+                              autoFocus
+                              style={{ flex: 1, fontSize: '0.95rem', fontWeight: '600' }}
+                              onClick={(e) => e.stopPropagation()}
                             />
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSettingsMenuOpenId((prev) => prev === workspace.id ? null : workspace.id);
-                              }}
-                              className="workspace-settings-button"
-                              data-workspace-settings
-                              style={{ 
-                                padding: '0.25rem', 
-                                minWidth: 'auto', 
-                                height: 'auto',
-                                opacity: settingsMenuOpenId === workspace.id ? 1 : 0,
-                                transition: 'opacity 0.2s ease'
-                              }}
-                              aria-label={`Workspace options for ${workspace.name}`}
-                            >
-                              <Settings2 className="size-4" />
-                            </Button>
-                            {settingsMenuOpenId === workspace.id && (
-                              <div
-                                data-workspace-menu
-                                style={{
-                                  position: 'absolute',
-                                  top: 'calc(100% + 0.5rem)',
-                                  right: 0,
-                                  minWidth: '180px',
-                                  background: 'hsl(var(--popover))',
-                                  color: 'hsl(var(--popover-foreground))',
-                                  border: '1px solid hsl(var(--border))',
-                                  borderRadius: '12px',
-                                  boxShadow: '0 12px 30px rgba(0,0,0,0.12)',
-                                  padding: '0.35rem',
-                                  zIndex: 20
-                                }}
-                                onClick={(e) => e.stopPropagation()}
+                            <div style={{ display: 'flex', gap: '0.25rem' }}>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={(e) => handleSaveEdit(e, workspace.id)}
+                                style={{ padding: '0.25rem', minWidth: 'auto', height: 'auto' }}
                               >
-                                <button
-                                  type="button"
-                                  disabled
-                                  style={{
-                                    width: '100%',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem',
-                                    padding: '0.5rem 0.65rem',
-                                    borderRadius: '10px',
-                                    border: 'none',
-                                    background: 'transparent',
-                                    color: 'hsl(var(--muted-foreground))',
-                                    cursor: 'not-allowed',
-                                    fontSize: '0.9rem',
-                                    fontWeight: 500
-                                  }}
-                                >
-                                  <span>Rename</span>
-                                  <span style={{ marginLeft: 'auto', fontSize: '0.75rem', color: 'hsl(var(--muted-foreground))' }}>Coming soon</span>
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={(e) => handleDeleteClick(e, workspace)}
-                                  style={{
-                                    width: '100%',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem',
-                                    padding: '0.5rem 0.65rem',
-                                    borderRadius: '10px',
-                                    border: 'none',
-                                    background: 'transparent',
-                                    color: 'hsl(var(--destructive))',
-                                    fontSize: '0.9rem',
-                                    fontWeight: 600,
-                                    cursor: 'pointer'
-                                  }}
-                                >
-                                  <Trash2 className="size-4" />
-                                  Delete workspace
-                                </button>
-                              </div>
-                            )}
+                                Save
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={handleCancelEdit}
+                                style={{ padding: '0.25rem', minWidth: 'auto', height: 'auto' }}
+                              >
+                                Cancel
+                              </Button>
+                            </div>
                           </div>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <div style={{ 
-                                display: 'inline-flex', 
-                                alignItems: 'center', 
-                                gap: '0.25rem',
-                                padding: '0.125rem 0.5rem',
-                                borderRadius: '12px',
-                                background: assessmentCount > 0 ? 'hsl(var(--primary) / 0.1)' : 'hsl(var(--muted) / 0.5)',
-                                fontSize: '0.75rem',
-                                fontWeight: '500',
-                                color: assessmentCount > 0 ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground))',
-                                cursor: 'default'
-                              }}>
-                                <FileText className="size-3" />
-                                {assessmentCount}
+                        ) : (
+                          <>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' }}>
+                              <CardTitle style={{ margin: 0, fontSize: '1rem', fontWeight: '600', lineHeight: '1.3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                {workspace.name}
+                              </CardTitle>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', position: 'relative' }}>
+                                <ChevronRight 
+                                  className="size-4 workspace-arrow" 
+                                  style={{ 
+                                    color: 'hsl(var(--muted-foreground))',
+                                    opacity: 0,
+                                    transition: 'opacity 0.2s ease',
+                                    flexShrink: 0
+                                  }} 
+                                />
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSettingsMenuOpenId((prev) => prev === workspace.id ? null : workspace.id);
+                                  }}
+                                  className="workspace-settings-button"
+                                  data-workspace-settings
+                                  style={{ 
+                                    padding: '0.25rem', 
+                                    minWidth: 'auto', 
+                                    height: 'auto',
+                                    opacity: settingsMenuOpenId === workspace.id ? 1 : 0,
+                                    transition: 'opacity 0.2s ease'
+                                  }}
+                                  aria-label={`Workspace options for ${workspace.name}`}
+                                >
+                                  <Settings2 className="size-4" />
+                                </Button>
+                                {settingsMenuOpenId === workspace.id && (
+                                  <div
+                                    data-workspace-menu
+                                    style={{
+                                      position: 'absolute',
+                                      top: 'calc(100% + 0.5rem)',
+                                      right: 0,
+                                      minWidth: '180px',
+                                      background: 'hsl(var(--popover))',
+                                      color: 'hsl(var(--popover-foreground))',
+                                      border: '1px solid hsl(var(--border))',
+                                      borderRadius: '12px',
+                                      boxShadow: '0 12px 30px rgba(0,0,0,0.12)',
+                                      padding: '0.35rem',
+                                      zIndex: 20
+                                    }}
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <button
+                                      type="button"
+                                      onClick={(e) => handleStartEdit(e, workspace)}
+                                      style={{
+                                        width: '100%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.5rem',
+                                        padding: '0.5rem 0.65rem',
+                                        borderRadius: '10px',
+                                        border: 'none',
+                                        background: 'transparent',
+                                        color: 'hsl(var(--foreground))',
+                                        fontSize: '0.9rem',
+                                        fontWeight: 600,
+                                        cursor: 'pointer'
+                                      }}
+                                    >
+                                      Rename workspace
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={(e) => handleDeleteClick(e, workspace)}
+                                      style={{
+                                        width: '100%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.5rem',
+                                        padding: '0.5rem 0.65rem',
+                                        borderRadius: '10px',
+                                        border: 'none',
+                                        background: 'transparent',
+                                        color: 'hsl(var(--destructive))',
+                                        fontSize: '0.9rem',
+                                        fontWeight: 600,
+                                        cursor: 'pointer'
+                                      }}
+                                    >
+                                      <Trash2 className="size-4" />
+                                      Delete workspace
+                                    </button>
+                                  </div>
+                                )}
                               </div>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Total Assessments</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <div style={{ 
+                                    display: 'inline-flex', 
+                                    alignItems: 'center', 
+                                    gap: '0.25rem',
+                                    padding: '0.125rem 0.5rem',
+                                    borderRadius: '12px',
+                                    background: assessmentCount > 0 ? 'hsl(var(--primary) / 0.1)' : 'hsl(var(--muted) / 0.5)',
+                                    fontSize: '0.75rem',
+                                    fontWeight: '500',
+                                    color: assessmentCount > 0 ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground))',
+                                    cursor: 'default'
+                                  }}>
+                                    <FileText className="size-3" />
+                                    {assessmentCount}
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Total Assessments</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </div>
+                          </>
+                        )}
                       </div>
                     </div>
                   </CardHeader>
