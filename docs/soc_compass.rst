@@ -85,3 +85,5 @@ The following are ideas for future releases:
 - **Change tracker** - Utilising AI integration, tell Compass what has changed recently. Compass will infer what elements of the assessment require a review or evidence re-assessing.
 - **Actions tracker** - As part of improving the reporting element, we can utilise AI to track the actions taken and the progress made towards objectives, actions and initiatives in a kanban board style view.
 - **Expiry dates on evidence** - Soon, elements of evidence will have an expiry date, which will be used to trigger a review or evidence re-assessing.
+- **Automation Administration** - Allow users to switch off Compass Recommend
+- **JIRA integration for actions** - Allow users to create JIRA tickets for actions directly from Compass.
