@@ -7,7 +7,7 @@ SOC Compass is distributed as prebuilt Docker images and runs as a small
 containerized stack. No source code checkout or local builds are required.
 
 -----------------
-Quick Install (Recommended)
+Quick Install
 -----------------
 
 The easiest way to install SOC Compass is using the provided installer script.
