@@ -25,8 +25,8 @@ jobs:
       - name: Build and push frontend (multi-platform)
         uses: docker/build-push-action@v6
         with:
-          context: soc-improvement-app/frontend
-          file: soc-improvement-app/frontend/Dockerfile
+          context: frontend
+          file: frontend/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
@@ -52,8 +52,8 @@ jobs:
       - name: Build and push backend (multi-platform)
         uses: docker/build-push-action@v6
         with:
-          context: soc-improvement-app/backend
-          file: soc-improvement-app/backend/Dockerfile
+          context: backend
+          file: backend/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
