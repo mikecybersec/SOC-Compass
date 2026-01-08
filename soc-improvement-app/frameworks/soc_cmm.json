@@ -146,6 +146,20 @@
           "code": "B1.6",
           "text": "Specify rationale for chosen values or any additional comments",
           "item_type": "criterion"
+        },
+        {
+          "code": "B1.TOM.1",
+          "text": "Current understanding of business drivers",
+          "item_type": "soctom",
+          "question_type": "SOCTOM",
+          "placeholder": "Describe the current state of understanding of business drivers..."
+        },
+        {
+          "code": "B1.TOM.2",
+          "text": "Current application of business drivers",
+          "item_type": "soctom",
+          "question_type": "SOCTOM",
+          "placeholder": "Describe how business drivers are currently applied..."
         }
       ],
       "Customers / Stakeholders": [

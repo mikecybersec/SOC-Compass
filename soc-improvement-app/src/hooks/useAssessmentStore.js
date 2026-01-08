@@ -34,12 +34,14 @@ const hasAssessmentContent = (assessment) => {
 
   const answers = assessment.answers || {};
   const notes = assessment.notes || {};
+  const soctomData = assessment.soctomData || {};
   const actionPlan = assessment.actionPlan || {};
   const aspectRecommendations = assessment.aspectRecommendations || {};
   const metadata = assessment.metadata || {};
 
   const hasAnswers = Object.keys(answers).length > 0;
   const hasNotes = Object.keys(notes).length > 0;
+  const hasSoctomData = Object.keys(soctomData).length > 0;
   const hasActionPlan = Boolean(actionPlan.raw?.trim()) || (actionPlan.steps || []).length > 0;
   const hasRecommendations = Object.keys(aspectRecommendations).length > 0;
 
@@ -60,7 +62,7 @@ const hasAssessmentContent = (assessment) => {
     (metadata.objectives || []).join('|') !== (defaults.objectives || []).join('|') ||
     trackedKeys.some((key) => (metadata[key] ?? defaults[key]) !== defaults[key]);
 
-  return hasAnswers || hasNotes || hasActionPlan || hasRecommendations || metadataChanged;
+  return hasAnswers || hasNotes || hasSoctomData || hasActionPlan || hasRecommendations || metadataChanged;
 };
 
 const normalizeMetadata = (metadata = {}) => ({
@@ -79,6 +81,7 @@ const buildAssessment = ({ frameworkId = defaultFrameworkId, metadata } = {}) =>
   frameworkId,
   answers: {},
   notes: {},
+  soctomData: {}, // Store SOCTOM current state, target state, and skip flags
   metadata: { ...defaultMetadata(), ...metadata },
   actionPlan: { steps: [], raw: '' },
   aspectRecommendations: {}, // Store recommendations per aspect key
@@ -105,6 +108,7 @@ const hydrateAssessment = (assessment, fallbackMetadata) => {
     metadata: normalizeMetadata(assessment.metadata || fallbackMetadata),
     answers: assessment.answers || {},
     notes: assessment.notes || {},
+    soctomData: assessment.soctomData || {},
     actionPlan: { steps: [], raw: '', ...(assessment.actionPlan || {}) },
     aspectRecommendations: assessment.aspectRecommendations || {},
   };
@@ -388,6 +392,7 @@ export const useAssessmentStore = create(
           frameworkId,
           answers: {},
           notes: {},
+          soctomData: {},
           actionPlan: { steps: [], raw: '' },
         },
         activeAspectKey: null,
@@ -404,6 +409,45 @@ export const useAssessmentStore = create(
         currentAssessment: {
           ...state.currentAssessment,
           notes: { ...state.currentAssessment.notes, [code]: value },
+        },
+      })),
+    setSoctomCurrentState: (code, value) =>
+      set((state) => ({
+        currentAssessment: {
+          ...state.currentAssessment,
+          soctomData: {
+            ...state.currentAssessment.soctomData,
+            [code]: {
+              ...state.currentAssessment.soctomData?.[code],
+              currentState: value,
+            },
+          },
+        },
+      })),
+    setSoctomTargetState: (code, value) =>
+      set((state) => ({
+        currentAssessment: {
+          ...state.currentAssessment,
+          soctomData: {
+            ...state.currentAssessment.soctomData,
+            [code]: {
+              ...state.currentAssessment.soctomData?.[code],
+              targetState: value,
+            },
+          },
+        },
+      })),
+    setSoctomSkipImprovement: (code, value) =>
+      set((state) => ({
+        currentAssessment: {
+          ...state.currentAssessment,
+          soctomData: {
+            ...state.currentAssessment.soctomData,
+            [code]: {
+              ...state.currentAssessment.soctomData?.[code],
+              skipImprovement: value,
+            },
+          },
         },
       })),
     setMetadata: (metadata) =>

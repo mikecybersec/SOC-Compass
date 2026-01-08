@@ -18,6 +18,7 @@ const mapQuestion = (question) => {
     questionType: question.question_type,
     importanceOptions: question.importance_options,
     isAnswerable: answerOptions.length > 0,
+    isSoctom: question.item_type === 'soctom',
   };
 };
 
