@@ -5,4 +5,9 @@ export const objectiveOptions = [
   'Enable MSSP service quality',
   'Automate triage',
   'Strengthen threat hunting',
+  'Improve Domain: Business',
+  'Improve Domain: People',
+  'Improve Domain: Process',
+  'Improve Domain: Technology',
+  'Improve Domain: Services',
 ];
