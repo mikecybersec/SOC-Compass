@@ -77,6 +77,7 @@ The following improvements have recently been made to the project:
 
 - **PostgreSQL Database** - Moving the project away from localStorage to a PostgreSQL database for enhanced data persistence, backup, and multi-device synchronization
 - **Docker Deployment** - Containerised deployment option for easier installation and deployment in enterprise environments
+- **Install scripts** - Install scripts for Linux and Windows to simplify the installation process
 
 **Planned Enhancements**
 
@@ -87,3 +88,4 @@ The following are ideas for future releases:
 - **Expiry dates on evidence** - Soon, elements of evidence will have an expiry date, which will be used to trigger a review or evidence re-assessing.
 - **Automation Administration** - Allow users to switch off Compass Recommend
 - **JIRA integration for actions** - Allow users to create JIRA tickets for actions directly from Compass.
+- **Agentic functionality** - Allow users to create agentic workflows to automate the assessment process. We will be introducing a CrewAI or LangChain container to allow for this.
