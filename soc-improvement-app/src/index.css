@@ -500,11 +500,11 @@ button.ui-btn-ghost {
   align-items: center;
   padding: 0.3rem 0.55rem;
   border-radius: 999px;
-  background: #eef1f5;
-  color: var(--text);
+  background: hsl(var(--muted));
+  color: hsl(var(--foreground));
   font-weight: 700;
   font-size: 0.85rem;
-  border: 1px solid var(--border);
+  border: 1px solid hsl(var(--border));
 }
 
 .ui-badge-success {
