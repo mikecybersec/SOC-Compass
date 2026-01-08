@@ -30,6 +30,23 @@ const QuestionPanel = ({ aspect, nextAspect, onNextAspect, onGenerateRecommendat
   const completion = totalQuestions === 0 ? 0 : Math.round((answered / totalQuestions) * 100);
   const isAspectCompleted = totalQuestions > 0 && answered === totalQuestions;
 
+  // Helper function to get the guidance text for a specific answer
+  const getGuidanceForAnswer = (question, selectedAnswer) => {
+    if (!question.guidance || !selectedAnswer) {
+      return null;
+    }
+    
+    // Find the index of the selected answer in answerOptions
+    const answerIndex = question.answerOptions.indexOf(selectedAnswer);
+    if (answerIndex === -1) {
+      return null;
+    }
+    
+    // Guidance keys are 1-based (1, 2, 3, 4, 5)
+    const guidanceKey = String(answerIndex + 1);
+    return question.guidance[guidanceKey] || null;
+  };
+
   return (
     <div className="card">
       {/* Compass Recommendations Button */}
@@ -79,9 +96,9 @@ const QuestionPanel = ({ aspect, nextAspect, onNextAspect, onGenerateRecommendat
               <div className="question-card-content">
                 <span className="question-code">{q.code}</span>
                 <h4 className="question-text">{q.text}</h4>
-                {q.guidance && (
+                {q.guidance && answers[q.code] && (
                   <p className="question-guidance">
-                    {Object.values(q.guidance).join(' • ')}
+                    {getGuidanceForAnswer(q, answers[q.code])}
                   </p>
                 )}
               </div>
