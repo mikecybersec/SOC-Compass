@@ -32,13 +32,13 @@ To verify::
 
 Run the installer script::
 
-    curl -fsSL https://github.com/mikecybersec/SOC-Compass/raw/main/install/install.sh | bash
+    curl -fsSL https://raw.githubusercontent.com/mikecybersec/SOC-Compass/refs/heads/main/install/linux/install.sh | bash
 
 **Windows (PowerShell)**
 
 Run the installer script::
 
-    iwr https://github.com/mikecybersec/SOC-Compass/raw/main/install/install.ps1 | iex
+    iwr https://raw.githubusercontent.com/mikecybersec/SOC-Compass/refs/heads/main/install/windows/install.ps1 | iex
 
 -----------------
 Accessing SOC Compass
