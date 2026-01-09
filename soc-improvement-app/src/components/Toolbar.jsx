@@ -11,7 +11,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { formatBudgetAmount } from '../utils/format';
+import { Info } from 'lucide-react';
 
 const Toolbar = ({ open, onClose }) => {
   const fileRef = useRef();
@@ -20,6 +27,7 @@ const Toolbar = ({ open, onClose }) => {
   const importState = useAssessmentStore((s) => s.importState);
 
   const objectives = state.currentAssessment.metadata.objectives || [];
+  const socRegions = state.currentAssessment.metadata.socRegion || [];
 
   const handleImport = async (event) => {
     const file = event.target.files?.[0];
@@ -37,6 +45,13 @@ const Toolbar = ({ open, onClose }) => {
       ? objectives.filter((item) => item !== objective)
       : [...objectives, objective];
     setMetadata({ objectives: updated });
+  };
+
+  const toggleRegion = (region) => {
+    const updated = socRegions.includes(region)
+      ? socRegions.filter((item) => item !== region)
+      : [...socRegions, region];
+    setMetadata({ socRegion: updated });
   };
 
   return (
@@ -118,11 +133,90 @@ const Toolbar = ({ open, onClose }) => {
               </Select>
             </div>
             <div className="metadata-field">
-              <label>Size</label>
+              <label>SOC FTE</label>
               <input
                 value={state.currentAssessment.metadata.size}
                 onChange={(e) => setMetadata({ size: e.target.value })}
+                placeholder="30"
               />
+            </div>
+            <div className="metadata-field">
+              <label>Business Size (FTE)</label>
+              <input
+                value={state.currentAssessment.metadata.businessSize || ''}
+                onChange={(e) => setMetadata({ businessSize: e.target.value })}
+                placeholder="5000"
+              />
+            </div>
+            <div className="metadata-field">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                <label style={{ margin: 0 }}>SOC Organisational Model</label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info style={{ width: '0.875rem', height: '0.875rem', color: 'hsl(var(--muted-foreground))', cursor: 'help' }} />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Reference: 11 Strategies of a World-Class CSOC</p>
+                      <p>MITRE, Pages 54-55</p>
+                      <a href="https://www.mitre.org/sites/default/files/2022-04/11-strategies-of-a-world-class-cybersecurity-operations-center.pdf" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline' }}>
+                        View Document
+                      </a>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <Select
+                value={state.currentAssessment.metadata.socOrgModel || ''}
+                onValueChange={(value) => setMetadata({ socOrgModel: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select model" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Distributed SOC">Distributed SOC</SelectItem>
+                  <SelectItem value="Centralised SOC">Centralised SOC</SelectItem>
+                  <SelectItem value="Federated SOC">Federated SOC</SelectItem>
+                  <SelectItem value="Coordinating SOC">Coordinating SOC</SelectItem>
+                  <SelectItem value="Hierarchical SOC">Hierarchical SOC</SelectItem>
+                  <SelectItem value="National SOC">National SOC</SelectItem>
+                  <SelectItem value="MSSP SOC">MSSP SOC</SelectItem>
+                  <SelectItem value="Hybrid SOC">Hybrid SOC</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="metadata-field" style={{ gridColumn: '1 / -1' }}>
+              <label>SOC Region(s)</label>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.5rem' }}>
+                {['Asia', 'Australia/New Zealand', 'Canada', 'Europe', 'South America', 'North America', 'Middle East'].map((region) => (
+                  <Button
+                    key={region}
+                    type="button"
+                    variant={socRegions.includes(region) ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => toggleRegion(region)}
+                  >
+                    {region}
+                  </Button>
+                ))}
+              </div>
+            </div>
+            <div className="metadata-field">
+              <label>Geographic Operation</label>
+              <Select
+                value={state.currentAssessment.metadata.geoOperation || ''}
+                onValueChange={(value) => setMetadata({ geoOperation: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select scope" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Regional">Regional</SelectItem>
+                  <SelectItem value="National">National</SelectItem>
+                  <SelectItem value="Continental">Continental</SelectItem>
+                  <SelectItem value="Global">Global</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="metadata-field">
               <label>Status</label>

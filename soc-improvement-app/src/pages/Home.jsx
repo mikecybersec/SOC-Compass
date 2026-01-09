@@ -19,13 +19,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import Label from '../components/ui/Label';
 import Badge from '../components/ui/Badge';
 import Dialog from '../components/ui/Dialog';
 import { objectiveOptions } from '../constants/objectives';
 import { formatBudgetAmount } from '../utils/format';
 import { validateApiKey } from '../utils/ai';
-import { FolderPlus, FileText, Sparkles, Bot, Minus, ChevronUp, Key, CheckCircle2, AlertCircle, Loader2, Compass } from 'lucide-react';
+import { FolderPlus, FileText, Sparkles, Bot, Minus, ChevronUp, Key, CheckCircle2, AlertCircle, Loader2, Compass, Info } from 'lucide-react';
 
 const disabledFrameworks = ['sim3', 'inform'];
 const getInitialFrameworkId = (frameworkId) =>
@@ -101,12 +107,16 @@ export const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, 
     budgetAmount: '',
     budgetCurrency: initialMetadata.budgetCurrency || '$',
     size: '',
+    businessSize: initialMetadata.businessSize || '',
+    socOrgModel: initialMetadata.socOrgModel || '',
+    geoOperation: initialMetadata.geoOperation || '',
     sector: '',
     socAge: initialMetadata.socAge || '',
     frameworkId: getInitialFrameworkId(currentFrameworkId),
   });
 
   const [selectedObjectives, setSelectedObjectives] = useState(initialMetadata.objectives || []);
+  const [selectedRegions, setSelectedRegions] = useState(initialMetadata.socRegion || []);
   const [form, setForm] = useState(buildInitialForm);
   const [customObjective, setCustomObjective] = useState('');
   const [step, setStep] = useState(0);
@@ -187,6 +197,12 @@ export const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, 
   const toggleObjective = (objective) => {
     setSelectedObjectives((prev) =>
       prev.includes(objective) ? prev.filter((item) => item !== objective) : [...prev, objective]
+    );
+  };
+
+  const toggleRegion = (region) => {
+    setSelectedRegions((prev) =>
+      prev.includes(region) ? prev.filter((item) => item !== region) : [...prev, region]
     );
   };
 
@@ -431,6 +447,88 @@ export const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, 
               onChange={(e) => setForm({ ...form, size: e.target.value })}
             />
           </div>
+          <div className="wizard-field">
+            <label className="wizard-label">Business Size (FTE)</label>
+            <p className="wizard-helper">Total employees in the organization.</p>
+            <Input
+              className="form-control"
+              value={form.businessSize}
+              placeholder="e.g. 5000"
+              onChange={(e) => setForm({ ...form, businessSize: e.target.value })}
+            />
+          </div>
+          <div className="wizard-field">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <label className="wizard-label">SOC Organisational Model</label>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info style={{ width: '1rem', height: '1rem', color: 'hsl(var(--muted-foreground))', cursor: 'help' }} />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Reference: 11 Strategies of a World-Class CSOC</p>
+                    <p>MITRE, Pages 54-55</p>
+                    <a href="https://www.mitre.org/sites/default/files/2022-04/11-strategies-of-a-world-class-cybersecurity-operations-center.pdf" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline' }}>
+                      View Document
+                    </a>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+            <Select
+              value={form.socOrgModel}
+              onValueChange={(value) => setForm({ ...form, socOrgModel: value })}
+            >
+              <SelectTrigger className="form-control">
+                <SelectValue placeholder="Select organizational model" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Distributed SOC">Distributed SOC</SelectItem>
+                <SelectItem value="Centralised SOC">Centralised SOC</SelectItem>
+                <SelectItem value="Federated SOC">Federated SOC</SelectItem>
+                <SelectItem value="Coordinating SOC">Coordinating SOC</SelectItem>
+                <SelectItem value="Hierarchical SOC">Hierarchical SOC</SelectItem>
+                <SelectItem value="National SOC">National SOC</SelectItem>
+                <SelectItem value="MSSP SOC">MSSP SOC</SelectItem>
+                <SelectItem value="Hybrid SOC">Hybrid SOC</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="wizard-field">
+            <label className="wizard-label">SOC Region(s)</label>
+            <p className="wizard-helper">Select all regions where the SOC operates (multi-select).</p>
+            <div className="pill-list" style={{ marginTop: '0.5rem' }}>
+              {['Asia', 'Australia/New Zealand', 'Canada', 'Europe', 'South America', 'North America', 'Middle East'].map((region) => (
+                <Button
+                  key={region}
+                  type="button"
+                  variant={selectedRegions.includes(region) ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => toggleRegion(region)}
+                  style={{ marginBottom: '0.5rem' }}
+                >
+                  {region}
+                </Button>
+              ))}
+            </div>
+          </div>
+          <div className="wizard-field">
+            <label className="wizard-label">Geographic Operation</label>
+            <Select
+              value={form.geoOperation}
+              onValueChange={(value) => setForm({ ...form, geoOperation: value })}
+            >
+              <SelectTrigger className="form-control">
+                <SelectValue placeholder="Select geographic scope" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Regional">Regional</SelectItem>
+                <SelectItem value="National">National</SelectItem>
+                <SelectItem value="Continental">Continental</SelectItem>
+                <SelectItem value="Global">Global</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <div className="wizard-field soc-age-field">
             <label className="wizard-label">How long has your SOC been established?</label>
             <Select
@@ -474,7 +572,11 @@ export const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, 
       validate: () => {
         if (!form.budgetAmount.trim()) return 'Budget amount must have at least one character.';
         if (!(form.budgetCurrency || '').toString().trim()) return 'Currency must have at least one character.';
-        if (!form.size.trim()) return 'Size must have at least one character.';
+        if (!form.size.trim()) return 'SOC FTE must have at least one character.';
+        if (!form.businessSize.trim()) return 'Business size must have at least one character.';
+        if (!form.socOrgModel.trim()) return 'SOC Organisational Model must be selected.';
+        if (selectedRegions.length === 0) return 'At least one SOC region must be selected.';
+        if (!form.geoOperation.trim()) return 'Geographic Operation must be selected.';
         if (!form.socAge.trim()) return 'SOC age must have at least one character.';
         if (!form.sector.trim()) return 'Sector must have at least one character.';
         return true;
@@ -638,7 +740,7 @@ export const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, 
         frameworkId,
         workspaceId: workspaceMode === 'existing' ? workspaceId : null,
         workspaceName: (selectedWorkspaceName || 'My Workspace').trim(),
-        metadata: { ...metadataFields, objectives: selectedObjectives },
+        metadata: { ...metadataFields, objectives: selectedObjectives, socRegion: selectedRegions },
       });
     }, 10000);
   };
