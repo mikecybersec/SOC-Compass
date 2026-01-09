@@ -529,14 +529,25 @@ button.ui-btn-ghost {
   position: fixed;
   inset: 0;
   background: rgba(6, 5, 14, 0.65);
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
   padding: 1.25rem;
   z-index: 20;
+  overflow-y: auto;
 }
 
 .ui-dialog {
   width: min(860px, 100%);
+  max-height: calc(100vh - 2.5rem);
+  display: flex;
+  flex-direction: column;
+  margin: auto 0;
+}
+
+.ui-dialog .ui-card-content {
+  overflow-y: auto;
+  max-height: calc(100vh - 220px);
 }
 
 .ui-dialog-card {
