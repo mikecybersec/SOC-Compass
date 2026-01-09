@@ -31,6 +31,7 @@ const AssessmentScoring = ({
   onOpenAssessmentScoring,
   onOpenReporting,
   onOpenContinuousImprovement,
+  onOpenOperatingModel,
   onNavigateHome,
   onSwitchWorkspace,
   onOpenApiModal,
@@ -89,6 +90,7 @@ const AssessmentScoring = ({
         onOpenAssessmentScoring={onOpenAssessmentScoring}
         onOpenReporting={onOpenReporting}
         onOpenContinuousImprovement={onOpenContinuousImprovement}
+        onOpenOperatingModel={onOpenOperatingModel}
         onSwitchWorkspace={onSwitchWorkspace}
         onOpenApiModal={onOpenApiModal}
         onOpenPreferences={onOpenPreferences}

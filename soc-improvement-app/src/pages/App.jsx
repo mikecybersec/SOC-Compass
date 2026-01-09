@@ -464,6 +464,7 @@ const App = () => {
               onNavigateHome={() => setView('home')}
               onOpenReporting={handleViewAssessmentScoring}
               onOpenContinuousImprovement={handleViewContinuousImprovement}
+              onOpenOperatingModel={handleViewOperatingModel}
               onSwitchWorkspace={handleSwitchWorkspace}
               onOpenApiModal={() => setApiModalOpen(true)}
               onOpenPreferences={() => setPreferencesModalOpen(true)}
@@ -489,6 +490,7 @@ const App = () => {
               onOpenAssessmentScoring={handleViewAssessmentScoring}
               onOpenReporting={handleViewReporting}
               onOpenContinuousImprovement={handleViewContinuousImprovement}
+              onOpenOperatingModel={handleViewOperatingModel}
               workspace={currentWorkspace}
               assessments={workspaceAssessments}
               currentAssessmentId={currentAssessmentId}
@@ -508,6 +510,7 @@ const App = () => {
               onOpenAssessmentInfo={handleViewAssessmentInfo}
               onOpenReporting={handleViewReporting}
               onOpenContinuousImprovement={handleViewContinuousImprovement}
+              onOpenOperatingModel={handleViewOperatingModel}
               workspace={currentWorkspace}
               assessments={workspaceAssessments}
               currentAssessmentId={currentAssessmentId}
@@ -525,6 +528,7 @@ const App = () => {
               onOpenAssessmentScoring={handleViewAssessmentScoring}
               onOpenReporting={handleViewReporting}
               onOpenContinuousImprovement={handleViewContinuousImprovement}
+              onOpenOperatingModel={handleViewOperatingModel}
               workspace={currentWorkspace}
               assessments={workspaceAssessments}
               currentAssessmentId={currentAssessmentId}

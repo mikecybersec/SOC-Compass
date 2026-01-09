@@ -31,6 +31,7 @@ const ContinuousImprovement = ({
   onOpenAssessmentScoring,
   onOpenReporting,
   onOpenContinuousImprovement,
+  onOpenOperatingModel,
   onSwitchWorkspace,
   onOpenApiModal,
   onOpenPreferences,
@@ -107,6 +108,7 @@ const ContinuousImprovement = ({
         onOpenAssessmentScoring={onOpenAssessmentScoring}
         onOpenReporting={onOpenReporting}
         onOpenContinuousImprovement={onOpenContinuousImprovement}
+        onOpenOperatingModel={onOpenOperatingModel}
         onSwitchWorkspace={onSwitchWorkspace}
         onOpenApiModal={onOpenApiModal}
         onOpenPreferences={onOpenPreferences}

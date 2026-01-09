@@ -70,6 +70,12 @@ const OperatingModel = ({
         onOpenPreferences={onOpenPreferences}
         onOpenApiModal={onOpenApiModal}
         onNavigateHome={onNavigateHome}
+        onOpenAssessmentInfo={onOpenAssessmentInfo}
+        onOpenAssessmentScoring={onOpenAssessmentScoring}
+        onOpenReporting={onOpenReporting}
+        onOpenContinuousImprovement={onOpenContinuousImprovement}
+        onOpenOperatingModel={null}
+        operatingModelActive={true}
         view="operating-model"
       />
       <SidebarInset>

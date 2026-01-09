@@ -21,7 +21,7 @@ import { frameworks } from '../utils/frameworks';
 import { exportPdf } from '../utils/pdf';
 import { FileDown } from 'lucide-react';
 
-const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessmentInfo, onOpenReporting, onOpenContinuousImprovement, onNavigateHome, onSwitchWorkspace, onOpenApiModal, onOpenPreferences, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
+const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessmentInfo, onOpenReporting, onOpenContinuousImprovement, onOpenOperatingModel, onNavigateHome, onSwitchWorkspace, onOpenApiModal, onOpenPreferences, workspace, assessments = [], currentAssessmentId, onSwitchAssessment }) => {
   const frameworkId = useAssessmentStore((s) => s.currentAssessment.frameworkId);
   const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
   const setActiveAspectKey = useAssessmentStore((s) => s.setActiveAspectKey);
@@ -57,6 +57,7 @@ const Reporting = ({ onBack, actionPlanRef, scoresRef, metaRef, onOpenAssessment
         onOpenAssessmentInfo={onOpenAssessmentInfo}
         onOpenReporting={onOpenReporting}
         onOpenContinuousImprovement={onOpenContinuousImprovement}
+        onOpenOperatingModel={onOpenOperatingModel}
         onSwitchWorkspace={onSwitchWorkspace}
         onOpenApiModal={onOpenApiModal}
         onOpenPreferences={onOpenPreferences}
