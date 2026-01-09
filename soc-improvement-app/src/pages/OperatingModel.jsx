@@ -28,12 +28,32 @@ const OperatingModel = ({
 }) => {
   const currentAssessment = useAssessmentStore((s) => s.currentAssessment);
   const soctomData = useAssessmentStore((s) => s.currentAssessment.soctomData || {});
+  const answers = useAssessmentStore((s) => s.currentAssessment.answers);
+  const activeAspectKey = useAssessmentStore((s) => s.activeAspectKey);
+  const setActiveAspectKey = useAssessmentStore((s) => s.setActiveAspectKey);
   const setSoctomCurrentState = useAssessmentStore((s) => s.setSoctomCurrentState);
   const setSoctomTargetState = useAssessmentStore((s) => s.setSoctomTargetState);
   const setSoctomSkipImprovement = useAssessmentStore((s) => s.setSoctomSkipImprovement);
+  const sidebarCollapsed = useAssessmentStore((s) => s.sidebarCollapsed);
+  const setSidebarCollapsed = useAssessmentStore((s) => s.setSidebarCollapsed);
+  const assessmentCollapsed = useAssessmentStore((s) => s.sidebarAssessmentCollapsed);
+  const setAssessmentCollapsed = useAssessmentStore((s) => s.setSidebarAssessmentCollapsed);
+  const domainCollapsed = useAssessmentStore((s) => s.sidebarDomainCollapsed || {});
+  const setDomainCollapsed = useAssessmentStore((s) => s.setSidebarDomainCollapsed);
+  const administrationCollapsed = useAssessmentStore((s) => s.sidebarAdministrationCollapsed);
+  const setAdministrationCollapsed = useAssessmentStore((s) => s.setSidebarAdministrationCollapsed);
 
   // Get all SOCTOM elements from the framework
   const framework = frameworks[currentAssessment.frameworkId];
+  const aspects = framework?.aspects || [];
+
+  const handleSelectAspect = (key) => {
+    setActiveAspectKey(key);
+    if (onOpenAssessmentInfo) {
+      onOpenAssessmentInfo();
+    }
+  };
+
   const soctomElements = useMemo(() => {
     if (!framework) return [];
     
@@ -60,8 +80,12 @@ const OperatingModel = ({
   }, 0);
 
   return (
-    <SidebarProvider>
+    <SidebarProvider open={!sidebarCollapsed} onOpenChange={(open) => setSidebarCollapsed(!open)}>
       <AppSidebar
+        variant="inset"
+        aspects={aspects}
+        currentKey={activeAspectKey}
+        onSelect={handleSelectAspect}
         workspace={workspace}
         assessments={assessments}
         currentAssessmentId={currentAssessmentId}
@@ -76,6 +100,13 @@ const OperatingModel = ({
         onOpenContinuousImprovement={onOpenContinuousImprovement}
         onOpenOperatingModel={null}
         operatingModelActive={true}
+        assessmentCollapsed={assessmentCollapsed}
+        setAssessmentCollapsed={setAssessmentCollapsed}
+        domainCollapsed={domainCollapsed}
+        setDomainCollapsed={setDomainCollapsed}
+        administrationCollapsed={administrationCollapsed}
+        setAdministrationCollapsed={setAdministrationCollapsed}
+        answers={answers}
         view="operating-model"
       />
       <SidebarInset>
