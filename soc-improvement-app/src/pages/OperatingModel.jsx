@@ -123,173 +123,115 @@ const OperatingModel = ({
           </Breadcrumb>
         </header>
 
-        <div className="flex flex-1 flex-col gap-4 p-4">
-          <div className="card">
-            <div style={{ padding: '1.5rem', borderBottom: '1px solid hsl(var(--border))' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-                <Target style={{ width: '1.5rem', height: '1.5rem', color: 'hsl(var(--primary))' }} />
-                <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 600 }}>
-                  SOC Targeting Operating Model (SOCTOM)
-                </h2>
-              </div>
-              <p style={{ margin: '0.5rem 0 0', color: 'hsl(var(--muted-foreground))' }}>
-                Assess your current state and define target states for each operating model element.
-              </p>
-              <div style={{ marginTop: '1rem', padding: '0.75rem', background: 'hsl(var(--muted) / 0.3)', borderRadius: '0.5rem' }}>
-                <p style={{ margin: 0, fontSize: '0.875rem', fontWeight: 600 }}>
-                  Progress: {completedSoctom} / {totalSoctom} elements completed
-                </p>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          {soctomElements.length === 0 ? (
+            <div className="card">
+              <div style={{ 
+                padding: '3rem 1rem', 
+                textAlign: 'center', 
+                color: 'hsl(var(--muted-foreground))' 
+              }}>
+                <Target style={{ width: '3rem', height: '3rem', margin: '0 auto 1rem', opacity: 0.5 }} />
+                <p>No Operating Model elements defined for this framework.</p>
               </div>
             </div>
-
-            <div style={{ padding: '1.5rem' }}>
-              {soctomElements.length === 0 ? (
+          ) : (
+            soctomElements.map((element) => (
+              <div key={`${element.domain}-${element.aspect}`} className="card">
+                {/* Header */}
                 <div style={{ 
-                  padding: '3rem 1rem', 
-                  textAlign: 'center', 
-                  color: 'hsl(var(--muted-foreground))' 
+                  padding: '1.25rem',
+                  borderBottom: '1px solid hsl(var(--border))',
                 }}>
-                  <Target style={{ width: '3rem', height: '3rem', margin: '0 auto 1rem', opacity: 0.5 }} />
-                  <p>No Operating Model elements defined for this framework.</p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
+                    <Target style={{ width: '1.25rem', height: '1.25rem', color: 'hsl(var(--primary))' }} />
+                    <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 600 }}>
+                      {element.domain} → {element.aspect}
+                    </h2>
+                  </div>
+                  <p style={{ margin: '0.25rem 0 0', fontSize: '0.875rem', color: 'hsl(var(--muted-foreground))' }}>
+                    Define current and target operating model states
+                  </p>
                 </div>
-              ) : (
-                <div style={{ display: 'grid', gap: '2rem' }}>
-                  {soctomElements.map((element) => (
-                    <div key={`${element.domain}-${element.aspect}`}>
-                      <div style={{ 
-                        marginBottom: '1rem',
-                        padding: '0.75rem',
-                        background: 'hsl(var(--muted) / 0.2)',
-                        borderRadius: '0.5rem',
-                      }}>
-                        <h3 style={{ 
-                          margin: 0, 
-                          fontSize: '1.125rem', 
-                          fontWeight: 600,
-                          color: 'hsl(var(--foreground))',
+
+                {/* Questions */}
+                <div style={{ padding: '1.25rem', display: 'grid', gap: '0.75rem' }}>
+                  {element.questions.map((q) => {
+                    const tomData = soctomData[q.code] || {};
+                    const isSkipped = tomData.skipImprovement || false;
+                    
+                    return (
+                      <div key={q.code} className="question-card">
+                        <div className="question-card-header">
+                          <div className="question-card-content">
+                            <span className="question-code">{q.code}</span>
+                            <h4 className="question-text">{q.text}</h4>
+                          </div>
+                        </div>
+                        
+                        {/* Current State */}
+                        <div className="question-card-notes">
+                          <label className="question-notes-label">Current State</label>
+                          <textarea
+                            className="question-notes-textarea"
+                            placeholder={q.placeholder || 'Describe the current state...'}
+                            value={tomData.currentState || ''}
+                            onChange={(e) => setSoctomCurrentState(q.code, e.target.value)}
+                            rows={3}
+                          />
+                        </div>
+
+                        {/* Skip Improvement Checkbox */}
+                        <div style={{ 
+                          margin: '0 1rem 1rem',
+                          padding: '0.75rem',
+                          background: 'hsl(var(--muted) / 0.5)',
+                          borderRadius: '0.375rem',
+                          border: '1px solid hsl(var(--border))',
                         }}>
-                          {element.domain} → {element.aspect}
-                        </h3>
-                      </div>
-
-                      <div style={{ display: 'grid', gap: '1rem' }}>
-                        {element.questions.map((q) => {
-                          const tomData = soctomData[q.code] || {};
-                          const isSkipped = tomData.skipImprovement || false;
-                          
-                          return (
-                            <div 
-                              key={q.code} 
-                              className="question-card" 
+                          <label style={{ 
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            cursor: 'pointer',
+                            fontSize: '0.875rem',
+                          }}>
+                            <input
+                              type="checkbox"
+                              checked={isSkipped}
+                              onChange={(e) => setSoctomSkipImprovement(q.code, e.target.checked)}
                               style={{ 
-                                background: 'hsl(var(--muted) / 0.3)',
-                                borderLeft: '3px solid hsl(var(--primary) / 0.5)',
+                                width: '1rem',
+                                height: '1rem',
+                                cursor: 'pointer',
                               }}
-                            >
-                              <div style={{ padding: '1rem' }}>
-                                <div style={{ marginBottom: '1rem' }}>
-                                  <span 
-                                    className="question-code" 
-                                    style={{ 
-                                      background: 'hsl(var(--primary) / 0.1)',
-                                      color: 'hsl(var(--primary))',
-                                      padding: '0.25rem 0.5rem',
-                                      borderRadius: '0.25rem',
-                                      fontSize: '0.75rem',
-                                      fontWeight: 600,
-                                    }}
-                                  >
-                                    {q.code}
-                                  </span>
-                                  <h4 style={{ 
-                                    margin: '0.5rem 0 0',
-                                    fontSize: '0.95rem',
-                                    fontWeight: 600,
-                                    color: 'hsl(var(--foreground))',
-                                  }}>
-                                    {q.text}
-                                  </h4>
-                                </div>
+                            />
+                            <span style={{ color: 'hsl(var(--foreground))' }}>
+                              Existing state not required for improvement
+                            </span>
+                          </label>
+                        </div>
 
-                                {/* Current State */}
-                                <div style={{ marginBottom: '1rem' }}>
-                                  <label 
-                                    className="question-notes-label" 
-                                    style={{ display: 'block', marginBottom: '0.5rem' }}
-                                  >
-                                    Current State
-                                  </label>
-                                  <textarea
-                                    className="question-notes-textarea"
-                                    placeholder={q.placeholder || 'Describe the current state...'}
-                                    value={tomData.currentState || ''}
-                                    onChange={(e) => setSoctomCurrentState(q.code, e.target.value)}
-                                    rows={3}
-                                    style={{ width: '100%' }}
-                                  />
-                                </div>
-
-                                {/* Skip Improvement Checkbox */}
-                                <div style={{ 
-                                  marginBottom: '1rem',
-                                  padding: '0.75rem',
-                                  background: 'hsl(var(--muted) / 0.5)',
-                                  borderRadius: '0.375rem',
-                                  border: '1px solid hsl(var(--border))',
-                                }}>
-                                  <label style={{ 
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem',
-                                    cursor: 'pointer',
-                                    fontSize: '0.875rem',
-                                  }}>
-                                    <input
-                                      type="checkbox"
-                                      checked={isSkipped}
-                                      onChange={(e) => setSoctomSkipImprovement(q.code, e.target.checked)}
-                                      style={{ 
-                                        width: '1rem',
-                                        height: '1rem',
-                                        cursor: 'pointer',
-                                      }}
-                                    />
-                                    <span style={{ color: 'hsl(var(--foreground))' }}>
-                                      Existing state not required for improvement
-                                    </span>
-                                  </label>
-                                </div>
-
-                                {/* Target State - Only show if not skipped */}
-                                {!isSkipped && (
-                                  <div style={{ marginBottom: '0.5rem' }}>
-                                    <label 
-                                      className="question-notes-label" 
-                                      style={{ display: 'block', marginBottom: '0.5rem' }}
-                                    >
-                                      Target State
-                                    </label>
-                                    <textarea
-                                      className="question-notes-textarea"
-                                      placeholder="Describe the desired target state..."
-                                      value={tomData.targetState || ''}
-                                      onChange={(e) => setSoctomTargetState(q.code, e.target.value)}
-                                      rows={3}
-                                      style={{ width: '100%' }}
-                                    />
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })}
+                        {/* Target State */}
+                        {!isSkipped && (
+                          <div className="question-card-notes" style={{ paddingTop: 0 }}>
+                            <label className="question-notes-label">Target State</label>
+                            <textarea
+                              className="question-notes-textarea"
+                              placeholder="Describe the desired target state..."
+                              value={tomData.targetState || ''}
+                              onChange={(e) => setSoctomTargetState(q.code, e.target.value)}
+                              rows={3}
+                            />
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
-              )}
-            </div>
-          </div>
+              </div>
+            ))
+          )}
         </div>
       </SidebarInset>
     </SidebarProvider>
