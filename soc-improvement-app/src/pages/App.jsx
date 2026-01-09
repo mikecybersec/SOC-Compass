@@ -541,6 +541,7 @@ const App = () => {
               onSwitchWorkspace={handleSwitchWorkspace}
               onOpenApiModal={() => setApiModalOpen(true)}
               onOpenPreferences={() => setPreferencesModalOpen(true)}
+              onOpenAssessment={() => setView('assessment')}
               onOpenAssessmentInfo={handleViewAssessmentInfo}
               onOpenAssessmentScoring={handleViewAssessmentScoring}
               onOpenReporting={handleViewReporting}

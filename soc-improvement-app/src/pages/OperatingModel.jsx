@@ -17,6 +17,7 @@ const OperatingModel = ({
   onSwitchWorkspace,
   onOpenApiModal,
   onOpenPreferences,
+  onOpenAssessment,
   onOpenAssessmentInfo,
   onOpenAssessmentScoring,
   onOpenReporting,
@@ -49,8 +50,8 @@ const OperatingModel = ({
 
   const handleSelectAspect = (key) => {
     setActiveAspectKey(key);
-    if (onOpenAssessmentInfo) {
-      onOpenAssessmentInfo();
+    if (onOpenAssessment) {
+      onOpenAssessment();
     }
   };
 
