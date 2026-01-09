@@ -97,21 +97,40 @@ export function AppSidebar({
         
         {/* Assessment sections */}
         {aspects && aspects.length > 0 && (
-          <>
-            <NavMain
-              aspects={aspects}
-              currentKey={currentKey}
-              onSelect={onSelect}
-              assessmentCollapsed={assessmentCollapsed}
-              setAssessmentCollapsed={setAssessmentCollapsed}
-              domainCollapsed={domainCollapsed}
-              setDomainCollapsed={setDomainCollapsed}
-              answers={answers}
-              showAssessmentState={showAssessmentState}
-            />
-            <SidebarSeparator className="mx-0 h-px" />
-          </>
+          <NavMain
+            aspects={aspects}
+            currentKey={currentKey}
+            onSelect={onSelect}
+            assessmentCollapsed={assessmentCollapsed}
+            setAssessmentCollapsed={setAssessmentCollapsed}
+            domainCollapsed={domainCollapsed}
+            setDomainCollapsed={setDomainCollapsed}
+            answers={answers}
+            showAssessmentState={showAssessmentState}
+          />
         )}
+        
+        {/* Operating Model */}
+        {onOpenOperatingModel && (
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton 
+                    onClick={onOpenOperatingModel}
+                    isActive={operatingModelActive || view === 'operating-model'}
+                    tooltip="Operating Model"
+                  >
+                    <Network />
+                    <span>Operating Model</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+        
+        <SidebarSeparator className="mx-0 h-px" />
         
         {/* Assessment Scoring, Reporting & Continuous Improvement */}
         <SidebarGroup>
@@ -147,18 +166,6 @@ export function AppSidebar({
                   <span>Continuous Improvement</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              {onOpenOperatingModel && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton 
-                    onClick={onOpenOperatingModel}
-                    isActive={operatingModelActive || view === 'operating-model'}
-                    tooltip="Operating Model"
-                  >
-                    <Network />
-                    <span>Operating Model</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
