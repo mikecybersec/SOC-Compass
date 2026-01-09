@@ -404,8 +404,8 @@ export const StartAssessmentModal = ({ open, onClose, onStart, initialMetadata, 
     },
     {
       id: 'context',
-      title: '',
-      description: '',
+      title: 'Profile',
+      description: 'Create a profile of the organisation and SOC for the assessment',
       render: () => (
         <div className="wizard-grid context-grid">
           <div className="wizard-field budget-field">
