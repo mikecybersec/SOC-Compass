@@ -18,7 +18,7 @@ import {
   SidebarHeader,
   SidebarSeparator,
 } from "@/components/ui/sidebar"
-import { Info, FileText, Target, TrendingUp } from "lucide-react"
+import { Info, FileText, Target, TrendingUp, Network } from "lucide-react"
 
 export function AppSidebar({
   aspects,
@@ -29,6 +29,7 @@ export function AppSidebar({
   onOpenAssessmentScoring,
   onOpenReporting,
   onOpenContinuousImprovement,
+  onOpenOperatingModel,
   onSwitchWorkspace,
   onOpenApiModal,
   onOpenPreferences,
@@ -36,6 +37,7 @@ export function AppSidebar({
   assessmentScoringActive = false,
   reportingActive = false,
   continuousImprovementActive = false,
+  operatingModelActive = false,
   assessmentCollapsed,
   setAssessmentCollapsed,
   domainCollapsed,
@@ -47,6 +49,7 @@ export function AppSidebar({
   assessments = [],
   currentAssessmentId,
   onSwitchAssessment,
+  view,
   ...props
 }) {
   const showAssessmentInfo = Boolean(onOpenAssessmentInfo) || assessmentInfoActive
@@ -144,6 +147,18 @@ export function AppSidebar({
                   <span>Continuous Improvement</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              {onOpenOperatingModel && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton 
+                    onClick={onOpenOperatingModel}
+                    isActive={operatingModelActive || view === 'operating-model'}
+                    tooltip="Operating Model"
+                  >
+                    <Network />
+                    <span>Operating Model</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

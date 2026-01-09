@@ -13,12 +13,8 @@ import {
 const QuestionPanel = ({ aspect, nextAspect, onNextAspect, onGenerateRecommendations, isLoadingRecommendations, hasRecommendation }) => {
   const answers = useAssessmentStore((s) => s.currentAssessment.answers);
   const notes = useAssessmentStore((s) => s.currentAssessment.notes);
-  const soctomData = useAssessmentStore((s) => s.currentAssessment.soctomData || {});
   const setAnswer = useAssessmentStore((s) => s.setAnswer);
   const setNote = useAssessmentStore((s) => s.setNote);
-  const setSoctomCurrentState = useAssessmentStore((s) => s.setSoctomCurrentState);
-  const setSoctomTargetState = useAssessmentStore((s) => s.setSoctomTargetState);
-  const setSoctomSkipImprovement = useAssessmentStore((s) => s.setSoctomSkipImprovement);
 
   if (!aspect) {
     return (
@@ -28,11 +24,10 @@ const QuestionPanel = ({ aspect, nextAspect, onNextAspect, onGenerateRecommendat
     );
   }
 
-  // Separate regular questions from SOCTOM elements
+  // Filter out SOCTOM elements - they're now in a separate section
   const regularQuestions = aspect.questions.filter((q) => !q.isSoctom);
-  const soctomQuestions = aspect.questions.filter((q) => q.isSoctom);
 
-  const answerableQuestions = aspect.questions.filter((q) => q.isAnswerable);
+  const answerableQuestions = regularQuestions.filter((q) => q.isAnswerable);
   const totalQuestions = answerableQuestions.length;
   const answered = answerableQuestions.filter((q) => answers[q.code]).length;
   const completion = totalQuestions === 0 ? 0 : Math.round((answered / totalQuestions) * 100);
@@ -144,129 +139,6 @@ const QuestionPanel = ({ aspect, nextAspect, onNextAspect, onGenerateRecommendat
           </div>
         ))}
       </div>
-
-      {/* SOCTOM Operating Model Section */}
-      {soctomQuestions.length > 0 && (
-        <>
-          <div style={{ 
-            margin: '1.5rem 0 1rem',
-            padding: '0.75rem 0',
-            borderTop: '2px solid hsl(var(--border))',
-            borderBottom: '1px solid hsl(var(--border) / 0.3)',
-          }}>
-            <h3 style={{ 
-              margin: 0,
-              fontSize: '0.875rem',
-              fontWeight: 600,
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
-              color: 'hsl(var(--muted-foreground))',
-            }}>
-              Operating Model
-            </h3>
-          </div>
-
-          <div style={{ display: 'grid', gap: '0.75rem' }}>
-            {soctomQuestions.map((q) => {
-              const tomData = soctomData[q.code] || {};
-              const isSkipped = tomData.skipImprovement || false;
-              
-              return (
-                <div key={q.code} className="question-card" style={{ 
-                  background: 'hsl(var(--muted) / 0.3)',
-                  borderLeft: '3px solid hsl(var(--primary) / 0.5)',
-                }}>
-                  <div style={{ padding: '1rem' }}>
-                    <div style={{ marginBottom: '1rem' }}>
-                      <span className="question-code" style={{ 
-                        background: 'hsl(var(--primary) / 0.1)',
-                        color: 'hsl(var(--primary))',
-                        padding: '0.25rem 0.5rem',
-                        borderRadius: '0.25rem',
-                        fontSize: '0.75rem',
-                        fontWeight: 600,
-                      }}>
-                        {q.code}
-                      </span>
-                      <h4 style={{ 
-                        margin: '0.5rem 0 0',
-                        fontSize: '0.95rem',
-                        fontWeight: 600,
-                        color: 'hsl(var(--foreground))',
-                      }}>
-                        {q.text}
-                      </h4>
-                    </div>
-
-                    {/* Current State */}
-                    <div style={{ marginBottom: '1rem' }}>
-                      <label className="question-notes-label" style={{ display: 'block', marginBottom: '0.5rem' }}>
-                        Current State
-                      </label>
-                      <textarea
-                        className="question-notes-textarea"
-                        placeholder={q.placeholder || 'Describe the current state...'}
-                        value={tomData.currentState || ''}
-                        onChange={(e) => setSoctomCurrentState(q.code, e.target.value)}
-                        rows={3}
-                        style={{ width: '100%' }}
-                      />
-                    </div>
-
-                    {/* Skip Improvement Checkbox */}
-                    <div style={{ 
-                      marginBottom: '1rem',
-                      padding: '0.75rem',
-                      background: 'hsl(var(--muted) / 0.5)',
-                      borderRadius: '0.375rem',
-                      border: '1px solid hsl(var(--border))',
-                    }}>
-                      <label style={{ 
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        cursor: 'pointer',
-                        fontSize: '0.875rem',
-                      }}>
-                        <input
-                          type="checkbox"
-                          checked={isSkipped}
-                          onChange={(e) => setSoctomSkipImprovement(q.code, e.target.checked)}
-                          style={{ 
-                            width: '1rem',
-                            height: '1rem',
-                            cursor: 'pointer',
-                          }}
-                        />
-                        <span style={{ color: 'hsl(var(--foreground))' }}>
-                          Existing state not required for improvement
-                        </span>
-                      </label>
-                    </div>
-
-                    {/* Target State - Only show if not skipped */}
-                    {!isSkipped && (
-                      <div style={{ marginBottom: '0.5rem' }}>
-                        <label className="question-notes-label" style={{ display: 'block', marginBottom: '0.5rem' }}>
-                          Target State
-                        </label>
-                        <textarea
-                          className="question-notes-textarea"
-                          placeholder="Describe the desired target state..."
-                          value={tomData.targetState || ''}
-                          onChange={(e) => setSoctomTargetState(q.code, e.target.value)}
-                          rows={3}
-                          style={{ width: '100%' }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </>
-      )}
 
       <div
         className="flex-between"

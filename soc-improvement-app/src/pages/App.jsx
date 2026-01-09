@@ -6,6 +6,7 @@ import AssessmentInfo from './AssessmentInfo';
 import AssessmentScoring from './AssessmentScoring';
 import Reporting from './Reporting';
 import ContinuousImprovement from './ContinuousImprovement';
+import OperatingModel from './OperatingModel';
 import ActiveAssessments from './ActiveAssessments';
 import { useAssessmentStore } from '../hooks/useAssessmentStore';
 import Navbar from '../components/Navbar';
@@ -331,6 +332,10 @@ const App = () => {
     setView('continuous-improvement');
   };
 
+  const handleViewOperatingModel = () => {
+    setView('operating-model');
+  };
+
   const handleStart = async (payload) => {
     if (hasActiveAssessment) {
       saveAssessmentToHistory('Previous assessment snapshot');
@@ -443,6 +448,7 @@ const App = () => {
               onOpenAssessmentInfo={handleViewAssessmentInfo}
               onOpenReporting={handleViewAssessmentScoring}
               onOpenContinuousImprovement={handleViewContinuousImprovement}
+              onOpenOperatingModel={handleViewOperatingModel}
               onSwitchWorkspace={handleSwitchWorkspace}
               onOpenApiModal={() => setApiModalOpen(true)}
               onOpenPreferences={() => setPreferencesModalOpen(true)}
@@ -525,10 +531,26 @@ const App = () => {
               onSwitchAssessment={switchAssessment}
             />
           )}
+          {view === 'operating-model' && (
+            <OperatingModel
+              onNavigateHome={() => setView('home')}
+              onSwitchWorkspace={handleSwitchWorkspace}
+              onOpenApiModal={() => setApiModalOpen(true)}
+              onOpenPreferences={() => setPreferencesModalOpen(true)}
+              onOpenAssessmentInfo={handleViewAssessmentInfo}
+              onOpenAssessmentScoring={handleViewAssessmentScoring}
+              onOpenReporting={handleViewReporting}
+              onOpenContinuousImprovement={handleViewContinuousImprovement}
+              workspace={currentWorkspace}
+              assessments={workspaceAssessments}
+              currentAssessmentId={currentAssessmentId}
+              onSwitchAssessment={switchAssessment}
+            />
+          )}
         </main>
         <Footer />
       </div>
-      {(view === 'assessment' || view === 'assessmentInfo' || view === 'assessment-scoring' || view === 'reporting' || view === 'continuous-improvement') && (
+      {(view === 'assessment' || view === 'assessmentInfo' || view === 'assessment-scoring' || view === 'reporting' || view === 'continuous-improvement' || view === 'operating-model') && (
         <AssessmentCopilot onOpenApiModal={() => setApiModalOpen(true)} />
       )}
       <ModeSelectionModal
