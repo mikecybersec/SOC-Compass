@@ -98,7 +98,7 @@ const OperatingModel = ({
         onOpenAssessmentScoring={onOpenAssessmentScoring}
         onOpenReporting={onOpenReporting}
         onOpenContinuousImprovement={onOpenContinuousImprovement}
-        onOpenOperatingModel={null}
+        onOpenOperatingModel={() => {}}
         operatingModelActive={true}
         assessmentCollapsed={assessmentCollapsed}
         setAssessmentCollapsed={setAssessmentCollapsed}
